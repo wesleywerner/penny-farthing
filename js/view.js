@@ -69,23 +69,14 @@
     // The vertical space between pile cards (multiplied per column)
     var y = v.pad.piletop * row;
     
-    card.x = x;
-    card.y = y;
-
-  };
-  
-  /**
-   * Draw a pile card.
-   */
-  v.drawPileCard = function(card, col, row) {
-    v.getPileCardPosition(card, col, row);
-    v.drawCard(card);
+    return {x:x, y:y};
+    
   };
   
   /**
    * Draw a card.
    */
-  v.drawCard = function(card) {
+  v.drawCard = function(card, x, y) {
     
     // draw card shape
     if (card.up) {
@@ -95,15 +86,15 @@
       v.ctx.fillStyle = "gray";
     }
     
-    v.ctx.fillRect(card.x, card.y, v.cardWidth, v.cardHeight);
+    v.ctx.fillRect(x, y, v.cardWidth, v.cardHeight);
     
     // outline card
     v.ctx.fillStyle = "black";
-    v.ctx.strokeRect(card.x, card.y, v.cardWidth, v.cardHeight);
+    v.ctx.strokeRect(x, y, v.cardWidth, v.cardHeight);
     
     // name
     if (card.up) {
-      v.ctx.strokeText(card.name, card.x+2, card.y+20);
+      v.ctx.strokeText(card.name, x+2, y+20);
     }
 
   }
@@ -121,7 +112,8 @@
     v.ctx.translate(v.pad.side, v.pad.top);
     game.model.piles.forEach(function(pile, col, arr){
       pile.cards.forEach(function(card, row){
-        v.drawPileCard(card, col, row);
+        var pos = v.getPileCardPosition(card, col, row);
+        v.drawCard(card, pos.x, pos.y);
       });
     });
     v.ctx.restore();
