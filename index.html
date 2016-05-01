@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>CARDS</title>
+    <script type="text/javascript" src="js/model.js"></script>
+    <script type="text/javascript" src="js/view.js"></script>
+    <script type="text/javascript" src="js/controller.js"></script>
+    <script type="text/javascript" src="js/table.js"></script>
+    <script type="text/javascript" src="js/deck.js"></script>
+    <script type="text/javascript" src="js/rules.js"></script>
+    <script type="text/javascript" src="js/tests.js"></script>
+
+    <script type="text/javascript">
+      function initialize() {
+        var el = document.getElementById('playfield');
+        game.view.initialize(el);
+        // ideally called on window resize event
+        game.view.resize(640, 480);
+        game.controller.initialize(el);
+      }
+    </script>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body onload="initialize()">
+    <canvas id="playfield" width="640" height="480"></canvas>
+  </body>
+</html>
