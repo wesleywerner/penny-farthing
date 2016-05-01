@@ -26,12 +26,6 @@
   };
   
   /**
-   * The view keeps an array of cards positions with a reference
-   * back to the card data.
-   */
-  v.cards = null;
-  
-  /**
    * Calculates card sizes and position based on the client size.
    */
   v.resize = function(w, h) {
@@ -59,63 +53,39 @@
     
   };
   
+  v.getPileCardPosition = function(card, col, row) {
+    
+    /**
+     * The card x position
+     */
+    // The pad between piles (multiplied per column)
+    var x = v.pad.pileside * col;
+    // add the card size (multiplied per column)
+    x += col * v.cardWidth;
+    
+    /**
+     * The card y position
+     */
+    // The vertical space between pile cards (multiplied per column)
+    var y = v.pad.piletop * row;
+    
+    card.x = x;
+    card.y = y;
+
+  };
+  
   /**
-   * Builds an array of the model cards, stores their column and rows.
+   * Draw a pile card.
    */
-  v.refreshCardsFromModel = function() {
-
-    v.cards = [ ];
-
-    // calculate pile positions
-    var decks = game.model.piles;
-
-    for (c=0; c < decks.length; c++) {
-      
-      var cards = decks[c].cards;
-
-      for (r=0; r < cards.length; r++) {
-        
-        /**
-         * The card x position
-         */
-        // start at the canvas pad
-        var x = v.pad.side;
-        // add the pad between piles (multiplied per column)
-        x += v.pad.pileside * c;
-        // add the card size (multiplied per column)
-        x += c * v.cardWidth;
-        
-        /**
-         * The card y position
-         */
-        // start at the canvas pad
-        var y = v.pad.top;
-        // add the pad between piles (multiplied per column)
-        y += v.pad.piletop * r;
-
-        //y = r * 6;
-        
-        var cardData = { };
-        cardData.x = x;
-        cardData.y = y;
-        //cardData.col = c;
-        //cardData.row = r;
-        cardData.card = cards[r];
-        v.cards.push(cardData);
-        
-      }
-      
-    }
+  v.drawPileCard = function(card, col, row) {
+    v.getPileCardPosition(card, col, row);
+    v.drawCard(card);
   };
   
   /**
    * Draw a card.
    */
-  v.drawCard = function(vcard) {
-    
-    var card = vcard.card;
-    var x = vcard.x;
-    var y = vcard.y;
+  v.drawCard = function(card) {
     
     // draw card shape
     if (card.up) {
@@ -125,15 +95,15 @@
       v.ctx.fillStyle = "gray";
     }
     
-    v.ctx.fillRect(x, y, v.cardWidth, v.cardHeight);
+    v.ctx.fillRect(card.x, card.y, v.cardWidth, v.cardHeight);
     
     // outline card
     v.ctx.fillStyle = "black";
-    v.ctx.strokeRect(x, y, v.cardWidth, v.cardHeight);
+    v.ctx.strokeRect(card.x, card.y, v.cardWidth, v.cardHeight);
     
     // name
     if (card.up) {
-      v.ctx.strokeText(card.name, x+2, y+20);
+      v.ctx.strokeText(card.name, card.x+2, card.y+20);
     }
 
   }
@@ -146,12 +116,15 @@
     v.ctx.fillStyle = "green";
     v.ctx.fillRect(0, 0, v.ctx.canvas.clientWidth, v.ctx.canvas.clientHeight);
 
-    v.cards.forEach(v.drawCard);
-    
-    //// draw piles
-    //game.model.piles.forEach(function(pile, index, arr){
-      //pile.cards.forEach(v.drawcard);
-      //});
+    // draw piles (translate the canvas padding)
+    v.ctx.save();
+    v.ctx.translate(v.pad.side, v.pad.top);
+    game.model.piles.forEach(function(pile, col, arr){
+      pile.cards.forEach(function(card, row){
+        v.drawPileCard(card, col, row);
+      });
+    });
+    v.ctx.restore();
     
   };
   
