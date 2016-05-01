@@ -154,51 +154,5 @@
       //});
     
   };
-
-  v.draw_v1 = function() {
-    if (v.ctx) {
-
-      //requestAnimationFrame(v.draw);
-
-      var decks = game.model.decks;
-      
-      // background
-      v.ctx.fillStyle = "green";
-      v.ctx.fillRect(0, 0, v.ctx.canvas.clientWidth, v.ctx.canvas.clientHeight);
-
-      v.ctx.save();
-
-      // if needed: transform position before any cards are drawn
-
-      for (c=1; c < decks.length; c++) {
-
-        v.ctx.save();
-        // transform position for this column
-        v.ctx.translate(c * v.cardWidth, 20);
-        // padding between columns
-        v.ctx.translate(c*20, 0);
-        
-        var cards = decks[c].cards;
-
-        for (i=0; i < cards.length; i++) {
-
-          // transform position for this card
-          v.ctx.save();
-          v.ctx.translate(3*i, i*20);
-          
-          v.drawCard(cards[i]);
-
-          v.ctx.restore();
-          
-        }
-
-        v.ctx.restore();
-        
-      }
-
-      v.ctx.restore();
-      
-    }
-  };
   
 })();
