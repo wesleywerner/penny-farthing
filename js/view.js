@@ -7,6 +7,13 @@
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
   var v = g.view = { }
+  
+  v.pad = { };
+  v.pad.ratios = {      // ratios to calculate padding values
+    top: 0.1,          // on the resize call
+    side: 0.1,
+    piletop: 0.02
+    };
 
   /**
    * Initialise the view's drawing context.
@@ -28,8 +35,28 @@
    * Calculates card sizes and position based on the client size.
    */
   v.resize = function(w, h) {
-    v.cardWidth = w * 0.1;
-    v.cardHeight = h * 0.15;
+    v.width = w;
+    v.height = h;
+    
+    // calculate padding from ratios
+    v.pad.top = Math.floor(v.pad.ratios.top * h);
+    v.pad.side = Math.floor(v.pad.ratios.side * w);
+    v.pad.piletop = Math.floor(v.pad.ratios.piletop * h);
+    
+    // To calculate the card size, we look at the canvas size
+    // and how many piles the rules request.
+    // We account for spacing between the piles in the form
+    // of one extra pile (which we split evenly between the requested
+    // pile amount)
+    
+    var widthMinusPad = w - v.pad.side * 2;   // includes both sides
+    var pilesPlusExtra = game.rules.pilesRequired+1;
+    v.cardWidth = Math.floor( widthMinusPad / pilesPlusExtra );
+    v.cardHeight = h * 0.15;  // TODO determine card height
+    
+    // split the extra pile space
+    v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
+    
   };
   
   /**
@@ -39,7 +66,8 @@
 
     v.cards = [ ];
 
-    var decks = game.model.decks;
+    // calculate pile positions
+    var decks = game.model.piles;
 
     for (c=0; c < decks.length; c++) {
       
@@ -47,9 +75,31 @@
 
       for (r=0; r < cards.length; r++) {
         
+        /**
+         * The card x position
+         */
+        // start at the canvas pad
+        var x = v.pad.side;
+        // add the pad between piles (multiplied per column)
+        x += v.pad.pileside * c;
+        // add the card size (multiplied per column)
+        x += c * v.cardWidth;
+        
+        /**
+         * The card y position
+         */
+        // start at the canvas pad
+        var y = v.pad.top;
+        // add the pad between piles (multiplied per column)
+        y += v.pad.piletop * r;
+
+        //y = r * 6;
+        
         var cardData = { };
-        cardData.col = c;
-        cardData.row = r;
+        cardData.x = x;
+        cardData.y = y;
+        //cardData.col = c;
+        //cardData.row = r;
         cardData.card = cards[r];
         v.cards.push(cardData);
         
@@ -59,23 +109,13 @@
   };
   
   /**
-   * Calculate the position of a card.
-   * This method should be overridden by the rules file.
-   */
-  v.calculateCardPosition = function(card, deckIndex, rowIndex) {
-    return [0, 0];
-  };
-  
-  /**
    * Draw a card.
    */
   v.drawCard = function(vcard) {
     
     var card = vcard.card;
-    var pos = v.calculateCardPosition(card, vcard.col, vcard.row);
-    if (pos == undefined) return;
-    var x = pos[0] * v.ctx.canvas.clientWidth;
-    var y = pos[1] * v.ctx.canvas.clientHeight;
+    var x = vcard.x;
+    var y = vcard.y;
     
     // draw card shape
     if (card.up) {
@@ -107,6 +147,11 @@
     v.ctx.fillRect(0, 0, v.ctx.canvas.clientWidth, v.ctx.canvas.clientHeight);
 
     v.cards.forEach(v.drawCard);
+    
+    //// draw piles
+    //game.model.piles.forEach(function(pile, index, arr){
+      //pile.cards.forEach(v.drawcard);
+      //});
     
   };
 

@@ -15,16 +15,23 @@
     
     c.canvas = canvasElement;
     
-    canvasElement.addEventListener("click", function( event ) {
-      
-      // The event position is relative to the document.
-      // Convert to canvas coordinates.
-      var rect = c.canvas.getBoundingClientRect();
-      var x = event.clientX - rect.left;
-      var y = event.clientY - rect.top;
-      console.log("x: " + x + " y: " + y);
-      
-    }, false);
+    // deal a new game
+    game.model.deal();
+    
+    game.view.initialize(canvasElement);
+    // ideally called on window resize event
+    game.view.resize(640, 480);
+    game.view.refreshCardsFromModel();
+
+    //canvasElement.addEventListener("click", function( event ) {
+      //// The event position is relative to the document.
+      //// Convert to canvas coordinates.
+      //var rect = c.canvas.getBoundingClientRect();
+      //var x = event.clientX - rect.left;
+      //var y = event.clientY - rect.top;
+      //console.log("x: " + x + " y: " + y);
+    //}, false);
+    
   };
   
 })();

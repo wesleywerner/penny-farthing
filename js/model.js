@@ -15,17 +15,29 @@
   /**
    * When a new game is dealt.
    */
-  m.dealCallback = function(dealer, decks) {
+  m.dealCallback = function(dealer, model) {
     var hand = dealer.new();
     hand.fill();
-    decks.push(hand);
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.piles.push(hand.take(4));
+    model.reserve.push(hand);
   };
 
-  m.decks = [ ];
-
   m.deal = function() {
-    this.dealCallback(game.deck, this.decks);
-    game.view.refreshCardsFromModel();
+    // reset all stacks
+    m.foundations = [ ];  // list of decks
+    m.piles = [ ];    // list of decks
+    m.hands = [ ];    // list of decks
+    m.reserve = [ ];  // one of
+    m.waste = [ ];    // one of
+    m.dealCallback(game.deck, m);
   };
   
 })();

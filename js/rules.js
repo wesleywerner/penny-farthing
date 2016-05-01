@@ -8,6 +8,10 @@
   var g = window.game = window.game == undefined ? { } : window.game;
   var r = g.rules = { }
   
+  // Set how many piles this game require.
+  // This helps the view calculate the card sizes to fit into the canvas.
+  r.pilesRequired = 6;
+  
   // Define the decks used in this ruleset.
   // (Maps to the model.decks array)
   r.DECKS = { };
@@ -27,7 +31,7 @@
   /**
    * Hook into the model callbacks.
    */
-  m.dealCallback = function(dealer, decks) {
+  m.dealCallback = function(dealer, model) {
 
     // Fill and shuffle a new hand.
     // Take 5 cards for the reserve.
@@ -48,45 +52,22 @@
 
     // six columns
     for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
-      decks[i] = topEch.take(4);
+      model.piles[i] = topEch.take(4);
     };
     
     // remaining deck goes to lower echelon
     for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
-      decks[i].add(hand.take(4));
+      model.piles[i].add(hand.take(4));
     };
     
     // turn top cards
     for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
-      decks[i].get().up = true;
+      model.piles[i].get().up = true;
     };
     
     // reserve
-    decks.push(hand.take(5));
+    model.reserve.push(hand.take(5));
 
   };
-  
-  /**
-   * Hook in card positioning.
-   * An array of [x, y] needs to return, or undefined to skip drawing.
-   * The values of x, y are not absolute, they should fall in the range
-   * 0..1 where they map to the width/height of the canvas.
-   */
-  game.view.calculateCardPosition = function(card, deckIndex, rowIndex) {
-    var topPad = 0.05;
-    var leftPad = 0.05;
-    if (deckIndex == r.DECKS.RESERVE) {
-      // TODO
-    }
-    else if (deckIndex == r.DECKS.HAND) {
-      // TODO
-    }
-    else if (deckIndex == r.DECKS.DISCARD) {
-      // TODO
-    }
-    else {
-      return [leftPad + deckIndex * 0.11, topPad + rowIndex * 0.05];
-    }
-  };
-  
+    
 })();
