@@ -14,6 +14,22 @@
     side: 0.1,
     piletop: 0.02
     };
+    
+  // Calculate a lookup of the card face positions in the imagemap.
+  v.facelookup = { };
+  v.facelookup.mapstart = {x:217, y:506};
+  v.facelookup.gridsize = {w:104, h:145};
+  v.facelookup.gridpad = {w:18, h:18};
+  
+  var suits = ["C", "H", "S", "D", "JOKER"];
+  for (n=0; n<13; n++) {
+    suits.forEach(function(suit, row) {
+      var name = (n+1).toString() + suit;
+      var x = v.facelookup.mapstart.x + (v.facelookup.gridsize.w*n) + (v.facelookup.gridpad.w*n);
+      var y = v.facelookup.mapstart.y + (v.facelookup.gridsize.h*row) + (v.facelookup.gridpad.h*row);
+      v.facelookup[name] = {x:x, y:y};
+    });
+  }
 
   /**
    * Initialise the view's drawing context.
@@ -46,11 +62,12 @@
     var widthMinusPad = w - v.pad.side * 2;   // includes both sides
     var pilesPlusExtra = game.rules.pilesRequired+1;
     v.cardWidth = Math.floor( widthMinusPad / pilesPlusExtra );
-    v.cardHeight = h * 0.15;  // TODO determine card height
+    v.cardHeight = v.cardWidth * 1.4;  // 1.4 is the height ratio of our card images
     
     // split the extra pile space
     v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
     
+    requestAnimationFrame(v.draw);
   };
   
   v.getPileCardPosition = function(card, col, row) {
@@ -80,21 +97,20 @@
     
     // draw card shape
     if (card.up) {
-      v.ctx.fillStyle = "white";
+      var map = v.facelookup[card.name];
+      v.ctx.drawImage(document.images[1],
+        map.x, map.y, v.facelookup.gridsize.w, v.facelookup.gridsize.h,
+        x, y, v.cardWidth, v.cardHeight);
     }
     else {
       v.ctx.fillStyle = "gray";
+      v.ctx.drawImage(document.images[0], x, y, v.cardWidth, v.cardHeight);
     }
-    
-    v.ctx.fillRect(x, y, v.cardWidth, v.cardHeight);
-    
-    // outline card
-    v.ctx.fillStyle = "black";
-    v.ctx.strokeRect(x, y, v.cardWidth, v.cardHeight);
     
     // name
     if (card.up) {
-      v.ctx.strokeText(card.name, x+2, y+20);
+      v.ctx.strokeStyle = "silver";
+      v.ctx.strokeText(card.name, x+2, y+100);
     }
 
   }
