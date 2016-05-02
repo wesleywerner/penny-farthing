@@ -107,14 +107,49 @@
     
     // Calculate specific zones
     v.zones = [ ];
+    // piles
+    var zone = {
+      name:'tableau',
+      x:v.pad.side/2,   // half padding each side
+      y:v.pad.top/2,    // ...
+      w:(v.cardWidth + v.pad.pileside) * game.rules.pilesRequired + v.pad.side/2,
+      h:v.cardHeight * 1.6,
+      };
+    zone.tx = (zone.x + zone.w)/2;
+    zone.ty = (zone.y + zone.h)/2;
+    v.zones.push(zone);
     // reserve
-    var zone = {name:'reserve', x:v.pad.side, y:h-v.cardHeight-v.pad.top};
+    zone = {
+      name:'reserve',
+      x:v.pad.side,
+      y:h-v.cardHeight-v.pad.top,
+      w:v.cardWidth,
+      h:v.cardHeight,
+      };
+    zone.tx = zone.x + zone.w/2;
+    zone.ty = zone.y + zone.h/2;
     v.zones.push(zone);
     // waste
-    zone = {name:'waste', x:zone.x + v.cardWidth + v.pad.pileside, y:h-v.cardHeight-v.pad.top};
+    zone = {
+      name:'waste',
+      x:zone.x + v.cardWidth + v.pad.pileside,
+      y:h-v.cardHeight-v.pad.top,
+      w:v.cardWidth,
+      h:v.cardHeight
+      };
+    zone.tx = zone.x + zone.w/2;
+    zone.ty = zone.y + zone.h/2;
     v.zones.push(zone);
     // hand
-    zone = {name:'hand', x:zone.x + (v.cardWidth + v.pad.pileside)*4, y:h-v.cardHeight-v.pad.top};
+    zone = {
+      name:'hand',
+      x:zone.x + (v.cardWidth + v.pad.pileside)*4,
+      y:h-v.cardHeight-v.pad.top,
+      w:v.cardWidth,
+      h:v.cardHeight
+      };
+    zone.tx = zone.x + zone.w/2;
+    zone.ty = zone.y + zone.h/2;
     v.zones.push(zone);
     
     requestAnimationFrame(v.draw);
@@ -198,27 +233,20 @@
     v.ctx.fillStyle = "green";
     v.ctx.fillRect(0, 0, v.width, v.height);
 
-    // draw piles (translate the canvas padding)
-    game.model.piles.forEach(function(pile, col, arr){
-      pile.cards.forEach(function(card, row){
-        card.pos = v.getPileCardPosition(card, col, row);
-        v.drawCard(card, card.pos.x, card.pos.y);
-      });
-    });
-    
     // draw zones
     v.zones.forEach(function(zone) {
       
-      // outline zone
+      // outline
       v.ctx.fillStyle = 'darkgreen';
-      v.ctx.fillRect(zone.x, zone.y, v.cardWidth, v.cardHeight);
+      v.ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+      
+      // title
       v.ctx.fillStyle = 'green';
       v.ctx.textAlign = 'center';
-      v.ctx.font = v.size.font.toString() + "px serif";
-      // TODO Can optimize drawing zone text by precalculating positions or even predraw these images.
-      v.ctx.fillText(zone.name, zone.x + v.cardWidth/2, zone.y + v.cardHeight/2);
+      v.ctx.font = v.size.font.toString() + 'px serif';
+      v.ctx.fillText(zone.name, zone.tx, zone.ty);
       
-      // draw reserve stack
+      // reserve
       if (zone.name == 'reserve') {
         for (i=0; i<game.model.reserve.cards.length; i++) {
           v.drawCardBack(zone.x-i*v.pad.stack, zone.y);
@@ -226,7 +254,7 @@
       }
       
       else if (zone.name == 'waste') {
-        // waste stack
+        // waste
         game.model.waste.cards.forEach(function(card, index, arr) {
           card.up = true;
           // offset x to give a stack effect
@@ -235,6 +263,16 @@
         });
       }
       
+      else if (zone.name == 'tableau') {
+        // tableau
+        game.model.piles.forEach(function(pile, col, arr){
+          pile.cards.forEach(function(card, row){
+            card.pos = v.getPileCardPosition(card, col, row);
+            v.drawCard(card, card.pos.x, card.pos.y);
+          });
+        });
+      }
+    
     });
     
 
@@ -272,8 +310,8 @@
     var match = undefined;
 
     v.zones.forEach(function(zone){
-      if (x > zone.x && x < zone.x + v.cardWidth &&
-        y > zone.y && y < zone.y + v.cardHeight) {
+      if (x > zone.x && x < zone.x + zone.w &&
+        y > zone.y && y < zone.y + zone.h) {
           match = zone.name;
     }
     });
