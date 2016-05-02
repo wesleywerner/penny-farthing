@@ -34,7 +34,7 @@
     // reset all stacks
     m.foundations = [ ];  // list of decks
     m.piles = [ ];    // list of decks
-    m.hands = [ ];    // list of decks
+    m.hand = [ ];    // list of decks
     m.reserve = [ ];  // one of
     m.waste = [ ];    // one of
     m.dealCallback(game.deck, m);

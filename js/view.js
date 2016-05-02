@@ -272,6 +272,12 @@
           });
         });
       }
+      
+      else if (zone.name == 'hand') {
+        // hand
+        var card = game.model.hand.get();
+        v.drawCard(card, zone.x, zone.y);
+      }
     
     });
     
@@ -288,7 +294,7 @@
     
     // combine all stacks to perform a single search
     var combined = [ ];
-    //combined = combined.concat(game.model.hands);
+    combined = combined.concat(game.model.hand);
     combined = combined.concat(game.model.foundations);
     combined = combined.concat(game.model.waste);
     combined = combined.concat(game.model.reserve.cards);
@@ -345,6 +351,20 @@
     var name = card == undefined ? '' : card.name;
     if (zone != undefined) {
       console.log('click hit in zone ' + zone + ' - ' + name);
+    }
+    if (zone == 'reserve') {
+      // example rule. this would never happen in the view.
+      // discard old
+      if (game.model.hand.cards.length == 1) {
+        game.model.waste.add(game.model.hand.take());
+      }
+      var n = game.model.reserve.take();
+      if (n.cards.length == 1) {
+        var m = n.cards[0];
+        m.up = true;
+        game.model.hand.add(m);
+        requestAnimationFrame(v.draw);
+      }
     }
   };
   

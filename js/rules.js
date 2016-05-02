@@ -74,6 +74,8 @@
     
     // new waste pile
     model.waste = dealer.new();
+    
+    model.hand = dealer.new();
 
   };
     
