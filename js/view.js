@@ -59,15 +59,17 @@
     var w = v.element.clientWidth;
     var h = v.element.clientHeight;
     
+    // The height is neglible at this point.
+    // We calculate the card width first based on how many piles
+    // the rules request. Then we work out the height of a card
+    // and only then do we calculate the height of the canvas.
+    
     // resize the canvas area to match the client area
-    v.ctx.canvas.width = w;
+    v.ctx.canvas.width = v.width = w;
     
-    // calculate padding from ratios
-    v.pad.top = Math.floor(v.pad.ratios.top * h);
+    // padding via preset ratios
     v.pad.side = Math.floor(v.pad.ratios.side * w);
-    v.pad.piletop = Math.floor(v.pad.ratios.piletop * h);
-    v.pad.stack = Math.floor(v.pad.ratios.stack * h);
-    
+
     // To calculate the card size, we look at the canvas size
     // and how many piles the rules request.
     // We account for spacing between the piles in the form
@@ -82,17 +84,27 @@
     // resize the canvas height to n cards
     var vstack = game.rules.verticalStackHeight;
     vstack = vstack == undefined ? 3 : vstack;
-    v.ctx.canvas.height = vstack * v.cardHeight;
+    v.ctx.canvas.height = h = v.height = Math.floor( vstack * v.cardHeight );
     
+    // vertical padding now that we have our height
+    v.pad.top = Math.floor(v.pad.ratios.top * h);
+    v.pad.piletop = Math.floor(v.pad.ratios.piletop * h);
+    v.pad.stack = Math.floor(v.pad.ratios.stack * h);    
+
     // split the extra pile space
     v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
     
     // Calculate specific zones
     v.zones = [ ];
     // reserve
-    v.zones.push({name:'reserve', x:v.pad.side, y:h-v.cardHeight });
+    var zone = {name:'reserve', x:v.pad.side, y:h-v.cardHeight};
+    v.zones.push(zone);
     // waste
-    v.zones.push({name:'waste', x:v.pad.side + v.cardWidth + v.pad.pileside, y:h-v.cardHeight });
+    zone = {name:'waste', x:zone.x + v.cardWidth + v.pad.pileside, y:h-v.cardHeight};
+    v.zones.push(zone);
+    // hand
+    zone = {name:'hand', x:zone.x + (v.cardWidth + v.pad.pileside)*4, y:h-v.cardHeight};
+    v.zones.push(zone);
     
     requestAnimationFrame(v.draw);
   };
@@ -173,7 +185,7 @@
     
     // background
     v.ctx.fillStyle = "green";
-    v.ctx.fillRect(0, 0, v.ctx.canvas.clientWidth, v.ctx.canvas.clientHeight);
+    v.ctx.fillRect(0, 0, v.width, v.height);
 
     // draw piles (translate the canvas padding)
     game.model.piles.forEach(function(pile, col, arr){
