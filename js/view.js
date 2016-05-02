@@ -21,7 +21,7 @@
   /**
    * Define positions of specific zones for the reserve, foundation, waste.
    */
-  v.pos = { };
+  v.zones = [ ];
     
   // Calculate a lookup of the card face positions in the imagemap.
   v.facelookup = { };
@@ -86,9 +86,11 @@
     v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
     
     // Calculate specific zones
-    var rpos = v.pos.reserve = { };
-    rpos.x = v.pad.side;
-    rpos.y = h - v.cardHeight;
+    v.zones = [ ];
+    // reserve
+    v.zones.push({name:'reserve', x:v.pad.side, y:h-v.cardHeight });
+    // waste
+    v.zones.push({name:'waste', x:v.pad.side + v.cardWidth + v.pad.pileside, y:h-v.cardHeight });
     
     requestAnimationFrame(v.draw);
   };
@@ -162,10 +164,12 @@
       });
     });
     
-    // draw reserve outline
-    v.ctx.strokeStyle = "black";
-    v.ctx.strokeRect(v.pos.reserve.x, v.pos.reserve.y, v.cardWidth, v.cardHeight);
-    
+    // draw zones
+    v.zones.forEach(function(zone) {
+      v.ctx.strokeStyle = "black";
+      v.ctx.strokeRect(zone.x, zone.y, v.cardWidth, v.cardHeight);
+    });
+
   };
   
   /**
@@ -197,14 +201,16 @@
     var card = v.cardAt(x, y);
     
     // detect zones
-    var zone = undefined;
-    
-    if (x > v.pos.reserve.x && x < v.pos.reserve.x + v.cardWidth &&
-        y > v.pos.reserve.y && y < v.pos.reserve.y + v.cardHeight) {
-          zone = 'reserve';
+    var match = undefined;
+
+    v.zones.forEach(function(zone){
+      if (x > zone.x && x < zone.x + v.cardWidth &&
+        y > zone.y && y < zone.y + v.cardHeight) {
+          match = zone.name;
     }
+    });
     
-    v.clickedEvent(zone, card);
+    v.clickedEvent(match, card);
     
   };
   
