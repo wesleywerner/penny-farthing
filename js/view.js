@@ -92,12 +92,16 @@
     var x = v.pad.pileside * col;
     // add the card size (multiplied per column)
     x += col * v.cardWidth;
+    // add the edge padding
+    x += v.pad.side;
     
     /**
      * The card y position
      */
     // The vertical space between pile cards (multiplied per column)
     var y = v.pad.piletop * row;
+    // add the edge padding
+    y += v.pad.top;
     
     return {x:x, y:y};
     
@@ -140,15 +144,12 @@
     v.ctx.fillRect(0, 0, v.ctx.canvas.clientWidth, v.ctx.canvas.clientHeight);
 
     // draw piles (translate the canvas padding)
-    v.ctx.save();
-    v.ctx.translate(v.pad.side, v.pad.top);
     game.model.piles.forEach(function(pile, col, arr){
       pile.cards.forEach(function(card, row){
         card.pos = v.getPileCardPosition(card, col, row);
         v.drawCard(card, card.pos.x, card.pos.y);
       });
     });
-    v.ctx.restore();
     
   };
   
@@ -157,9 +158,6 @@
    */
   v.cardAt = function(x, y) {
     var match = undefined;
-    // adjust for padding
-    x -= v.pad.side;
-    y -= v.pad.top;
     // check the top card in each pile
     game.model.piles.forEach(function(pile){
       var card = pile.get();
