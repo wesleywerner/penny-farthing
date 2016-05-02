@@ -16,9 +16,17 @@
     top: 0.05,          // on the resize call
     side: 0.05,
     piletop: 0.02,
-    stack: 0.005         // x-offset of stacked cards
+    stack: 0.005,       // x-offset of stacked cards
     };
     
+  /**
+   * Define sizes.
+   */
+  v.size = { };
+  v.size.ratios = {
+    font: 0.03,
+  }
+  
   /**
    * Define positions of specific zones for the reserve, foundation, waste.
    */
@@ -67,6 +75,9 @@
     // resize the canvas area to match the client area
     v.ctx.canvas.width = v.width = w;
     
+    // scale font
+    v.size.font = Math.floor( v.size.ratios.font * w );
+    
     // padding via preset ratios
     v.pad.side = Math.floor(v.pad.ratios.side * w);
 
@@ -89,7 +100,7 @@
     // vertical padding now that we have our height
     v.pad.top = Math.floor(v.pad.ratios.top * h);
     v.pad.piletop = Math.floor(v.pad.ratios.piletop * h);
-    v.pad.stack = Math.floor(v.pad.ratios.stack * h);    
+    v.pad.stack = Math.floor(v.pad.ratios.stack * h);
 
     // split the extra pile space
     v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
@@ -97,13 +108,13 @@
     // Calculate specific zones
     v.zones = [ ];
     // reserve
-    var zone = {name:'reserve', x:v.pad.side, y:h-v.cardHeight};
+    var zone = {name:'reserve', x:v.pad.side, y:h-v.cardHeight-v.pad.top};
     v.zones.push(zone);
     // waste
-    zone = {name:'waste', x:zone.x + v.cardWidth + v.pad.pileside, y:h-v.cardHeight};
+    zone = {name:'waste', x:zone.x + v.cardWidth + v.pad.pileside, y:h-v.cardHeight-v.pad.top};
     v.zones.push(zone);
     // hand
-    zone = {name:'hand', x:zone.x + (v.cardWidth + v.pad.pileside)*4, y:h-v.cardHeight};
+    zone = {name:'hand', x:zone.x + (v.cardWidth + v.pad.pileside)*4, y:h-v.cardHeight-v.pad.top};
     v.zones.push(zone);
     
     requestAnimationFrame(v.draw);
@@ -203,7 +214,7 @@
       v.ctx.fillRect(zone.x, zone.y, v.cardWidth, v.cardHeight);
       v.ctx.fillStyle = 'green';
       v.ctx.textAlign = 'center';
-      v.ctx.font = "40px serif";
+      v.ctx.font = v.size.font.toString() + "px serif";
       // TODO Can optimize drawing zone text by precalculating positions or even predraw these images.
       v.ctx.fillText(zone.name, zone.x + v.cardWidth/2, zone.y + v.cardHeight/2);
       

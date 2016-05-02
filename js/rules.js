@@ -14,7 +14,7 @@
   
   // Set how many cards should be visible vertically, if stacked
   // end-to-end.
-  r.verticalStackHeight = 4;
+  r.verticalStackHeight = 3;
   
   // Define the decks used in this ruleset.
   // (Maps to the model.decks array)
