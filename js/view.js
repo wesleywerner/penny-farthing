@@ -13,8 +13,8 @@
    */
   v.pad = { };
   v.pad.ratios = {      // ratios to calculate padding values
-    top: 0.1,          // on the resize call
-    side: 0.1,
+    top: 0.05,          // on the resize call
+    side: 0.05,
     piletop: 0.02
     };
     
@@ -51,6 +51,7 @@
   v.resize = function() {
     
     // fixed canvas size
+    // To use this the canvas tag needs the width= height= attributes
     //var w = Math.floor( v.element.clientWidth );
     //var h = Math.floor( v.element.clientHeight );
     //v.ctx.canvas.width  = w;
