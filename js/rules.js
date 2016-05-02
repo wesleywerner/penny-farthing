@@ -12,6 +12,10 @@
   // This helps the view calculate the card sizes to fit into the canvas.
   r.pilesRequired = 6;
   
+  // Set how many cards should be visible vertically, if stacked
+  // end-to-end.
+  r.verticalStackHeight = 3;
+  
   // Define the decks used in this ruleset.
   // (Maps to the model.decks array)
   r.DECKS = { };

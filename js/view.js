@@ -50,19 +50,11 @@
    */
   v.resize = function() {
     
-    // fixed canvas size
-    // To use this the canvas tag needs the width= height= attributes
-    //var w = Math.floor( v.element.clientWidth );
-    //var h = Math.floor( v.element.clientHeight );
-    //v.ctx.canvas.width  = w;
-    //v.ctx.canvas.height = h;
+    var w = v.element.clientWidth;
+    var h = v.element.clientHeight;
     
-    // resize canvas to fit ratio with window size
-    var w = Math.floor( v.element.clientWidth );
-    var h = Math.floor( v.element.clientHeight );
     // resize the canvas area to match the client area
     v.ctx.canvas.width = w;
-    v.ctx.canvas.height = h;
     
     // calculate padding from ratios
     v.pad.top = Math.floor(v.pad.ratios.top * h);
@@ -79,6 +71,11 @@
     var pilesPlusExtra = game.rules.pilesRequired+1;
     v.cardWidth = Math.floor( widthMinusPad / pilesPlusExtra );
     v.cardHeight = v.cardWidth * 1.4;  // 1.4 is the height ratio of our card images
+
+    // resize the canvas height to n cards
+    var vstack = game.rules.verticalStackHeight;
+    vstack = vstack == undefined ? 3 : vstack;
+    v.ctx.canvas.height = vstack * v.cardHeight;
     
     // split the extra pile space
     v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
