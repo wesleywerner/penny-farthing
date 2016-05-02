@@ -58,11 +58,11 @@
     //v.ctx.canvas.height = h;
     
     // resize canvas to fit ratio with window size
-    var w = Math.floor( window.innerWidth );
-    var h = Math.floor( window.innerHeight );
+    var w = Math.floor( v.element.clientWidth );
+    var h = Math.floor( v.element.clientHeight );
     // resize the canvas area to match the client area
-    v.ctx.canvas.width = window.innerWidth;
-    v.ctx.canvas.height = window.innerHeight;
+    v.ctx.canvas.width = w;
+    v.ctx.canvas.height = h;
     
     // calculate padding from ratios
     v.pad.top = Math.floor(v.pad.ratios.top * h);

@@ -25,15 +25,24 @@
       }
       canvas {
         border: 1px solid black;
+        width: 100%;
+      }
+      .center {
+        width: 80%;
+        margin: 0 auto;
       }
     </style>
   </head>
   <body onload="initialize()">
-    <canvas id="playfield"></canvas>    
+    
+    <div class="center">
+      <canvas id="playfield"></canvas>
+    </div>
+    
     <div style="display: none">
     <img id="cardback" src="assets/cardback.png" />
     <img id="faces" src="assets/faces.png" />
     </div>
-    
+
   </body>
 </html>
