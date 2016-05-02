@@ -15,7 +15,8 @@
   v.pad.ratios = {      // ratios to calculate padding values
     top: 0.05,          // on the resize call
     side: 0.05,
-    piletop: 0.02
+    piletop: 0.02,
+    stack: 0.005         // x-offset of stacked cards
     };
     
   /**
@@ -65,6 +66,7 @@
     v.pad.top = Math.floor(v.pad.ratios.top * h);
     v.pad.side = Math.floor(v.pad.ratios.side * w);
     v.pad.piletop = Math.floor(v.pad.ratios.piletop * h);
+    v.pad.stack = Math.floor(v.pad.ratios.stack * h);
     
     // To calculate the card size, we look at the canvas size
     // and how many piles the rules request.
@@ -120,20 +122,37 @@
   };
   
   /**
+   * Draw a card back
+   */
+  v.drawCardBack = function(x, y) {
+    v.ctx.drawImage(document.images[0], x, y, v.cardWidth, v.cardHeight);
+  };
+  
+  /**
    * Draw a card.
    */
   v.drawCard = function(card, x, y) {
     
+    if (card == undefined) return;
+    
     // draw card shape
     if (card.up) {
       var map = v.facelookup[card.name];
-      v.ctx.drawImage(document.images[1],
-        map.x, map.y, v.facelookup.gridsize.w, v.facelookup.gridsize.h,
-        x, y, v.cardWidth, v.cardHeight);
+      if (map == undefined) {
+        v.ctx.fillStyle = "white";
+        v.ctx.fillRect(x, y, v.cardWidth, v.cardHeight);
+        v.ctx.font = "12px serif";
+        v.ctx.fillStyle = "red";
+        v.ctx.fillText('card face image not found', x, y+14);
+      }
+      else {
+        v.ctx.drawImage(document.images[1],
+          map.x, map.y, v.facelookup.gridsize.w, v.facelookup.gridsize.h,
+          x, y, v.cardWidth, v.cardHeight);
+      }
     }
     else {
-      v.ctx.fillStyle = "gray";
-      v.ctx.drawImage(document.images[0], x, y, v.cardWidth, v.cardHeight);
+      v.drawCardBack(x, y);
     }
     
     // name
@@ -166,9 +185,35 @@
     
     // draw zones
     v.zones.forEach(function(zone) {
-      v.ctx.strokeStyle = "black";
-      v.ctx.strokeRect(zone.x, zone.y, v.cardWidth, v.cardHeight);
+      
+      // outline zone
+      v.ctx.fillStyle = 'darkgreen';
+      v.ctx.fillRect(zone.x, zone.y, v.cardWidth, v.cardHeight);
+      v.ctx.fillStyle = 'green';
+      v.ctx.textAlign = 'center';
+      v.ctx.font = "40px serif";
+      // TODO Can optimize drawing zone text by precalculating positions or even predraw these images.
+      v.ctx.fillText(zone.name, zone.x + v.cardWidth/2, zone.y + v.cardHeight/2);
+      
+      // draw reserve stack
+      if (zone.name == 'reserve') {
+        for (i=0; i<game.model.reserve.cards.length; i++) {
+          v.drawCardBack(zone.x-i*v.pad.stack, zone.y);
+        }
+      }
+      
+      else if (zone.name == 'waste') {
+        // waste stack
+        game.model.waste.cards.forEach(function(card, index, arr) {
+          card.up = true;
+          // offset x to give a stack effect
+          var x = zone.x-index*v.pad.stack;
+          v.drawCard(card, x, zone.y);
+        });
+      }
+      
     });
+    
 
   };
   

@@ -70,7 +70,10 @@
     };
     
     // reserve
-    model.reserve.push(hand.take(5));
+    model.reserve = hand.take(5);
+    
+    // new waste pile
+    model.waste = dealer.new();
 
   };
     
