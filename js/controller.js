@@ -47,8 +47,7 @@
       var rect = c.canvas.getBoundingClientRect();
       var x = event.clientX - rect.left;
       var y = event.clientY - rect.top;
-      var card = game.view.cardAt(x, y);
-      console.log(card.name);
+      game.view.click(x, y);
     }, false);
     
   };

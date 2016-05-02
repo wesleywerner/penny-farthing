@@ -18,6 +18,11 @@
     piletop: 0.02
     };
     
+  /**
+   * Define positions of specific zones for the reserve, foundation, waste.
+   */
+  v.pos = { };
+    
   // Calculate a lookup of the card face positions in the imagemap.
   v.facelookup = { };
   v.facelookup.mapstart = {x:217, y:506};
@@ -80,6 +85,11 @@
     // split the extra pile space
     v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
     
+    // Calculate specific zones
+    var rpos = v.pos.reserve = { };
+    rpos.x = v.pad.side;
+    rpos.y = h - v.cardHeight;
+    
     requestAnimationFrame(v.draw);
   };
   
@@ -126,8 +136,9 @@
     
     // name
     if (card.up) {
-      v.ctx.strokeStyle = "silver";
-      v.ctx.strokeText(card.name, x+2, y+100);
+      v.ctx.font = "16px serif";
+      v.ctx.fillStyle = "blue";
+      v.ctx.fillText(card.name, x, y+14);
     }
 
   }
@@ -151,6 +162,10 @@
       });
     });
     
+    // draw reserve outline
+    v.ctx.strokeStyle = "black";
+    v.ctx.strokeRect(v.pos.reserve.x, v.pos.reserve.y, v.cardWidth, v.cardHeight);
+    
   };
   
   /**
@@ -168,7 +183,43 @@
         }
       }
     }); // forEach
+    // TODO match in reserve, foundation
     return match;
+  };
+  
+  /**
+   * Accepts a position to click and fires an event with the card
+   * and zone it hits.
+   */
+  v.click = function(x, y) {
+    
+    // get the card at this position
+    var card = v.cardAt(x, y);
+    
+    // detect zones
+    var zone = undefined;
+    
+    if (x > v.pos.reserve.x && x < v.pos.reserve.x + v.cardWidth &&
+        y > v.pos.reserve.y && y < v.pos.reserve.y + v.cardHeight) {
+          zone = 'reserve';
+    }
+    
+    v.clickedEvent(zone, card);
+    
+  };
+  
+  
+  
+  /**
+   * Define callbacks that can be overwritten by the rules file.
+   */
+   
+  /**
+   * Called after the view.click method is called with the hit results.
+   */
+  v.clickedEvent = function(zone, card) {
+    var name = card == undefined ? '' : card.name;
+    console.log('click hit in zone ' + zone + ' on card ' + name);
   };
   
 })();
