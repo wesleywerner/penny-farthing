@@ -128,6 +128,9 @@
 
   }
 
+  /**
+   * Draw the canvas
+   */
   v.draw = function() {
     
     if (!v.ctx) return;
@@ -141,12 +144,33 @@
     v.ctx.translate(v.pad.side, v.pad.top);
     game.model.piles.forEach(function(pile, col, arr){
       pile.cards.forEach(function(card, row){
-        var pos = v.getPileCardPosition(card, col, row);
-        v.drawCard(card, pos.x, pos.y);
+        card.pos = v.getPileCardPosition(card, col, row);
+        v.drawCard(card, card.pos.x, card.pos.y);
       });
     });
     v.ctx.restore();
     
+  };
+  
+  /**
+   * Gets the card at position x,y
+   */
+  v.cardAt = function(x, y) {
+    var match = undefined;
+    // adjust for padding
+    x -= v.pad.side;
+    y -= v.pad.top;
+    // check the top card in each pile
+    game.model.piles.forEach(function(pile){
+      var card = pile.get();
+      if (card != undefined) {
+        if (x > card.pos.x && x < card.pos.x + v.cardWidth &&
+            y > card.pos.y && y < card.pos.y + v.cardHeight) {
+          match = card;
+        }
+      }
+    }); // forEach
+    return match;
   };
   
 })();
