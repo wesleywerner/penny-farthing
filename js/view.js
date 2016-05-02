@@ -282,18 +282,30 @@
    * Gets the card at position x,y
    */
   v.cardAt = function(x, y) {
+    
+    // store the card matched under x,y
     var match = undefined;
-    // check the top card in each pile
+    
+    // combine all stacks to perform a single search
+    var combined = [ ];
+    //combined = combined.concat(game.model.hands);
+    combined = combined.concat(game.model.foundations);
+    combined = combined.concat(game.model.waste);
+    combined = combined.concat(game.model.reserve.cards);
     game.model.piles.forEach(function(pile){
-      var card = pile.get();
-      if (card != undefined) {
+      combined = combined.concat(pile.cards);
+    });
+    
+    // scan
+    combined.forEach(function(card){
+      if (card != undefined && card.pos != undefined) {
         if (x > card.pos.x && x < card.pos.x + v.cardWidth &&
             y > card.pos.y && y < card.pos.y + v.cardHeight) {
           match = card;
         }
       }
-    }); // forEach
-    // TODO match in reserve, foundation
+    });
+    
     return match;
   };
   
@@ -331,7 +343,9 @@
    */
   v.clickedEvent = function(zone, card) {
     var name = card == undefined ? '' : card.name;
-    console.log('click hit in zone ' + zone + ' on card ' + name);
+    if (zone != undefined) {
+      console.log('click hit in zone ' + zone + ' - ' + name);
+    }
   };
   
 })();
