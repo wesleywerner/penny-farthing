@@ -19,8 +19,27 @@
     game.model.deal();
     
     game.view.initialize(canvasElement);
-    // ideally called on window resize event
-    game.view.resize(640, 480);
+    
+    // Hook into the canvas resize event to retrigger resize calculations
+    c.resizeHandler = function() {
+      game.view.resize();
+    };
+
+    c.onResize = function(callback) {
+      var windowH = window.innerHeight,
+          windowW = window.innerWidth;
+      setInterval(function(){
+          if( window.innerHeight !== windowH || window.innerWidth !== windowW ){
+            windowH = window.innerHeight;
+            windowW = window.innerWidth;
+            callback();
+          }
+      }, 600);
+    }
+
+    c.onResize(c.resizeHandler);
+    
+    c.resizeHandler();
 
     //canvasElement.addEventListener("click", function( event ) {
       //// The event position is relative to the document.

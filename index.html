@@ -18,11 +18,18 @@
       }
     </script>
     <style type="text/css">
-      canvas { border: 1px solid black; }
+      html, body {
+        width:  100%;
+        height: 100%;
+        margin: 0px;
+      }
+      canvas {
+        border: 1px solid black;
+      }
     </style>
   </head>
   <body onload="initialize()">
-    <canvas id="playfield" width="800" height="600"></canvas>    
+    <canvas id="playfield"></canvas>    
     <div style="display: none">
     <img id="cardback" src="assets/cardback.png" />
     <img id="faces" src="assets/faces.png" />

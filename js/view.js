@@ -8,6 +8,9 @@
   var g = window.game = window.game == undefined ? { } : window.game;
   var v = g.view = { }
   
+  /**
+   * Define padding ratios.
+   */
   v.pad = { };
   v.pad.ratios = {      // ratios to calculate padding values
     top: 0.1,          // on the resize call
@@ -35,6 +38,7 @@
    * Initialise the view's drawing context.
    */
   v.initialize = function(canvasElement) {
+    v.element = canvasElement;
     if (canvasElement.getContext) {
       v.ctx = canvasElement.getContext('2d');
       requestAnimationFrame(v.draw);
@@ -44,9 +48,20 @@
   /**
    * Calculates card sizes and position based on the client size.
    */
-  v.resize = function(w, h) {
-    v.width = w;
-    v.height = h;
+  v.resize = function() {
+    
+    // fixed canvas size
+    //var w = Math.floor( v.element.clientWidth );
+    //var h = Math.floor( v.element.clientHeight );
+    //v.ctx.canvas.width  = w;
+    //v.ctx.canvas.height = h;
+    
+    // resize canvas to fit ratio with window size
+    var w = Math.floor( window.innerWidth );
+    var h = Math.floor( window.innerHeight );
+    // resize the canvas area to match the client area
+    v.ctx.canvas.width = window.innerWidth;
+    v.ctx.canvas.height = window.innerHeight;
     
     // calculate padding from ratios
     v.pad.top = Math.floor(v.pad.ratios.top * h);
