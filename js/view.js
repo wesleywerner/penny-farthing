@@ -34,12 +34,6 @@
    */
   v.grid = null;
   
-  
-  /**
-   * Define positions of specific zones for the reserve, foundation, waste.
-   */
-  v.zones = [ ];
-    
   // Calculate a lookup of the card face positions in the imagemap.
   v.facelookup = { };
   v.facelookup.mapstart = {x:217, y:506};
@@ -72,6 +66,9 @@
    */
   v.resize = function() {
     
+    // Request the rules layout
+    v.layout = game.rules.requestLayout();
+    
     var w = v.element.clientWidth;
     var h = v.element.clientHeight;
     
@@ -93,13 +90,13 @@
     // To calculate the card size, we look at the canvas size
     // and how many columns the rules request.
     // We account for padding between the piles.
-    var stackRows = game.rules.columnsRequested;
+    var stackRows = v.layout.columnsRequested;
     var widthMinusPad = w - v.pad.side * 2 - v.pad.pileside * stackRows;
     v.cardWidth = Math.floor( widthMinusPad / stackRows );
-    v.cardHeight = v.cardWidth * 1.4;  // 1.4 is the height ratio of our card images
+    v.cardHeight = Math.floor(v.cardWidth * 1.4);  // 1.4 is the height ratio of our card images
 
     // resize the canvas height to n cards
-    var stackRows = game.rules.rowsRequested;
+    var stackRows = v.layout.rowsRequested;
     stackRows = stackRows == undefined ? 3 : stackRows;
     var stackHeight = stackRows * v.cardHeight;
     
@@ -116,8 +113,8 @@
     // The grid positions
     v.grid = { };
     v.grid.cells = [ ];
-    v.grid.cols = game.rules.columnsRequested;
-    v.grid.rows = game.rules.rowsRequested;
+    v.grid.cols = v.layout.columnsRequested;
+    v.grid.rows = v.layout.rowsRequested;
     
     for (col=0; col < v.grid.cols; col++) {
       for (row=0; row < v.grid.rows; row++) {
@@ -148,9 +145,18 @@
       }
     }
     
-    // Calculate specific zones
-    v.zones = [ ];
-    game.rules.requestZones(v.addZoneFunc);
+    // Calculate zone positions from grid positions
+    Object.keys(v.layout.zones).forEach(function(zonename) {
+      var zone = v.layout.zones[zonename];
+      var grid = v.grid.cells[zone.col-1][zone.row-1];
+      zone.x = grid.x;
+      zone.y = grid.y;
+      zone.w = Math.floor(zone.width*v.cardWidth + (zone.width-1)*v.pad.pileside);
+      zone.h = Math.floor(zone.height*v.cardHeight + (zone.height-1)*v.pad.piletop);
+      // find the center of each zone
+      zone.cenx = zone.x + zone.w/2;
+      zone.ceny = zone.y + zone.h/2;
+    });
     
     // Request to redraw
     requestAnimationFrame(v.draw);
@@ -251,7 +257,9 @@
     v.ctx.fillRect(0, 0, v.width, v.height);
 
     // draw zones
-    v.zones.forEach(function(zone) {
+    Object.keys(v.layout.zones).forEach(function(zonename) {
+      
+      var zone = v.layout.zones[zonename];
       
       // outline
       v.ctx.fillStyle = 'darkgreen';
@@ -261,7 +269,7 @@
       v.ctx.fillStyle = 'green';
       v.ctx.textAlign = 'center';
       v.ctx.font = v.size.font.toString() + 'px serif';
-      v.ctx.fillText(zone.name, zone.tx, zone.ty);
+      v.ctx.fillText(zonename, zone.cenx, zone.ceny);
       
       // reserve
       if (zone.name == 'reserve') {
@@ -356,7 +364,8 @@
     // detect zones
     var match = undefined;
 
-    v.zones.forEach(function(zone){
+    Object.keys(v.layout.zones).forEach(function(zonename) {
+      var zone = v.layout.zones[zonename];
       if (x > zone.x && x < zone.x + zone.w &&
         y > zone.y && y < zone.y + zone.h) {
           match = zone.name;

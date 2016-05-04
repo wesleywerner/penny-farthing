@@ -8,9 +8,26 @@
   var g = window.game = window.game == undefined ? { } : window.game;
   var r = g.rules = { }
   
-  // Tell the view how many columns and rows our game needs
-  r.columnsRequested = 6;
-  r.rowsRequested = 2;
+  // The game model will request the requirements for your game.
+  r.requestLayout = function() {
+    
+    var layout = { };
+    
+    // Number of columns and rows our game will need.
+    layout.columnsRequested = 6;
+    layout.rowsRequested = 2;
+    
+    // Play zones
+    layout.zones = {
+      'tableau': { col:1, row:1, width:6, height:1},  // entire top row
+      'reserve': { col:1, row:2, width:1, height:1},  // bottom left
+      'waste': { col:2, row:2, width:1, height:1},    // next to reserve
+      'hand': { col:6, row:2, width:1, height:1}     // bottom right
+    };
+
+    return layout;
+    
+  }
   
   // Define the decks used in this ruleset.
   // (Maps to the model.decks array)
@@ -24,18 +41,6 @@
   r.DECKS.RESERVE = 6;
   r.DECKS.HAND = 7;
   r.DECKS.DISCARD = 8;
-  
-  r.requestZones = function(func) {
-    
-    // func takes a name, starting column and row, and size
-    // (1 BASED)
-    func('tableau', 1, 1, 6, 1);  // entire top row
-    func('reserve', 1, 2, 1, 1);  // bottom left
-    func('waste', 2, 2, 1, 1);    // next to reserve
-    func('hand', 6, 2, 1, 1);     // bottom right
-    
-    
-  };
 
   // Get the model object
   var m = game.model;
