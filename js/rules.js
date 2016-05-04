@@ -15,14 +15,14 @@
     
     // Number of columns and rows our game will need.
     layout.columnsRequested = 6;
-    layout.rowsRequested = 2;
+    layout.rowsRequested = 3;
     
     // Play zones
     layout.zones = {
       'tableau': { col:1, row:1, width:6, height:1},  // entire top row
-      'reserve': { col:1, row:2, width:1, height:1},  // bottom left
-      'waste': { col:2, row:2, width:1, height:1},    // next to reserve
-      'hand': { col:6, row:2, width:1, height:1}     // bottom right
+      'reserve': { col:1, row:3, width:1, height:1},  // bottom left
+      'waste': { col:2, row:3, width:1, height:1},    // next to reserve
+      'hand': { col:6, row:3, width:1, height:1}     // bottom right
     };
 
     return layout;
