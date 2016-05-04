@@ -178,30 +178,6 @@
     v.zones.push(zone);
   };
   
-  v.getPileCardPosition = function(card, col, row) {
-    
-    /**
-     * The card x position
-     */
-    // The pad between piles (multiplied per column)
-    var x = v.pad.pileside * col;
-    // add the card size (multiplied per column)
-    x += col * v.cardWidth;
-    // add the edge padding
-    x += v.pad.side;
-    
-    /**
-     * The card y position
-     */
-    // The vertical space between pile cards (multiplied per column)
-    var y = v.pad.piletop * row;
-    // add the edge padding
-    y += v.pad.top;
-    
-    return {x:x, y:y};
-    
-  };
-  
   /**
    * Draw a card back
    */
@@ -257,6 +233,7 @@
     v.ctx.fillRect(0, 0, v.width, v.height);
 
     // draw zones
+    // TODO predraw this loop to an off screen images for blitting here
     Object.keys(v.layout.zones).forEach(function(zonename) {
       
       var zone = v.layout.zones[zonename];
@@ -271,14 +248,21 @@
       v.ctx.font = v.size.font.toString() + 'px serif';
       v.ctx.fillText(zonename, zone.cenx, zone.ceny);
       
+    });
+    
+    // Cards
+    Object.keys(v.layout.zones).forEach(function(zonename) {
+      
+      var zone = v.layout.zones[zonename];
+
       // reserve
-      if (zone.name == 'reserve') {
+      if (zonename == 'reserve') {
         for (i=0; i<game.model.reserve.cards.length; i++) {
           v.drawCardBack(zone.x-i*v.pad.stack, zone.y);
         }
       }
       
-      else if (zone.name == 'waste') {
+      else if (zonename == 'waste') {
         // waste
         game.model.waste.cards.forEach(function(card, index, arr) {
           card.up = true;
@@ -288,17 +272,27 @@
         });
       }
       
-      else if (zone.name == 'tableau') {
+      else if (zonename == 'tableau') {
         // tableau
         game.model.piles.forEach(function(pile, col, arr){
           pile.cards.forEach(function(card, row){
-            card.pos = v.getPileCardPosition(card, col, row);
-            v.drawCard(card, card.pos.x, card.pos.y);
+
+            var x = zone.x;
+            // The pad between piles (multiplied per column)
+            x += v.pad.pileside * col;
+            // add the card size (multiplied per column)
+            x += col * v.cardWidth;
+
+            var y = zone.y;
+            // The vertical space between pile cards (multiplied per row)
+            y += v.pad.piletop * row;
+
+            v.drawCard(card, x, y);
           });
         });
       }
       
-      else if (zone.name == 'hand') {
+      else if (zonename == 'hand') {
         // hand
         var card = game.model.hand.get();
         v.drawCard(card, zone.x, zone.y);
@@ -368,7 +362,7 @@
       var zone = v.layout.zones[zonename];
       if (x > zone.x && x < zone.x + zone.w &&
         y > zone.y && y < zone.y + zone.h) {
-          match = zone.name;
+          match = zonename;
     }
     });
     
