@@ -150,52 +150,26 @@
     
     // Calculate specific zones
     v.zones = [ ];
-    // piles
-    var zone = {
-      name:'tableau',
-      x:v.pad.side/2,   // half padding each side
-      y:v.pad.top/2,    // ...
-      w:(v.cardWidth + v.pad.pileside) * game.rules.columnsRequested + v.pad.side/2,
-      h:v.cardHeight * 1.6,
-      };
-    zone.tx = (zone.x + zone.w)/2;
-    zone.ty = (zone.y + zone.h)/2;
-    v.zones.push(zone);
-    // reserve
-    zone = {
-      name:'reserve',
-      x:v.pad.side,
-      y:h-v.cardHeight-v.pad.top,
-      w:v.cardWidth,
-      h:v.cardHeight,
-      };
-    zone.tx = zone.x + zone.w/2;
-    zone.ty = zone.y + zone.h/2;
-    v.zones.push(zone);
-    // waste
-    zone = {
-      name:'waste',
-      x:zone.x + v.cardWidth + v.pad.pileside,
-      y:h-v.cardHeight-v.pad.top,
-      w:v.cardWidth,
-      h:v.cardHeight
-      };
-    zone.tx = zone.x + zone.w/2;
-    zone.ty = zone.y + zone.h/2;
-    v.zones.push(zone);
-    // hand
-    zone = {
-      name:'hand',
-      x:zone.x + (v.cardWidth + v.pad.pileside)*4,
-      y:h-v.cardHeight-v.pad.top,
-      w:v.cardWidth,
-      h:v.cardHeight
-      };
-    zone.tx = zone.x + zone.w/2;
-    zone.ty = zone.y + zone.h/2;
-    v.zones.push(zone);
+    game.rules.requestZones(v.addZoneFunc);
     
+    // Request to redraw
     requestAnimationFrame(v.draw);
+  };
+  
+  /**
+   * Adds a zone by grid column and row.
+   */
+  v.addZoneFunc = function(name, col, row, width, height) {
+    var grid = v.grid.cells[col-1][row-1];
+    if (grid == undefined) return;
+    zone = {
+      name:name,
+      x:grid.x,
+      y:grid.y,
+      w:Math.floor(width*v.cardWidth),
+      h:Math.floor(height*v.cardHeight)
+    };
+    v.zones.push(zone);
   };
   
   v.getPileCardPosition = function(card, col, row) {

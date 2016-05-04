@@ -24,6 +24,18 @@
   r.DECKS.RESERVE = 6;
   r.DECKS.HAND = 7;
   r.DECKS.DISCARD = 8;
+  
+  r.requestZones = function(func) {
+    
+    // func takes a name, starting column and row, and size
+    // (1 BASED)
+    func('tableau', 1, 1, 6, 1);  // entire top row
+    func('reserve', 1, 2, 1, 1);  // bottom left
+    func('waste', 2, 2, 1, 1);    // next to reserve
+    func('hand', 6, 2, 1, 1);     // bottom right
+    
+    
+  };
 
   // Get the model object
   var m = game.model;
