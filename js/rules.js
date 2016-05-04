@@ -8,13 +8,9 @@
   var g = window.game = window.game == undefined ? { } : window.game;
   var r = g.rules = { }
   
-  // Set how many piles this game require.
-  // This helps the view calculate the card sizes to fit into the canvas.
-  r.pilesRequired = 6;
-  
-  // Set how many cards should be visible vertically, if stacked
-  // end-to-end.
-  r.verticalStackHeight = 3;
+  // Tell the view how many columns and rows our game needs
+  r.columnsRequested = 6;
+  r.rowsRequested = 2;
   
   // Define the decks used in this ruleset.
   // (Maps to the model.decks array)

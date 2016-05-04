@@ -16,6 +16,7 @@
     top: 0.05,          // on the resize call
     side: 0.05,
     piletop: 0.02,
+    pileside: 0.02,
     stack: 0.005,       // x-offset of stacked cards
     };
     
@@ -26,6 +27,13 @@
   v.size.ratios = {
     font: 0.03,
   }
+  
+  /**
+   * Stores the grid positions for card columns and rows.
+   * Calculated on resize.
+   */
+  v.grid = null;
+  
   
   /**
    * Define positions of specific zones for the reserve, foundation, waste.
@@ -80,30 +88,65 @@
     
     // padding via preset ratios
     v.pad.side = Math.floor(v.pad.ratios.side * w);
+    v.pad.pileside = Math.floor(v.pad.ratios.pileside * w);
 
     // To calculate the card size, we look at the canvas size
-    // and how many piles the rules request.
-    // We account for spacing between the piles in the form
-    // of one extra pile (which we split evenly between the requested
-    // pile amount)
-    
-    var widthMinusPad = w - v.pad.side * 2;   // includes both sides
-    var pilesPlusExtra = game.rules.pilesRequired+1;
-    v.cardWidth = Math.floor( widthMinusPad / pilesPlusExtra );
+    // and how many columns the rules request.
+    // We account for padding between the piles.
+    var stackRows = game.rules.columnsRequested;
+    var widthMinusPad = w - v.pad.side * 2 - v.pad.pileside * stackRows;
+    v.cardWidth = Math.floor( widthMinusPad / stackRows );
     v.cardHeight = v.cardWidth * 1.4;  // 1.4 is the height ratio of our card images
 
     // resize the canvas height to n cards
-    var vstack = game.rules.verticalStackHeight;
-    vstack = vstack == undefined ? 3 : vstack;
-    v.ctx.canvas.height = h = v.height = Math.floor( vstack * v.cardHeight );
+    var stackRows = game.rules.rowsRequested;
+    stackRows = stackRows == undefined ? 3 : stackRows;
+    var stackHeight = stackRows * v.cardHeight;
     
     // vertical padding now that we have our height
     v.pad.top = Math.floor(v.pad.ratios.top * h);
     v.pad.piletop = Math.floor(v.pad.ratios.piletop * h);
     v.pad.stack = Math.floor(v.pad.ratios.stack * h);
 
-    // split the extra pile space
-    v.pad.pileside = Math.ceil(v.cardWidth / game.rules.pilesRequired);
+    // Resize the canvas height
+    // Include the top padding and padding between rows of cards
+    var stackPadding = (v.pad.top * 2) + (v.pad.piletop * stackRows);
+    v.ctx.canvas.height = h = v.height = Math.floor(stackHeight + stackPadding);
+
+    // The grid positions
+    v.grid = { };
+    v.grid.cells = [ ];
+    v.grid.cols = game.rules.columnsRequested;
+    v.grid.rows = game.rules.rowsRequested;
+    
+    for (col=0; col < v.grid.cols; col++) {
+      for (row=0; row < v.grid.rows; row++) {
+
+        /**
+         * The card x position
+         */
+        // The pad between piles (multiplied per column)
+        var x = v.pad.pileside * col;
+        // add the card size (multiplied per column)
+        x += col * v.cardWidth;
+        // add the edge padding
+        x += v.pad.side;
+        
+        /**
+         * The card y position
+         */
+        // The vertical space between pile cards (multiplied per column)
+        var y = v.pad.piletop * row;
+        // add the card size (multiplied per row)
+        y += row * v.cardHeight;
+        // add the edge padding
+        y += v.pad.top;
+      
+        // initialise array
+        v.grid.cells[col] = v.grid.cells[col] == undefined ? [] : v.grid.cells[col];
+        v.grid.cells[col][row] = {x:x, y:y};
+      }
+    }
     
     // Calculate specific zones
     v.zones = [ ];
@@ -112,7 +155,7 @@
       name:'tableau',
       x:v.pad.side/2,   // half padding each side
       y:v.pad.top/2,    // ...
-      w:(v.cardWidth + v.pad.pileside) * game.rules.pilesRequired + v.pad.side/2,
+      w:(v.cardWidth + v.pad.pileside) * game.rules.columnsRequested + v.pad.side/2,
       h:v.cardHeight * 1.6,
       };
     zone.tx = (zone.x + zone.w)/2;
@@ -281,6 +324,18 @@
     
     });
     
+    // Grid
+    v.ctx.strokeStyle = 'blue';
+    for (col=0; col < v.grid.cols; col++) {
+      for (row=0; row < v.grid.rows; row++) {
+        v.ctx.strokeRect(
+          v.grid.cells[col][row].x,
+          v.grid.cells[col][row].y,
+          v.cardWidth,
+          v.cardHeight
+          );
+      }
+    }
 
   };
   
