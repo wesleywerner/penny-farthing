@@ -46,9 +46,12 @@
   var m = game.model;
 
   /**
-   * Hook into the model callbacks.
+   * Table deal function.
+   * cards is an array and can contain:
+   *   + a pile of cards
+   *   + an array of piles
    */
-  m.dealCallback = function(dealer, model) {
+  r.dealFunc = function(dealer, cards) {
 
     // Fill and shuffle a new hand.
     // Take 5 cards for the reserve.
@@ -67,28 +70,29 @@
     topEch.add(hand.card(0, 'joker'));
     topEch.shuffle();
 
-    // six columns
+    // tableau (an array of piles)
+    cards.tableau = [ ];
     for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
-      model.piles[i] = topEch.take(4);
+      cards.tableau[i] = topEch.take(4);
     };
     
     // remaining deck goes to lower echelon
     for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
-      model.piles[i].add(hand.take(4));
+      cards.tableau[i].add(hand.take(4));
     };
     
     // turn top cards
     for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
-      model.piles[i].get().up = true;
+      cards.tableau[i].get().up = true;
     };
     
     // reserve
-    model.reserve = hand.take(5);
+    cards.reserve = hand.take(5);
     
     // new waste pile
-    model.waste = dealer.new();
+    cards.waste = dealer.new();
     
-    model.hand = dealer.new();
+    cards.hand = dealer.new();
 
   };
     

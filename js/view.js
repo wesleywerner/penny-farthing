@@ -254,50 +254,42 @@
     Object.keys(v.layout.zones).forEach(function(zonename) {
       
       var zone = v.layout.zones[zonename];
-
-      // reserve
-      if (zonename == 'reserve') {
-        for (i=0; i<game.model.reserve.cards.length; i++) {
-          v.drawCardBack(zone.x-i*v.pad.stack, zone.y);
-        }
-      }
+      var ispile = game.model.cards[zonename].cards != undefined;
+      var ismanypiles = !ispile && game.model.cards[zonename].length > 0;
       
-      else if (zonename == 'waste') {
-        // waste
-        game.model.waste.cards.forEach(function(card, index, arr) {
-          card.up = true;
-          // offset x to give a stack effect
+      if (ispile) {
+        var zonecards = game.model.cards[zonename].cards;
+      }
+      else if (ismanypiles) {
+        var zonepiles = game.model.cards[zonename];
+      }
+  
+      if (ispile) {
+        zonecards.forEach(function(card, index){
+          // offset x to give a pile like effect
           var x = zone.x-index*v.pad.stack;
-          v.drawCard(card, x, zone.y);
+          var y = zone.y;
+          // store the card position
+          card.pos = {x:x, y:y};
+          v.drawCard(card, x, y);
         });
       }
-      
-      else if (zonename == 'tableau') {
-        // tableau
-        game.model.piles.forEach(function(pile, col, arr){
+
+      if (ismanypiles) {
+        // this is an array of piles
+        zonepiles.forEach(function(pile, col){
           pile.cards.forEach(function(card, row){
-
-            var x = zone.x;
-            // The pad between piles (multiplied per column)
-            x += v.pad.pileside * col;
-            // add the card size (multiplied per column)
-            x += col * v.cardWidth;
-
-            var y = zone.y;
-            // The vertical space between pile cards (multiplied per row)
-            y += v.pad.piletop * row;
-
+            // position for each column.
+            var x = zone.x + (col*v.pad.pileside) + (col*v.cardWidth);
+            // offset y for a stack like effect
+            var y = zone.y + (row * v.pad.piletop);
+            // store the card position
+            card.pos = {x:x, y:y};
             v.drawCard(card, x, y);
           });
         });
       }
-      
-      else if (zonename == 'hand') {
-        // hand
-        var card = game.model.hand.get();
-        v.drawCard(card, zone.x, zone.y);
-      }
-    
+
     });
     
     // Grid
@@ -323,24 +315,41 @@
     // store the card matched under x,y
     var match = undefined;
     
-    // combine all stacks to perform a single search
-    var combined = [ ];
-    combined = combined.concat(game.model.hand);
-    combined = combined.concat(game.model.foundations);
-    combined = combined.concat(game.model.waste);
-    combined = combined.concat(game.model.reserve.cards);
-    game.model.piles.forEach(function(pile){
-      combined = combined.concat(pile.cards);
-    });
-    
-    // scan
-    combined.forEach(function(card){
-      if (card != undefined && card.pos != undefined) {
-        if (x > card.pos.x && x < card.pos.x + v.cardWidth &&
-            y > card.pos.y && y < card.pos.y + v.cardHeight) {
-          match = card;
-        }
+    // scan each zone
+    Object.keys(v.layout.zones).forEach(function(zonename) {
+      
+      var zone = v.layout.zones[zonename];
+      var ispile = game.model.cards[zonename].cards != undefined;
+      var ismanypiles = !ispile && game.model.cards[zonename].length > 0;
+      
+      if (ispile) {
+        var zonecards = game.model.cards[zonename].cards;
       }
+      else if (ismanypiles) {
+        var zonepiles = game.model.cards[zonename];
+      }
+  
+      if (ispile) {
+        zonecards.forEach(function(card, index){
+          if (x > card.pos.x && x < card.pos.x + v.cardWidth &&
+              y > card.pos.y && y < card.pos.y + v.cardHeight) {
+            match = card;
+          }
+        });
+      }
+
+      if (ismanypiles) {
+        // this is an array of piles
+        zonepiles.forEach(function(pile, col){
+          pile.cards.forEach(function(card, index){
+            if (x > card.pos.x && x < card.pos.x + v.cardWidth &&
+                y > card.pos.y && y < card.pos.y + v.cardHeight) {
+              match = card;
+            }
+          });
+        });
+      }
+
     });
     
     return match;
@@ -387,14 +396,14 @@
     if (zone == 'reserve') {
       // example rule. this would never happen in the view.
       // discard old
-      if (game.model.hand.cards.length == 1) {
-        game.model.waste.add(game.model.hand.take());
+      if (game.model.cards.hand.cards.length == 1) {
+        game.model.cards.waste.add(game.model.cards.hand.take());
       }
-      var n = game.model.reserve.take();
+      var n = game.model.cards.reserve.take();
       if (n.cards.length == 1) {
         var m = n.cards[0];
         m.up = true;
-        game.model.hand.add(m);
+        game.model.cards.hand.add(m);
         requestAnimationFrame(v.draw);
       }
     }
