@@ -15,19 +15,10 @@
   /**
    * When a new game is dealt.
    */
-  m.dealCallback = function(dealer, model) {
+  m.dealCallback = function(dealer, cards) {
     var hand = dealer.new();
     hand.fill();
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.piles.push(hand.take(4));
-    model.reserve.push(hand);
+    cards.hand = hand;
   };
 
   m.deal = function() {
