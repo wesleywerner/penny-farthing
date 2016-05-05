@@ -19,7 +19,7 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:1, width:6, height:1},  // entire top row
+      'tableau': { col:1, row:1, width:6, height:1.5},  // entire top row
       'reserve': { col:1, row:3, width:1, height:1},  // bottom left
       'waste': { col:2, row:3, width:1, height:1},    // next to reserve
       'hand': { col:6, row:3, width:1, height:1}     // bottom right
@@ -29,22 +29,6 @@
     
   }
   
-  // Define the decks used in this ruleset.
-  // (Maps to the model.decks array)
-  r.DECKS = { };
-  r.DECKS.COL1 = 0;
-  r.DECKS.COL2 = 1;
-  r.DECKS.COL3 = 2;
-  r.DECKS.COL4 = 3;
-  r.DECKS.COL5 = 4;
-  r.DECKS.COL6 = 5;
-  r.DECKS.RESERVE = 6;
-  r.DECKS.HAND = 7;
-  r.DECKS.DISCARD = 8;
-
-  // Get the model object
-  var m = game.model;
-
   /**
    * Table deal function.
    * cards is an array and can contain:
@@ -72,17 +56,17 @@
 
     // tableau (an array of piles)
     cards.tableau = [ ];
-    for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
+    for (var i = 0; i <= 5; i++) {
       cards.tableau[i] = topEch.take(4);
     };
     
     // remaining deck goes to lower echelon
-    for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
+    for (var i = 0; i <= 5; i++) {
       cards.tableau[i].add(hand.take(4));
     };
     
     // turn top cards
-    for (var i = r.DECKS.COL1; i <= r.DECKS.COL6; i++) {
+    for (var i = 0; i <= 5; i++) {
       cards.tableau[i].get().up = true;
     };
     
