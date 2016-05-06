@@ -7,7 +7,7 @@
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
   var rules = g.rules = { }
-  //var controller = g.controller;
+  var control = g.controller;
   
   // The game model will request the requirements for your game.
   rules.requestLayout = function() {
@@ -95,19 +95,20 @@
     
     if (zone == 'reserve') {
       
-      // discard old
-      if (game.model.cards.hand.cards.length == 1) {
-        game.model.cards.waste.add(game.model.cards.hand.take());
-      }
+      // We have to work through the controller
       
-      // take new
-      var n = game.model.cards.reserve.take();
-      if (n.cards.length == 1) {
-        var m = n.cards[0];
-        m.up = true;
-        game.model.cards.hand.add(m);
-        requestAnimationFrame(game.view.draw);
-      }
+      // take from our hand
+      var handcard = control.take('hand');   // get the cards in hand
+      // place into waste
+      control.place(handcard, 'waste'); // move the hand card to the waste
+      
+      // take from reserve
+      var reservecard = control.take('reserve');
+      // place into hand
+      control.place(reservecard, 'hand');
+      // turn the hand card face up
+      reservecard.up = true;
+      
     }
 
   };

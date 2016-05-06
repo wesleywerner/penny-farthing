@@ -7,6 +7,8 @@
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
   var controller = g.controller = { }
+  var model = g.model;
+  var view = g.view;
   
   /**
    * Initialize controllers for the canvas element.
@@ -49,6 +51,37 @@
       var y = event.clientY - rect.top;
       game.view.click(x, y);
     }, false);
+    
+    /**
+     * Card manipulation methods.
+     */
+     
+     
+    /**
+     * Takes the top card from a zone.
+     * Returns null if no card is available.
+     */
+    controller.take = function(zone) {
+      // taking from piles returns a new pile.
+      var pile = model.cards[zone].take();
+      if (pile.cards.length == 1) {
+        return pile.cards[0];
+      }
+      else {
+        return null;
+      }
+    }
+    
+    /**
+     * Place the given card into a zone.
+     */
+    controller.place = function(card, zone) {
+      if (card != null) {
+        model.cards[zone].add(card);
+        // TODO funcitonzie this draw request
+        requestAnimationFrame(view.draw);
+      }
+    };
     
   };
   
