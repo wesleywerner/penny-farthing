@@ -73,6 +73,16 @@
     }
     
     /**
+     * Peek at the top card from a zone.
+     * Returns null if no card is available.
+     */
+    controller.peek = function(zone) {
+      // taking from piles returns a new pile.
+      var card = model.cards[zone].get();
+      return card || null;
+    }
+    
+    /**
      * Place the given card into a zone.
      */
     controller.place = function(card, zone) {
