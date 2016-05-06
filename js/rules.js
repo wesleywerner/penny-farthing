@@ -9,6 +9,8 @@
   var rules = g.rules = { }
   var control = g.controller;
   
+  rules.action = 'spy';
+  
   // The game model will request the requirements for your game.
   rules.requestLayout = function() {
     
@@ -20,10 +22,10 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:1, width:6, height:1.5},  // entire top row
-      'reserve': { col:1, row:3, width:1, height:1},  // bottom left
-      'waste': { col:2, row:3, width:1, height:1},    // next to reserve
-      'hand': { col:6, row:3, width:1, height:1}     // bottom right
+      'tableau': { col:1, row:2, width:6, height:2},  // entire top row
+      'reserve': { col:1, row:1, width:1, height:1},  // bottom left
+      'waste': { col:2, row:1, width:1, height:1},    // next to reserve
+      'hand': { col:6, row:1, width:1, height:1}     // bottom right
     };
 
     return layout;
@@ -114,22 +116,83 @@
       
     }
     
-    if (zone == 'tableau') {
+    // tableau cards can only be acted on if they are the top card, with a facing value.
+    if (zone == 'tableau' && card && card.up && card.onTop) {
       
-      // tableau card is lower
-      var canSwitch = card.value < hand.value;
+      if (rules.action == 'replace') {
+        
+        // If the target card is the same color as your Shape, your Shape's value
+        // must be lower than the target card's value.
+        // If the card is a different color than your Shape, your
+        // Shape's value must be higher than the target card's value.
+        
+        var handcolor = (hand.suit == 'D' || hand.suit == 'H' ? 'red' : 'black');
+        var cardcolor = (card.suit == 'D' || card.suit == 'H' ? 'red' : 'black');
+        
+        if (handcolor == cardcolor) {
+          var canSwitch = card.up && (card.value > hand.value)
+        }
+        else {
+          var canSwitch = card.up && (card.value < hand.value)
+        }
+        
+        if (canSwitch) {
+          
+          // discard our hand
+          control.place(hand, 'waste')
+          
+          // place new card in hand
+          control.place(card, 'hand');
+        }
       
-      if (canSwitch) {
-        
-        // discard our hand
-        control.place(hand, 'waste')
-        
-        // place new card in hand
-        control.place(card, 'hand');
       }
       
+      if (rules.action == 'spy') {
+        
+        // cards receive the clickedColRow property of the column / row of the pile(s) the live in.
+        
+        if (card.suit == hand.suit) {
+          
+          // show adjacent cards
+          var pos = card.clickedColRow;
+          
+          // directly above
+          var acard = control.byColRow('tableau', pos.col, Math.max(1, pos.row-1) );
+          if (acard) acard.up = true;
+
+          // to the left
+          acard = control.byColRow('tableau', Math.max(1, pos.col-1), pos.row );
+          if (acard) acard.up = true;
+          
+          // to the right
+          acard = control.byColRow('tableau', Math.min(6, pos.col+1), pos.row );
+          if (acard) acard.up = true;
+          
+        }
+        
+      }
+    
     }
+    
+    control.redraw();
 
   };
+  
+  window.setTimeout(function() {
+    var btn = document.createElement('button');
+    btn.innerHTML = 'SPY';
+    btn.onclick = function(){game.rules.action='spy'; txt.innerHTML = 'SPY'}
+    document.body.appendChild(btn);
+
+    var btn = document.createElement('button');
+    btn.innerHTML = 'REPLACE';
+    btn.onclick = function(){game.rules.action='replace'; txt.innerHTML = 'REPLACE'}
+    document.body.appendChild(btn);
     
+    var txt = document.createElement('h1');
+    txt.innerHTML = 'REPLACE';
+    document.body.appendChild(txt);
+    
+  }, 1000);
+
 })();
