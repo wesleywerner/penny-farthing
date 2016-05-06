@@ -78,7 +78,7 @@
     cards.waste = dealer.new();
     
     cards.hand = dealer.new();
-
+    
   };
   
   
@@ -88,48 +88,42 @@
    */
   rules.clickEvent = function(zone, card) {
 
-    var name = card == undefined ? '' : card.name;
+    var name = card == null ? '' : card.name;
     
     if (zone != undefined) {
       console.log('click hit in zone ' + zone + ' - ' + name);
     }
     
+    // look at our hand
+    var hand = control.peek('hand');
+
     if (zone == 'reserve') {
       
       // take from reserve
-      var reservecard = control.take('reserve');
+      if (card) {
 
-      if (reservecard) {
-
-        // take from our hand
-        var handcard = control.take('hand');   // get the cards in hand
-
-        // place into waste
-        control.place(handcard, 'waste'); // move the hand card to the waste
+        // discard our hand
+        control.place(hand, 'waste')
         
-        // place into hand
-        control.place(reservecard, 'hand');
+        // place selected card into hand
+        control.place(card, 'hand');
 
         // turn the hand card face up
-        reservecard.up = true;
+        card.up = true;
       }
       
     }
     
     if (zone == 'tableau') {
       
-      // look at our hand
-      var hand = control.peek('hand');
-      
       // tableau card is lower
       var canSwitch = card.value < hand.value;
       
       if (canSwitch) {
-        console.log('switching cards');
+        
         // discard our hand
-        control.place(control.take('hand'), 'waste');
-        // remove from tableau
-        control.remove(card, 'tableau');
+        control.place(hand, 'waste')
+        
         // place new card in hand
         control.place(card, 'hand');
       }

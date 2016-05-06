@@ -84,9 +84,12 @@
     
     /**
      * Place the given card into a zone.
+     * Placing a card into any zone will first remove it from
+     * any existing zone it may be in.
      */
     controller.place = function(card, zone) {
       if (card != null) {
+        controller.remove(card);
         model.cards[zone].add(card);
         // TODO funcitonzie this draw request
         requestAnimationFrame(view.draw);
@@ -94,24 +97,30 @@
     };
     
     /**
-     * Remove the given card from the given zone.
+     * Remove the given card from all zones
      */
-    controller.remove = function(card, zone) {
+    controller.remove = function(card) {
       if (card != null) {
-        var zonecards = model.cards[zone];
-        if (zonecards.length) {
-          // an array of piles
-          zonecards.forEach(function(pile){
-            pile.remove(card);
-          });
-        }
-        else {
-          // a single pile
-          zonecards.remove(card);
-        }
+        
+        Object.keys(game.model.cards).forEach(function(zone){
+        
+          var zonecards = model.cards[zone];
+          if (zonecards.length) {
+            // an array of piles
+            zonecards.forEach(function(pile){
+              pile.remove(card);
+            });
+          }
+          else {
+            // a single pile
+            zonecards.remove(card);
+          }
+
+        });
 
       }
     };
+    
     
   };
   

@@ -362,7 +362,7 @@
   view.click = function(x, y) {
     
     // get the card at this position
-    var card = view.cardAt(x, y);
+    var card = view.cardAt(x, y) || null;
     
     // detect zones
     var match = undefined;
