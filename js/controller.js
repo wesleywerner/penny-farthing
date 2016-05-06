@@ -52,6 +52,10 @@
       game.view.click(x, y);
     }, false);
     
+    controller.redraw = function() {
+      requestAnimationFrame(view.draw);
+    };
+    
     /**
      * Card manipulation methods.
      */
@@ -91,8 +95,7 @@
       if (card != null) {
         controller.remove(card);
         model.cards[zone].add(card);
-        // TODO funcitonzie this draw request
-        requestAnimationFrame(view.draw);
+        //controller.redraw();
       }
     };
     
@@ -121,6 +124,13 @@
       }
     };
     
+    /**
+     * Returns a card from a pile-array zone by column and row indexes.
+     */
+    controller.byColRow = function(zone, col, row) {
+      var zonepiles = game.model.cards[zone];
+      return zonepiles[col-1].cards[row-1];
+    };
     
   };
   
