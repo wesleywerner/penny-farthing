@@ -330,11 +330,13 @@
       }
   
       if (ispile) {
+        var pilecount = zonecards.length-1;
         zonecards.forEach(function(card, row){
           if (x > card.pos.x && x < card.pos.x + view.cardWidth &&
               y > card.pos.y && y < card.pos.y + view.cardHeight) {
             // store the clicked row on the card
             card.clickedColRow = {col:0, row:row+1};
+            card.onTop = row == pilecount;
             match = card;
           }
         });
@@ -343,11 +345,13 @@
       if (ismanypiles) {
         // this is an array of piles
         zonepiles.forEach(function(pile, col){
+          var pilecount = pile.cards.length-1;
           pile.cards.forEach(function(card, row){
             if (x > card.pos.x && x < card.pos.x + view.cardWidth &&
                 y > card.pos.y && y < card.pos.y + view.cardHeight) {
               // store the clicked row and column on the card
               card.clickedColRow = {col:col+1, row:row+1};
+              card.onTop = row == pilecount;
               match = card;
             }
           });
