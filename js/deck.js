@@ -5,28 +5,28 @@
 
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
-  var d = g.deck = { }
+  var deck = g.deck = { }
 
   /**
    * Returns a deck object exposing helper methods to manage the deck.
    */
-  d.newFunc = function() {
+  deck.newFunc = function() {
     var clone = { };
     clone.cards = [ ];
-    clone.new = d.newFunc;
-    clone.fill = d.fillFunc;
-    clone.shuffle = d.shuffleFunc;
-    clone.take = d.takeFunc;
-    clone.add = d.addFunc;
-    clone.card = d.cardFunc;
-    clone.get = d.getFunc;
+    clone.new = deck.newFunc;
+    clone.fill = deck.fillFunc;
+    clone.shuffle = deck.shuffleFunc;
+    clone.take = deck.takeFunc;
+    clone.add = deck.addFunc;
+    clone.card = deck.cardFunc;
+    clone.get = deck.getFunc;
     return clone;
   };
 
   /**
    * Creates and returns a new card object.
    */
-  d.cardFunc = function(value, suit) {
+  deck.cardFunc = function(value, suit) {
     var card = { };
     // numerical value
     card.value = value;
@@ -46,7 +46,7 @@
    * + an array of cards from deck.cards or deck.take()
    * + another deck
    */
-  d.addFunc = function(card) {
+  deck.addFunc = function(card) {
     if (card.cards != undefined) {
       // another deck
       this.cards = this.cards.concat(card.cards);
@@ -64,7 +64,7 @@
   /**
    * Fills the deck with 52 cards.
    */
-  d.fillFunc = function() {
+  deck.fillFunc = function() {
     var deck = this;
     var cards = this.cards;
     var suits = ["C", "D", "H", "S"];
@@ -78,7 +78,7 @@
   /**
    * Shuffles the deck
    */
-  d.shuffleFunc = function() {
+  deck.shuffleFunc = function() {
     var j, x, i;
     var a = this.cards;
     for (i = a.length; i; i -= 1) {
@@ -92,7 +92,7 @@
   /**
    * Take n cards from this deck and returns a new deck of the taken cards.
    */
-  d.takeFunc = function(n) {
+  deck.takeFunc = function(n) {
     n = n == undefined ? 1 : n;
     var newdeck = this.new();
     var cards = this.cards;
@@ -107,7 +107,7 @@
   /**
    * Gets the top card off the deck, or the nth card if specified.
    */
-  d.getFunc = function(n) {
+  deck.getFunc = function(n) {
     n = n == undefined ? this.cards.length-1 : n;
     return this.cards[n];
   };
@@ -115,7 +115,7 @@
   /**
    * Create and return a new deck
    */
-  d.new = d.newFunc;
+  deck.new = deck.newFunc;
 
 })();
 

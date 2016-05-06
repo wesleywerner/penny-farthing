@@ -6,10 +6,10 @@
 
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
-  var r = g.rules = { }
+  var rules = g.rules = { }
   
   // The game model will request the requirements for your game.
-  r.requestLayout = function() {
+  rules.requestLayout = function() {
     
     var layout = { };
     
@@ -35,7 +35,7 @@
    *   + a pile of cards
    *   + an array of piles
    */
-  r.dealFunc = function(dealer, cards) {
+  rules.dealFunc = function(dealer, cards) {
 
     // Fill and shuffle a new hand.
     // Take 5 cards for the reserve.

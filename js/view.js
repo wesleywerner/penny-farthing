@@ -6,13 +6,13 @@
 
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
-  var v = g.view = { }
+  var view = g.view = { }
   
   /**
    * Define padding ratios.
    */
-  v.pad = { };
-  v.pad.ratios = {      // ratios to calculate padding values
+  view.pad = { };
+  view.pad.ratios = {      // ratios to calculate padding values
     top: 0.05,          // on the resize call
     side: 0.05,
     piletop: 0.02,
@@ -23,8 +23,8 @@
   /**
    * Define sizes.
    */
-  v.size = { };
-  v.size.ratios = {
+  view.size = { };
+  view.size.ratios = {
     font: 0.03,
   }
   
@@ -32,45 +32,45 @@
    * Stores the grid positions for card columns and rows.
    * Calculated on resize.
    */
-  v.grid = null;
+  view.grid = null;
   
   // Calculate a lookup of the card face positions in the imagemap.
-  v.facelookup = { };
-  v.facelookup.mapstart = {x:217, y:506};
-  v.facelookup.gridsize = {w:104, h:145};
-  v.facelookup.gridpad = {w:18, h:18};
+  view.facelookup = { };
+  view.facelookup.mapstart = {x:217, y:506};
+  view.facelookup.gridsize = {w:104, h:145};
+  view.facelookup.gridpad = {w:18, h:18};
   
   var suits = ["C", "H", "S", "D", "JOKER"];
   for (n=0; n<13; n++) {
     suits.forEach(function(suit, row) {
       var name = (n+1).toString() + suit;
-      var x = v.facelookup.mapstart.x + (v.facelookup.gridsize.w*n) + (v.facelookup.gridpad.w*n);
-      var y = v.facelookup.mapstart.y + (v.facelookup.gridsize.h*row) + (v.facelookup.gridpad.h*row);
-      v.facelookup[name] = {x:x, y:y};
+      var x = view.facelookup.mapstart.x + (view.facelookup.gridsize.w*n) + (view.facelookup.gridpad.w*n);
+      var y = view.facelookup.mapstart.y + (view.facelookup.gridsize.h*row) + (view.facelookup.gridpad.h*row);
+      view.facelookup[name] = {x:x, y:y};
     });
   }
 
   /**
    * Initialise the view's drawing context.
    */
-  v.initialize = function(canvasElement) {
-    v.element = canvasElement;
+  view.initialize = function(canvasElement) {
+    view.element = canvasElement;
     if (canvasElement.getContext) {
-      v.ctx = canvasElement.getContext('2d');
-      requestAnimationFrame(v.draw);
+      view.ctx = canvasElement.getContext('2d');
+      requestAnimationFrame(view.draw);
     }
   };
   
   /**
    * Calculates card sizes and position based on the client size.
    */
-  v.resize = function() {
+  view.resize = function() {
     
     // Request the rules layout
-    v.layout = game.rules.requestLayout();
+    view.layout = game.rules.requestLayout();
     
-    var w = v.element.clientWidth;
-    var h = v.element.clientHeight;
+    var w = view.element.clientWidth;
+    var h = view.element.clientHeight;
     
     // The height is neglible at this point.
     // We calculate the card width first based on how many piles
@@ -78,145 +78,145 @@
     // and only then do we calculate the height of the canvas.
     
     // resize the canvas area to match the client area
-    v.ctx.canvas.width = v.width = w;
+    view.ctx.canvas.width = view.width = w;
     
     // scale font
-    v.size.font = Math.floor( v.size.ratios.font * w );
+    view.size.font = Math.floor( view.size.ratios.font * w );
     
     // padding via preset ratios
-    v.pad.side = Math.floor(v.pad.ratios.side * w);
-    v.pad.pileside = Math.floor(v.pad.ratios.pileside * w);
+    view.pad.side = Math.floor(view.pad.ratios.side * w);
+    view.pad.pileside = Math.floor(view.pad.ratios.pileside * w);
 
     // To calculate the card size, we look at the canvas size
     // and how many columns the rules request.
     // We account for padding between the piles.
-    var stackRows = v.layout.columnsRequested;
-    var widthMinusPad = w - v.pad.side * 2 - v.pad.pileside * stackRows;
-    v.cardWidth = Math.floor( widthMinusPad / stackRows );
-    v.cardHeight = Math.floor(v.cardWidth * 1.4);  // 1.4 is the height ratio of our card images
+    var stackRows = view.layout.columnsRequested;
+    var widthMinusPad = w - view.pad.side * 2 - view.pad.pileside * stackRows;
+    view.cardWidth = Math.floor( widthMinusPad / stackRows );
+    view.cardHeight = Math.floor(view.cardWidth * 1.4);  // 1.4 is the height ratio of our card images
 
     // resize the canvas height to n cards
-    var stackRows = v.layout.rowsRequested;
+    var stackRows = view.layout.rowsRequested;
     stackRows = stackRows == undefined ? 3 : stackRows;
-    var stackHeight = stackRows * v.cardHeight;
+    var stackHeight = stackRows * view.cardHeight;
     
     // vertical padding now that we have our height
-    v.pad.top = Math.floor(v.pad.ratios.top * h);
-    v.pad.piletop = Math.floor(v.pad.ratios.piletop * h);
-    v.pad.stack = Math.floor(v.pad.ratios.stack * h);
+    view.pad.top = Math.floor(view.pad.ratios.top * h);
+    view.pad.piletop = Math.floor(view.pad.ratios.piletop * h);
+    view.pad.stack = Math.floor(view.pad.ratios.stack * h);
 
     // Resize the canvas height
     // Include the top padding and padding between rows of cards
-    var stackPadding = (v.pad.top * 2) + (v.pad.piletop * stackRows);
-    v.ctx.canvas.height = h = v.height = Math.floor(stackHeight + stackPadding);
+    var stackPadding = (view.pad.top * 2) + (view.pad.piletop * stackRows);
+    view.ctx.canvas.height = h = view.height = Math.floor(stackHeight + stackPadding);
 
     // The grid positions
-    v.grid = { };
-    v.grid.cells = [ ];
-    v.grid.cols = v.layout.columnsRequested;
-    v.grid.rows = v.layout.rowsRequested;
+    view.grid = { };
+    view.grid.cells = [ ];
+    view.grid.cols = view.layout.columnsRequested;
+    view.grid.rows = view.layout.rowsRequested;
     
-    for (col=0; col < v.grid.cols; col++) {
-      for (row=0; row < v.grid.rows; row++) {
+    for (col=0; col < view.grid.cols; col++) {
+      for (row=0; row < view.grid.rows; row++) {
 
         /**
          * The card x position
          */
         // The pad between piles (multiplied per column)
-        var x = v.pad.pileside * col;
+        var x = view.pad.pileside * col;
         // add the card size (multiplied per column)
-        x += col * v.cardWidth;
+        x += col * view.cardWidth;
         // add the edge padding
-        x += v.pad.side;
+        x += view.pad.side;
         
         /**
          * The card y position
          */
         // The vertical space between pile cards (multiplied per column)
-        var y = v.pad.piletop * row;
+        var y = view.pad.piletop * row;
         // add the card size (multiplied per row)
-        y += row * v.cardHeight;
+        y += row * view.cardHeight;
         // add the edge padding
-        y += v.pad.top;
+        y += view.pad.top;
       
         // initialise array
-        v.grid.cells[col] = v.grid.cells[col] == undefined ? [] : v.grid.cells[col];
-        v.grid.cells[col][row] = {x:x, y:y};
+        view.grid.cells[col] = view.grid.cells[col] == undefined ? [] : view.grid.cells[col];
+        view.grid.cells[col][row] = {x:x, y:y};
       }
     }
     
     // Calculate zone positions from grid positions
-    Object.keys(v.layout.zones).forEach(function(zonename) {
-      var zone = v.layout.zones[zonename];
-      var grid = v.grid.cells[zone.col-1][zone.row-1];
+    Object.keys(view.layout.zones).forEach(function(zonename) {
+      var zone = view.layout.zones[zonename];
+      var grid = view.grid.cells[zone.col-1][zone.row-1];
       zone.x = grid.x;
       zone.y = grid.y;
-      zone.w = Math.floor(zone.width*v.cardWidth + (zone.width-1)*v.pad.pileside);
-      zone.h = Math.floor(zone.height*v.cardHeight + (zone.height-1)*v.pad.piletop);
+      zone.w = Math.floor(zone.width*view.cardWidth + (zone.width-1)*view.pad.pileside);
+      zone.h = Math.floor(zone.height*view.cardHeight + (zone.height-1)*view.pad.piletop);
       // find the center of each zone
       zone.cenx = zone.x + zone.w/2;
       zone.ceny = zone.y + zone.h/2;
     });
     
     // Request to redraw
-    requestAnimationFrame(v.draw);
+    requestAnimationFrame(view.draw);
   };
   
   /**
    * Adds a zone by grid column and row.
    */
-  v.addZoneFunc = function(name, col, row, width, height) {
-    var grid = v.grid.cells[col-1][row-1];
+  view.addZoneFunc = function(name, col, row, width, height) {
+    var grid = view.grid.cells[col-1][row-1];
     if (grid == undefined) return;
     zone = {
       name:name,
       x:grid.x,
       y:grid.y,
-      w:Math.floor(width*v.cardWidth),
-      h:Math.floor(height*v.cardHeight)
+      w:Math.floor(width*view.cardWidth),
+      h:Math.floor(height*view.cardHeight)
     };
-    v.zones.push(zone);
+    view.zones.push(zone);
   };
   
   /**
    * Draw a card back
    */
-  v.drawCardBack = function(x, y) {
-    v.ctx.drawImage(document.images[0], x, y, v.cardWidth, v.cardHeight);
+  view.drawCardBack = function(x, y) {
+    view.ctx.drawImage(document.images[0], x, y, view.cardWidth, view.cardHeight);
   };
   
   /**
    * Draw a card.
    */
-  v.drawCard = function(card, x, y) {
+  view.drawCard = function(card, x, y) {
     
     if (card == undefined) return;
     
     // draw card shape
     if (card.up) {
-      var map = v.facelookup[card.name];
+      var map = view.facelookup[card.name];
       if (map == undefined) {
-        v.ctx.fillStyle = "white";
-        v.ctx.fillRect(x, y, v.cardWidth, v.cardHeight);
-        v.ctx.font = "12px serif";
-        v.ctx.fillStyle = "red";
-        v.ctx.fillText('card face image not found', x, y+14);
+        view.ctx.fillStyle = "white";
+        view.ctx.fillRect(x, y, view.cardWidth, view.cardHeight);
+        view.ctx.font = "12px serif";
+        view.ctx.fillStyle = "red";
+        view.ctx.fillText('card face image not found', x, y+14);
       }
       else {
-        v.ctx.drawImage(document.images[1],
-          map.x, map.y, v.facelookup.gridsize.w, v.facelookup.gridsize.h,
-          x, y, v.cardWidth, v.cardHeight);
+        view.ctx.drawImage(document.images[1],
+          map.x, map.y, view.facelookup.gridsize.w, view.facelookup.gridsize.h,
+          x, y, view.cardWidth, view.cardHeight);
       }
     }
     else {
-      v.drawCardBack(x, y);
+      view.drawCardBack(x, y);
     }
     
     // name
     if (card.up) {
-      v.ctx.font = "16px serif";
-      v.ctx.fillStyle = "blue";
-      v.ctx.fillText(card.name, x, y+14);
+      view.ctx.font = "16px serif";
+      view.ctx.fillStyle = "blue";
+      view.ctx.fillText(card.name, x, y+14);
     }
 
   }
@@ -224,36 +224,36 @@
   /**
    * Draw the canvas
    */
-  v.draw = function() {
+  view.draw = function() {
     
-    if (!v.ctx) return;
+    if (!view.ctx) return;
     
     // background
-    v.ctx.fillStyle = "green";
-    v.ctx.fillRect(0, 0, v.width, v.height);
+    view.ctx.fillStyle = "green";
+    view.ctx.fillRect(0, 0, view.width, view.height);
 
     // draw zones
     // TODO predraw this loop to an off screen images for blitting here
-    Object.keys(v.layout.zones).forEach(function(zonename) {
+    Object.keys(view.layout.zones).forEach(function(zonename) {
       
-      var zone = v.layout.zones[zonename];
+      var zone = view.layout.zones[zonename];
       
       // outline
-      v.ctx.fillStyle = 'darkgreen';
-      v.ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+      view.ctx.fillStyle = 'darkgreen';
+      view.ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
       
       // title
-      v.ctx.fillStyle = 'green';
-      v.ctx.textAlign = 'center';
-      v.ctx.font = v.size.font.toString() + 'px serif';
-      v.ctx.fillText(zonename, zone.cenx, zone.ceny);
+      view.ctx.fillStyle = 'green';
+      view.ctx.textAlign = 'center';
+      view.ctx.font = view.size.font.toString() + 'px serif';
+      view.ctx.fillText(zonename, zone.cenx, zone.ceny);
       
     });
     
     // Cards
-    Object.keys(v.layout.zones).forEach(function(zonename) {
+    Object.keys(view.layout.zones).forEach(function(zonename) {
       
-      var zone = v.layout.zones[zonename];
+      var zone = view.layout.zones[zonename];
       var ispile = game.model.cards[zonename].cards != undefined;
       var ismanypiles = !ispile && game.model.cards[zonename].length > 0;
       
@@ -267,11 +267,11 @@
       if (ispile) {
         zonecards.forEach(function(card, index){
           // offset x to give a pile like effect
-          var x = zone.x-index*v.pad.stack;
+          var x = zone.x-index*view.pad.stack;
           var y = zone.y;
           // store the card position
           card.pos = {x:x, y:y};
-          v.drawCard(card, x, y);
+          view.drawCard(card, x, y);
         });
       }
 
@@ -280,12 +280,12 @@
         zonepiles.forEach(function(pile, col){
           pile.cards.forEach(function(card, row){
             // position for each column.
-            var x = zone.x + (col*v.pad.pileside) + (col*v.cardWidth);
+            var x = zone.x + (col*view.pad.pileside) + (col*view.cardWidth);
             // offset y for a stack like effect
-            var y = zone.y + (row * v.pad.piletop);
+            var y = zone.y + (row * view.pad.piletop);
             // store the card position
             card.pos = {x:x, y:y};
-            v.drawCard(card, x, y);
+            view.drawCard(card, x, y);
           });
         });
       }
@@ -293,14 +293,14 @@
     });
     
     // Grid
-    v.ctx.strokeStyle = 'blue';
-    for (col=0; col < v.grid.cols; col++) {
-      for (row=0; row < v.grid.rows; row++) {
-        v.ctx.strokeRect(
-          v.grid.cells[col][row].x,
-          v.grid.cells[col][row].y,
-          v.cardWidth,
-          v.cardHeight
+    view.ctx.strokeStyle = 'blue';
+    for (col=0; col < view.grid.cols; col++) {
+      for (row=0; row < view.grid.rows; row++) {
+        view.ctx.strokeRect(
+          view.grid.cells[col][row].x,
+          view.grid.cells[col][row].y,
+          view.cardWidth,
+          view.cardHeight
           );
       }
     }
@@ -310,15 +310,15 @@
   /**
    * Gets the card at position x,y
    */
-  v.cardAt = function(x, y) {
+  view.cardAt = function(x, y) {
     
     // store the card matched under x,y
     var match = undefined;
     
     // scan each zone
-    Object.keys(v.layout.zones).forEach(function(zonename) {
+    Object.keys(view.layout.zones).forEach(function(zonename) {
       
-      var zone = v.layout.zones[zonename];
+      var zone = view.layout.zones[zonename];
       var ispile = game.model.cards[zonename].cards != undefined;
       var ismanypiles = !ispile && game.model.cards[zonename].length > 0;
       
@@ -331,8 +331,8 @@
   
       if (ispile) {
         zonecards.forEach(function(card, index){
-          if (x > card.pos.x && x < card.pos.x + v.cardWidth &&
-              y > card.pos.y && y < card.pos.y + v.cardHeight) {
+          if (x > card.pos.x && x < card.pos.x + view.cardWidth &&
+              y > card.pos.y && y < card.pos.y + view.cardHeight) {
             match = card;
           }
         });
@@ -342,8 +342,8 @@
         // this is an array of piles
         zonepiles.forEach(function(pile, col){
           pile.cards.forEach(function(card, index){
-            if (x > card.pos.x && x < card.pos.x + v.cardWidth &&
-                y > card.pos.y && y < card.pos.y + v.cardHeight) {
+            if (x > card.pos.x && x < card.pos.x + view.cardWidth &&
+                y > card.pos.y && y < card.pos.y + view.cardHeight) {
               match = card;
             }
           });
@@ -359,23 +359,23 @@
    * Accepts a position to click and fires an event with the card
    * and zone it hits.
    */
-  v.click = function(x, y) {
+  view.click = function(x, y) {
     
     // get the card at this position
-    var card = v.cardAt(x, y);
+    var card = view.cardAt(x, y);
     
     // detect zones
     var match = undefined;
 
-    Object.keys(v.layout.zones).forEach(function(zonename) {
-      var zone = v.layout.zones[zonename];
+    Object.keys(view.layout.zones).forEach(function(zonename) {
+      var zone = view.layout.zones[zonename];
       if (x > zone.x && x < zone.x + zone.w &&
         y > zone.y && y < zone.y + zone.h) {
           match = zonename;
     }
     });
     
-    v.clickedEvent(match, card);
+    view.clickedEvent(match, card);
     
   };
   
@@ -388,7 +388,7 @@
   /**
    * Called after the view.click method is called with the hit results.
    */
-  v.clickedEvent = function(zone, card) {
+  view.clickedEvent = function(zone, card) {
     var name = card == undefined ? '' : card.name;
     if (zone != undefined) {
       console.log('click hit in zone ' + zone + ' - ' + name);
@@ -404,7 +404,7 @@
         var m = n.cards[0];
         m.up = true;
         game.model.cards.hand.add(m);
-        requestAnimationFrame(v.draw);
+        requestAnimationFrame(view.draw);
       }
     }
   };

@@ -5,7 +5,7 @@
 
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
-  var m = g.model = { }
+  var model = g.model = { }
 
   /**
    * Callback functions that the game rules can hook into
@@ -15,15 +15,15 @@
   /**
    * When a new game is dealt.
    */
-  m.dealCallback = function(dealer, cards) {
+  model.dealCallback = function(dealer, cards) {
     var hand = dealer.new();
     hand.fill();
     cards.hand = hand;
   };
 
-  m.deal = function() {
-    m.cards = { };
-    game.rules.dealFunc(game.deck, m.cards);
+  model.deal = function() {
+    model.cards = { };
+    game.rules.dealFunc(game.deck, model.cards);
   };
   
 })();
