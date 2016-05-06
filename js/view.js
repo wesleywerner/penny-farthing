@@ -375,38 +375,10 @@
     }
     });
     
-    view.clickedEvent(match, card);
+    if (game.rules.clickEvent != undefined) {
+      game.rules.clickEvent(match, card);
+    }
     
-  };
-  
-  
-  
-  /**
-   * Define callbacks that can be overwritten by the rules file.
-   */
-   
-  /**
-   * Called after the view.click method is called with the hit results.
-   */
-  view.clickedEvent = function(zone, card) {
-    var name = card == undefined ? '' : card.name;
-    if (zone != undefined) {
-      console.log('click hit in zone ' + zone + ' - ' + name);
-    }
-    if (zone == 'reserve') {
-      // example rule. this would never happen in the view.
-      // discard old
-      if (game.model.cards.hand.cards.length == 1) {
-        game.model.cards.waste.add(game.model.cards.hand.take());
-      }
-      var n = game.model.cards.reserve.take();
-      if (n.cards.length == 1) {
-        var m = n.cards[0];
-        m.up = true;
-        game.model.cards.hand.add(m);
-        requestAnimationFrame(view.draw);
-      }
-    }
   };
   
 })();

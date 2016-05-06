@@ -7,6 +7,7 @@
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
   var rules = g.rules = { }
+  //var controller = g.controller;
   
   // The game model will request the requirements for your game.
   rules.requestLayout = function() {
@@ -77,6 +78,37 @@
     cards.waste = dealer.new();
     
     cards.hand = dealer.new();
+
+  };
+  
+  
+  /**
+   * Handles click events on the view.
+   */
+  rules.clickEvent = function(zone, card) {
+
+    var name = card == undefined ? '' : card.name;
+    
+    if (zone != undefined) {
+      console.log('click hit in zone ' + zone + ' - ' + name);
+    }
+    
+    if (zone == 'reserve') {
+      
+      // discard old
+      if (game.model.cards.hand.cards.length == 1) {
+        game.model.cards.waste.add(game.model.cards.hand.take());
+      }
+      
+      // take new
+      var n = game.model.cards.reserve.take();
+      if (n.cards.length == 1) {
+        var m = n.cards[0];
+        m.up = true;
+        game.model.cards.hand.add(m);
+        requestAnimationFrame(game.view.draw);
+      }
+    }
 
   };
     
