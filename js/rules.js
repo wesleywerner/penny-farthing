@@ -115,6 +115,26 @@
       }
       
     }
+    
+    if (zone == 'tableau') {
+      
+      // look at our hand
+      var hand = control.peek('hand');
+      
+      // tableau card is lower
+      var canSwitch = card.value < hand.value;
+      
+      if (canSwitch) {
+        console.log('switching cards');
+        // discard our hand
+        control.place(control.take('hand'), 'waste');
+        // remove from tableau
+        control.remove(card, 'tableau');
+        // place new card in hand
+        control.place(card, 'hand');
+      }
+      
+    }
 
   };
     
