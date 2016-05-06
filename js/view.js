@@ -15,7 +15,7 @@
   view.pad.ratios = {      // ratios to calculate padding values
     top: 0.05,          // on the resize call
     side: 0.05,
-    piletop: 0.02,
+    piletop: 0.2,
     pileside: 0.02,
     stack: 0.005,       // x-offset of stacked cards
     };
@@ -102,7 +102,7 @@
     
     // vertical padding now that we have our height
     view.pad.top = Math.floor(view.pad.ratios.top * h);
-    view.pad.piletop = Math.floor(view.pad.ratios.piletop * h);
+    view.pad.piletop = Math.floor(view.pad.ratios.piletop * view.cardHeight);
     view.pad.stack = Math.floor(view.pad.ratios.stack * h);
 
     // Resize the canvas height
