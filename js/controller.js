@@ -93,6 +93,26 @@
       }
     };
     
+    /**
+     * Remove the given card from the given zone.
+     */
+    controller.remove = function(card, zone) {
+      if (card != null) {
+        var zonecards = model.cards[zone];
+        if (zonecards.length) {
+          // an array of piles
+          zonecards.forEach(function(pile){
+            pile.remove(card);
+          });
+        }
+        else {
+          // a single pile
+          zonecards.remove(card);
+        }
+
+      }
+    };
+    
   };
   
 })();

@@ -20,6 +20,7 @@
     clone.add = deck.addFunc;
     clone.card = deck.cardFunc;
     clone.get = deck.getFunc;
+    clone.remove = deck.removeFunc;
     return clone;
   };
 
@@ -110,6 +111,16 @@
   deck.getFunc = function(n) {
     n = n == undefined ? this.cards.length-1 : n;
     return this.cards[n];
+  };
+  
+  /**
+   * Remove the given instance of a card.
+   */
+  deck.removeFunc = function(card) {
+    var index = this.cards.indexOf(card);
+    if (index > -1) {
+      this.cards.splice(index, 1);
+    }
   };
   
   /**
