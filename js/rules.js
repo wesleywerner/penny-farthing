@@ -84,6 +84,7 @@
   
   /**
    * Handles click events on the view.
+   * Any game manipulations are done through the controller.
    */
   rules.clickEvent = function(zone, card) {
 
@@ -95,19 +96,23 @@
     
     if (zone == 'reserve') {
       
-      // We have to work through the controller
-      
-      // take from our hand
-      var handcard = control.take('hand');   // get the cards in hand
-      // place into waste
-      control.place(handcard, 'waste'); // move the hand card to the waste
-      
       // take from reserve
       var reservecard = control.take('reserve');
-      // place into hand
-      control.place(reservecard, 'hand');
-      // turn the hand card face up
-      reservecard.up = true;
+
+      if (reservecard) {
+
+        // take from our hand
+        var handcard = control.take('hand');   // get the cards in hand
+
+        // place into waste
+        control.place(handcard, 'waste'); // move the hand card to the waste
+        
+        // place into hand
+        control.place(reservecard, 'hand');
+
+        // turn the hand card face up
+        reservecard.up = true;
+      }
       
     }
 
