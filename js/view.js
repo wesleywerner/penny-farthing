@@ -198,9 +198,9 @@
       if (map == undefined) {
         view.ctx.fillStyle = "white";
         view.ctx.fillRect(x, y, view.cardWidth, view.cardHeight);
-        view.ctx.font = "12px serif";
-        view.ctx.fillStyle = "red";
-        view.ctx.fillText('card face image not found', x, y+14);
+        //view.ctx.font = "12px serif";
+        //view.ctx.fillStyle = "red";
+        //view.ctx.fillText('card face image not found', x, y+14);
       }
       else {
         view.ctx.drawImage(document.images[1],
@@ -212,12 +212,12 @@
       view.drawCardBack(x, y);
     }
     
-    // name
-    if (card.up) {
-      view.ctx.font = "16px serif";
-      view.ctx.fillStyle = "blue";
-      view.ctx.fillText(card.name, x, y+14);
-    }
+    //// name
+    //if (card.up) {
+      //view.ctx.font = "16px serif";
+      //view.ctx.fillStyle = "blue";
+      //view.ctx.fillText(card.name, x, y+14);
+    //}
 
   }
 
@@ -292,18 +292,18 @@
 
     });
     
-    // Grid
-    view.ctx.strokeStyle = 'blue';
-    for (col=0; col < view.grid.cols; col++) {
-      for (row=0; row < view.grid.rows; row++) {
-        view.ctx.strokeRect(
-          view.grid.cells[col][row].x,
-          view.grid.cells[col][row].y,
-          view.cardWidth,
-          view.cardHeight
-          );
-      }
-    }
+    //// Grid
+    //view.ctx.strokeStyle = 'blue';
+    //for (col=0; col < view.grid.cols; col++) {
+      //for (row=0; row < view.grid.rows; row++) {
+        //view.ctx.strokeRect(
+          //view.grid.cells[col][row].x,
+          //view.grid.cells[col][row].y,
+          //view.cardWidth,
+          //view.cardHeight
+          //);
+      //}
+    //}
 
   };
   
