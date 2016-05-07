@@ -104,6 +104,7 @@
     if (newgame) {
       newgame = false;
       control.deal();
+      rules.hint('Draw a card from the reserve');
       return;
     }
 
@@ -120,6 +121,8 @@
 
         // turn the hand card face up
         card.up = true;
+        
+        rules.hint('<p>You can spy on cards of the same suit.</p><p>You can replace with cards of the same color, counting up.</p><p>You can replace cards of the opposite color, counting down.</p><p>You can panic, draw a new hand from the reserve (5 cards in total)</p><p>Find the joker to win</p>');
       }
       
     }
@@ -186,6 +189,14 @@
 
   };
   
+  
+  /**
+   * Display a game play hint.
+   */
+  rules.hint = function(text) {
+    rules.hintEl.innerHTML = text;
+  };
+  
   document.addEventListener("DOMContentLoaded", function(event) { 
 
     var container = document.getElementsByTagName('footer')[0];
@@ -218,6 +229,10 @@
       btnRep.style.color = 'white';
       }
     container.appendChild(btnRep);
+    
+    game.rules.hintEl = document.getElementById('left-column');
+    
+    rules.hint('Welcome to Doppelganger! Touch to deal.');
     
   });
 
