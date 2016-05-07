@@ -100,6 +100,9 @@
     // look at our hand
     var hand = control.peek('hand');
     
+    // win condition
+    if (hand && hand.value > 100) return;
+    
     // start a new game
     if (newgame) {
       newgame = false;
@@ -145,6 +148,12 @@
         }
         else {
           var canSwitch = card.up && (card.value < hand.value)
+        }
+        
+        // win condition
+        if (card.value > 100) {
+          canSwitch = true;
+          rules.hint('You won!');
         }
         
         if (canSwitch) {
