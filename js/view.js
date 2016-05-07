@@ -17,7 +17,7 @@
     side: 0.05,
     piletop: 0.2,
     pileside: 0.02,
-    stack: 0.005,       // x-offset of stacked cards
+    stack: 0.001,       // x-offset of stacked cards
     };
     
   /**
@@ -273,6 +273,8 @@
       
     });
     
+    if (!game.model.cards) return;
+
     // Cards
     Object.keys(view.layout.zones).forEach(function(zonename) {
       
@@ -334,6 +336,8 @@
    * Gets the card at position x,y
    */
   view.cardAt = function(x, y) {
+    
+    if (!game.model.cards) return null;
     
     // store the card matched under x,y
     var match = undefined;
