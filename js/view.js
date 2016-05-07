@@ -36,11 +36,12 @@
   
   // Calculate a lookup of the card face positions in the imagemap.
   view.facelookup = { };
-  view.facelookup.mapstart = {x:217, y:506};
+  view.facelookup.mapstart = {x:216, y:506};
+  view.facelookup.mapjokerstart = {x:216, y:1159};
   view.facelookup.gridsize = {w:104, h:145};
   view.facelookup.gridpad = {w:18, h:18};
   
-  var suits = ["C", "H", "S", "D", "JOKER"];
+  var suits = ["C", "H", "S", "D"];
   for (n=0; n<13; n++) {
     suits.forEach(function(suit, row) {
       var name = (n+1).toString() + suit;
@@ -48,6 +49,14 @@
       var y = view.facelookup.mapstart.y + (view.facelookup.gridsize.h*row) + (view.facelookup.gridpad.h*row);
       view.facelookup[name] = {x:x, y:y};
     });
+  }
+  
+  // insert the joker cards
+  for (n=0; n<3; n++) {
+      var name = (n+101).toString() + 'JOKER';
+      var x = view.facelookup.mapjokerstart.x + (view.facelookup.gridsize.w*n) + (view.facelookup.gridpad.w*n);
+      var y = view.facelookup.mapjokerstart.y;
+      view.facelookup[name] = {x:x, y:y};
   }
 
   /**

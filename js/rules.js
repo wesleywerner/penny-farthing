@@ -54,7 +54,7 @@
 
     // top echelon
     var topEch = hand.take(23);
-    topEch.add(hand.card(0, 'joker'));
+    topEch.add(hand.card(103, 'JOKER'));
     topEch.shuffle();
 
     // tableau (an array of piles)
