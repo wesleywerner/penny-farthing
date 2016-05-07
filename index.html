@@ -22,6 +22,16 @@
         width:  100%;
         height: 100%;
         margin: 0px;
+        background: #000;
+        color: gray;
+        font-size: 1em;
+      }
+      h1 {
+        text-align: center;
+      }
+      footer {
+        color: gray;
+        text-align: center;
       }
       canvas {
         border: 1px solid black;
@@ -31,18 +41,39 @@
         width: 60%;
         margin: 0 auto;
       }
+      .column-left {
+        float: left;
+        width: 20%;
+      }
+      .column-right {
+        float: right;
+        width: 20%;
+      }
+      .column-center {
+        display: inline-block;
+        width: 60%;
+      }
+      .padded-container {
+        padding: 5%;
+      }
     </style>
   </head>
   <body onload="initialize()">
     
-    <div class="center">
-      <canvas id="playfield"></canvas>
+    <h1>Cards</h1>
+    
+    <div class="container">
+       <div class="column-center"><canvas id="playfield"></canvas></div>
+       <div class="column-left"><div id="left-column" class="padded-container"></div></div>
+       <div class="column-right"><div id="right-column" class="padded-container"></div></div>
+    </div>
+
+    <div style="display: none">
+      <img id="cardback" src="assets/cardback.png" />
+      <img id="faces" src="assets/faces.png" />
     </div>
     
-    <div style="display: none">
-    <img id="cardback" src="assets/cardback.png" />
-    <img id="faces" src="assets/faces.png" />
-    </div>
+    <footer></footer>
 
   </body>
 </html>
