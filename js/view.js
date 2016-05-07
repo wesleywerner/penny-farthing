@@ -29,6 +29,11 @@
   }
   
   /**
+   * Stores loaded images.
+   */
+  view.images = { };
+  
+  /**
    * Stores the grid positions for card columns and rows.
    * Calculated on resize.
    */
@@ -188,10 +193,29 @@
   };
   
   /**
+   * Get the faces imagemap.
+   */
+  view.image = function(name) {
+    
+    if (!view.images[name]) {
+      view.images[name] = document.images.namedItem(name);
+    };
+    
+    return view.images[name] || null;
+    
+  };
+  
+  /**
    * Draw a card back
    */
   view.drawCardBack = function(x, y) {
-    view.ctx.drawImage(document.images[0], x, y, view.cardWidth, view.cardHeight);
+    if (view.image('cardback')) {
+      view.ctx.drawImage(view.image('cardback'), x, y, view.cardWidth, view.cardHeight);
+    }
+    else {
+      view.ctx.fillStyle = "gray";
+      view.ctx.fillRect(x, y, view.cardWidth, view.cardHeight);
+    }
   };
   
   /**
@@ -204,15 +228,12 @@
     // draw card shape
     if (card.up) {
       var map = view.facelookup[card.name];
-      if (map == undefined) {
+      if (!map || !view.image('faces')) {
         view.ctx.fillStyle = "white";
         view.ctx.fillRect(x, y, view.cardWidth, view.cardHeight);
-        //view.ctx.font = "12px serif";
-        //view.ctx.fillStyle = "red";
-        //view.ctx.fillText('card face image not found', x, y+14);
       }
       else {
-        view.ctx.drawImage(document.images[1],
+        view.ctx.drawImage(view.image('faces'),
           map.x, map.y, view.facelookup.gridsize.w, view.facelookup.gridsize.h,
           x, y, view.cardWidth, view.cardHeight);
       }
@@ -220,13 +241,6 @@
     else {
       view.drawCardBack(x, y);
     }
-    
-    //// name
-    //if (card.up) {
-      //view.ctx.font = "16px serif";
-      //view.ctx.fillStyle = "blue";
-      //view.ctx.fillText(card.name, x, y+14);
-    //}
 
   }
 
