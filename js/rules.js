@@ -9,7 +9,8 @@
   var rules = g.rules = { }
   var control = g.controller;
   
-  rules.action = 'spy';
+  var action = 'spy';
+  var newgame = true;
   
   // The game model will request the requirements for your game.
   rules.requestLayout = function() {
@@ -98,6 +99,13 @@
     
     // look at our hand
     var hand = control.peek('hand');
+    
+    // start a new game
+    if (newgame) {
+      newgame = false;
+      control.deal();
+      return;
+    }
 
     if (zone == 'reserve') {
       
@@ -119,7 +127,7 @@
     // tableau cards can only be acted on if they are the top card, with a facing value.
     if (zone == 'tableau' && card && card.up && card.onTop) {
       
-      if (rules.action == 'replace') {
+      if (action == 'replace') {
         
         // If the target card is the same color as your Shape, your Shape's value
         // must be lower than the target card's value.
@@ -147,7 +155,7 @@
       
       }
       
-      if (rules.action == 'spy') {
+      if (action == 'spy') {
         
         // cards receive the clickedColRow property of the column / row of the pile(s) the live in.
         
@@ -178,21 +186,39 @@
 
   };
   
-  window.setTimeout(function() {
-    var btn = document.createElement('button');
-    btn.innerHTML = 'SPY';
-    btn.onclick = function(){game.rules.action='spy'; txt.innerHTML = 'SPY'}
-    document.body.appendChild(btn);
+  document.addEventListener("DOMContentLoaded", function(event) { 
 
-    var btn = document.createElement('button');
-    btn.innerHTML = 'REPLACE';
-    btn.onclick = function(){game.rules.action='replace'; txt.innerHTML = 'REPLACE'}
-    document.body.appendChild(btn);
+    var container = document.getElementsByTagName('footer')[0];
     
-    var txt = document.createElement('h1');
-    txt.innerHTML = 'REPLACE';
-    document.body.appendChild(txt);
+    var btnSpy = document.createElement('button');
+    btnSpy.innerHTML = 'SPY';
+    btnSpy.style.width = '20%';
+    btnSpy.style.height = '50px';
+    btnSpy.onclick = function(){
+      action='spy';
+      btnSpy.style.backgroundColor = 'gray';
+      btnRep.style.backgroundColor = '';
+      btnSpy.style.color = 'white';
+      btnRep.style.color = '';
+      }
+    container.appendChild(btnSpy);
+
+    var btnRep = document.createElement('button');
+    btnRep.innerHTML = 'REPLACE';
+    btnRep.style.width = '20%';
+    btnRep.style.height = '50px';
+    btnRep.style.backgroundColor = 'gray';
+    btnRep.style.color = 'white';
+
+    btnRep.onclick = function(){
+      action='replace';
+      btnSpy.style.backgroundColor = '';
+      btnRep.style.backgroundColor = 'gray';
+      btnSpy.style.color = '';
+      btnRep.style.color = 'white';
+      }
+    container.appendChild(btnRep);
     
-  }, 1000);
+  });
 
 })();
