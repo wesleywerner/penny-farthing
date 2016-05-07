@@ -17,9 +17,6 @@
     
     controller.canvas = canvasElement;
     
-    // deal a new game
-    game.model.deal();
-    
     game.view.initialize(canvasElement);
     
     // Hook into the canvas resize event to retrigger resize calculations
@@ -52,6 +49,18 @@
       game.view.click(x, y);
     }, false);
     
+    
+    /**
+     * Deal.
+     */
+    controller.deal = function() {
+      game.model.deal();
+      controller.redraw();
+    }
+    
+    /**
+     * Redraw.
+     */
     controller.redraw = function() {
       requestAnimationFrame(view.draw);
     };
@@ -82,6 +91,7 @@
      */
     controller.peek = function(zone) {
       // taking from piles returns a new pile.
+      if (!model.cards) return null;
       var card = model.cards[zone].get();
       return card || null;
     }
@@ -92,6 +102,7 @@
      * any existing zone it may be in.
      */
     controller.place = function(card, zone) {
+      if (!model.cards) return;
       if (card != null) {
         controller.remove(card);
         model.cards[zone].add(card);
@@ -103,6 +114,7 @@
      * Remove the given card from all zones
      */
     controller.remove = function(card) {
+      if (!model.cards) return;
       if (card != null) {
         
         Object.keys(game.model.cards).forEach(function(zone){
