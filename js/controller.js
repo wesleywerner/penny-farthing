@@ -6,6 +6,7 @@
 
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
+  g.games = { };
   var controller = g.controller = { }
   var model = g.model;
   var view = g.view;
@@ -13,9 +14,19 @@
   /**
    * Initialize controllers for the canvas element.
    */
-  controller.initialize = function(canvasElement) {
+  controller.initialize = function(canvasElement, gamename) {
     
     controller.canvas = canvasElement;
+    
+    // default to the first game if none set
+    if (!game.rules) {
+      if (!game.games[gamename]) {
+        alert('No game named ' + gamename);
+      }
+      else {
+        game.rules = game.games[gamename];
+      }
+    }
     
     // ensure that each of the game zones have an initialized hand.
     var layout = game.rules.requestLayout();

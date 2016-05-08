@@ -9,11 +9,12 @@
   // reference the game object
   var g = window.game = window.game == undefined ? { } : window.game;
 
-  // refrence the controller. We perform any card manipulations through here.
+  // refrence the controller.
+  // We perform any card manipulations through here.
   var control = g.controller;
   
   // create our rules object
-  var template = g.rules = { }
+  var template = game.games.template = { };
   
   // deal a new game on first click
   var newgame = true;
