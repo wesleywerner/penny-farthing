@@ -36,7 +36,12 @@
         font-size: 1em;
       }
       canvas {
-        width: 100%;
+        width: 80%;
+      }
+      #game-actions {
+        display: inline-block;
+        vertical-align:top;
+        width: 20%;
       }
     </style>
         
@@ -85,8 +90,8 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-2"><div id="game-actions"></div></div>
-        <div class="col-md-8"><canvas id="playfield"></canvas></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-8"><canvas id="playfield"></canvas><div id="game-actions"></div></div>
         <div class="col-md-2"><div id="game-info"></div></div>
       </div>
     </div>

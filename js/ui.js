@@ -54,6 +54,7 @@
     buttonArray.forEach(function(button, index){
       var label = document.createElement('label');
       label.classList.add('btn');
+      label.classList.add('btn-block');
       label.classList.add('btn-primary');
       if (index == 0) label.classList.add('active');  // first item active
       
