@@ -21,9 +21,9 @@
     cards.hand = hand;
   };
 
-  model.deal = function() {
+  model.deal = function(dealFunc) {
     model.cards = { };
-    game.rules.dealFunc(game.deck, model.cards);
+    dealFunc(game.deck, model.cards);
   };
   
 })();

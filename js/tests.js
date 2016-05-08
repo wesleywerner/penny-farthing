@@ -90,8 +90,11 @@
   t.testDeckAdding();
 
   t.testDeal = function() {
-    game.model.deal();
+    game.model.deal(t.dealFunc);
   };
+  
+  t.dealFunc = function(dealer, cards) {
+    };
 
   t.testDeal();
   

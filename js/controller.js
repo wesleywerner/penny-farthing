@@ -17,6 +17,13 @@
     
     controller.canvas = canvasElement;
     
+    // ensure that each of the game zones have an initialized hand.
+    var layout = game.rules.requestLayout();
+    Object.keys(layout.zones).forEach(function(zonename) {
+      model.cards[zonename] = game.deck.new();
+    });
+    
+    // Initialize the game view.
     game.view.initialize(canvasElement);
     
     // Hook into the canvas resize event to retrigger resize calculations
@@ -54,7 +61,7 @@
      * Deal.
      */
     controller.deal = function() {
-      game.model.deal();
+      game.model.deal(game.rules.dealFunc);
       controller.redraw();
     }
     
