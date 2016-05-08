@@ -5,9 +5,15 @@
  */
 
 ;(function(){
+  
+  // reference the game object
   var g = window.game = window.game == undefined ? { } : window.game;
-  var template = g.rules = { }
+
+  // refrence the controller. We perform any card manipulations through here.
   var control = g.controller;
+  
+  // create our rules object
+  var template = g.rules = { }
   
   // deal a new game on first click
   var newgame = true;
@@ -142,12 +148,14 @@
 
   };
 
-
-  document.addEventListener("DOMContentLoaded", function(event) { 
+  /**
+   * The setup function is called when our rule is selected.
+   */
+  template.setup = function() {
   
     var ui = game.ui;
     ui.info('This is a card game rules template. It features a very basic game: Pick any card, your hand will be discarded. If you pick up the joker you win the game.');
   
-  });
+  };
 
 })();

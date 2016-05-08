@@ -151,6 +151,11 @@
       return zonepiles[col-1].cards[row-1];
     };
     
+    
+    //document.addEventListener("DOMContentLoaded", function(event) {
+      game.rules.setup();
+    //});
+    
   };
   
 })();
