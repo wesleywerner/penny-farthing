@@ -62,7 +62,7 @@
       input.setAttribute('type', 'radio');
       input.setAttribute('name', 'options');
       input.setAttribute('autocomplete', 'off');
-      input.onclick = button.onclick;
+      label.onclick = button.onclick;
       
       label.innerHTML = button.title;
       label.appendChild(input);
