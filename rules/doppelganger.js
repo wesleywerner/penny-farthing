@@ -5,15 +5,22 @@
  */
 
 ;(function(){
+
+  // reference the game object
   var g = window.game = window.game == undefined ? { } : window.game;
-  var rules = g.rules = { }
+
+  // refrence the controller.
+  // We perform any card manipulations through here.
   var control = g.controller;
+
+  // create our rules object
+  var doppel = game.games.doppelganger = { };
   
-  var action = 'spy';
-  var newgame = true;
+  doppel.action = 'spy';
+  doppel.newgame = true;
   
   // The game model will request the requirements for your game.
-  rules.requestLayout = function() {
+  doppel.requestLayout = function() {
     
     var layout = { };
     
@@ -39,7 +46,7 @@
    *   + a pile of cards
    *   + an array of piles
    */
-  rules.dealFunc = function(dealer, cards) {
+  doppel.dealFunc = function(dealer, cards) {
 
     // Fill and shuffle a new hand.
     // Take 5 cards for the reserve.
@@ -89,7 +96,7 @@
    * Handles click events on the view.
    * Any game manipulations are done through the controller.
    */
-  rules.clickEvent = function(zone, card) {
+  doppel.clickEvent = function(zone, card) {
 
     var name = card == null ? '' : card.name;
     
@@ -104,8 +111,8 @@
     if (hand && hand.value > 100) return;
     
     // start a new game
-    if (newgame) {
-      newgame = false;
+    if (doppel.newgame) {
+      doppel.newgame = false;
       control.deal();
       game.ui.info('Draw a card from the reserve');
       return;
@@ -133,7 +140,7 @@
     // tableau cards can only be acted on if they are the top card, with a facing value.
     if (zone == 'tableau' && card && card.up && card.onTop) {
       
-      if (action == 'replace') {
+      if (doppel.action == 'replace') {
         
         // If the target card is the same color as your Shape, your Shape's value
         // must be lower than the target card's value.
@@ -167,7 +174,7 @@
       
       }
       
-      if (action == 'spy') {
+      if (doppel.action == 'spy') {
         
         // cards receive the clickedColRow property of the column / row of the pile(s) the live in.
         
@@ -199,15 +206,15 @@
   };
 
 
-  document.addEventListener("DOMContentLoaded", function(event) { 
+  doppel.setup = function() {
   
     var ui = game.ui;
     
     var buttons = [ ];
-    buttons.push({title:'Spy', onclick:function(){ action='spy'; } });
-    buttons.push({title:'Replace', onclick:function(){ action='replace'; } });
+    buttons.push({title:'Spy', onclick:function(){ doppel.action='spy'; } });
+    buttons.push({title:'Replace', onclick:function(){ doppel.action='replace'; } });
     ui.radioButtons(buttons);
     
-  });
+  };
 
 })();
