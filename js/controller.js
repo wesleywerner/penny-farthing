@@ -19,13 +19,11 @@
     controller.canvas = canvasElement;
     
     // default to the first game if none set
-    if (!game.rules) {
-      if (!game.games[gamename]) {
-        alert('No game named ' + gamename);
-      }
-      else {
-        game.rules = game.games[gamename];
-      }
+    if (!game.games[gamename]) {
+      alert('No game named ' + gamename);
+    }
+    else {
+      game.rules = game.games[gamename];
     }
     
     // ensure that each of the game zones have an initialized hand.
