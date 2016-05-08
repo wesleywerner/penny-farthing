@@ -208,6 +208,8 @@
 
   doppel.setup = function() {
   
+    doppel.newgame = true;
+    doppel.action = 'spy';
     var ui = game.ui;
     
     var buttons = [ ];

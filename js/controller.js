@@ -16,6 +16,7 @@
    */
   controller.initialize = function(canvasElement, gamename) {
     
+    game.ui.reset();
     controller.canvas = canvasElement;
     
     // default to the first game if none set

@@ -49,7 +49,7 @@
         
   </head>
   
-  <body onload="initialize()">
+  <body onload="initialize('doppelganger')">
   
     <!-- Navigation Bar -->
     <nav class="navbar navbar-default">
@@ -75,8 +75,8 @@
               <ul class="dropdown-menu" id="all-games-list">
                 <li><a href="#">Restart Current Game</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="#">Doppelganger</a></li>
-                <li><a href="#">Template Game</a></li>
+                <li><a href="#" onclick="initialize('doppelganger')">Doppelganger</a></li>
+                <li><a href="#" onclick="initialize('template')">Template Game</a></li>
               </ul>
             </li>
           </ul>
@@ -110,9 +110,9 @@
 
     <!-- Call to Initialize the game engine -->
     <script type="text/javascript">
-      function initialize() {
+      function initialize(gamename) {
         var el = document.getElementById('playfield');
-        game.controller.initialize(el, 'doppelganger');
+        game.controller.initialize(el, gamename);
       }
     </script>
 
