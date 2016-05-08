@@ -208,38 +208,32 @@
   
   document.addEventListener("DOMContentLoaded", function(event) { 
 
-    var container = document.getElementsByTagName('footer')[0];
+    var container = document.getElementById('game-actions');
     
     var btnSpy = document.createElement('button');
     btnSpy.innerHTML = 'SPY';
-    btnSpy.style.width = '20%';
-    btnSpy.style.height = '50px';
+    btnSpy.classList.add('btn');
+    btnSpy.classList.add('btn-default');
     btnSpy.onclick = function(){
       action='spy';
-      btnSpy.style.backgroundColor = 'gray';
-      btnRep.style.backgroundColor = '';
-      btnSpy.style.color = 'white';
-      btnRep.style.color = '';
+      btnRep.classList.remove('btn-primary');
+      btnSpy.classList.add('btn-primary');
       }
     container.appendChild(btnSpy);
 
     var btnRep = document.createElement('button');
     btnRep.innerHTML = 'REPLACE';
-    btnRep.style.width = '20%';
-    btnRep.style.height = '50px';
-    btnRep.style.backgroundColor = 'gray';
-    btnRep.style.color = 'white';
+    btnRep.classList.add('btn');
+    btnRep.classList.add('btn-default');
 
     btnRep.onclick = function(){
       action='replace';
-      btnSpy.style.backgroundColor = '';
-      btnRep.style.backgroundColor = 'gray';
-      btnSpy.style.color = '';
-      btnRep.style.color = 'white';
+      btnSpy.classList.remove('btn-primary');
+      btnRep.classList.add('btn-primary');
       }
     container.appendChild(btnRep);
     
-    game.rules.hintEl = document.getElementById('left-column');
+    game.rules.hintEl = document.getElementById('game-info');
     
     rules.hint('Welcome to Doppelganger! Touch to deal.');
     
