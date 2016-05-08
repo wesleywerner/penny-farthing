@@ -107,7 +107,7 @@
     if (newgame) {
       newgame = false;
       control.deal();
-      rules.hint('Draw a card from the reserve');
+      game.ui.info('Draw a card from the reserve');
       return;
     }
 
@@ -125,7 +125,7 @@
         // turn the hand card face up
         card.up = true;
         
-        rules.hint('<p>You can spy on cards of the same suit.</p><p>You can replace with cards of the same color, counting up.</p><p>You can replace cards of the opposite color, counting down.</p><p>You can panic, draw a new hand from the reserve (5 cards in total)</p><p>Find the joker to win</p>');
+        game.ui.info('<p>You can spy on cards of the same suit.</p><p>You can replace with cards of the same color, counting up.</p><p>You can replace cards of the opposite color, counting down.</p><p>You can panic, draw a new hand from the reserve (5 cards in total)</p><p>Find the joker to win</p>');
       }
       
     }
@@ -153,7 +153,7 @@
         // win condition
         if (card.value > 100) {
           canSwitch = true;
-          rules.hint('You won!');
+          game.ui.info('You won!');
         }
         
         if (canSwitch) {
@@ -197,45 +197,16 @@
     control.redraw();
 
   };
-  
-  
-  /**
-   * Display a game play hint.
-   */
-  rules.hint = function(text) {
-    rules.hintEl.innerHTML = text;
-  };
-  
+
+
   document.addEventListener("DOMContentLoaded", function(event) { 
-
-    var container = document.getElementById('game-actions');
+  
+    var ui = game.ui;
     
-    var btnSpy = document.createElement('button');
-    btnSpy.innerHTML = 'SPY';
-    btnSpy.classList.add('btn');
-    btnSpy.classList.add('btn-default');
-    btnSpy.onclick = function(){
-      action='spy';
-      btnRep.classList.remove('btn-primary');
-      btnSpy.classList.add('btn-primary');
-      }
-    container.appendChild(btnSpy);
-
-    var btnRep = document.createElement('button');
-    btnRep.innerHTML = 'REPLACE';
-    btnRep.classList.add('btn');
-    btnRep.classList.add('btn-default');
-
-    btnRep.onclick = function(){
-      action='replace';
-      btnSpy.classList.remove('btn-primary');
-      btnRep.classList.add('btn-primary');
-      }
-    container.appendChild(btnRep);
-    
-    game.rules.hintEl = document.getElementById('game-info');
-    
-    rules.hint('Welcome to Doppelganger! Touch to deal.');
+    var buttons = [ ];
+    buttons.push({title:'Spy', onclick:function(){ action='spy'; } });
+    buttons.push({title:'Replace', onclick:function(){ action='replace'; } });
+    ui.radioButtons(buttons);
     
   });
 
