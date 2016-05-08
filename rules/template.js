@@ -6,14 +6,14 @@
 
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
-  var rules = g.rules = { }
+  var template = g.rules = { }
   var control = g.controller;
   
   // deal a new game on first click
   var newgame = true;
   
   // The game model will request the requirements for your game.
-  rules.requestLayout = function() {
+  template.requestLayout = function() {
     
     var layout = { };
     
@@ -39,7 +39,7 @@
    *   + a pile of cards
    *   + an array of piles
    */
-  rules.dealFunc = function(dealer, cards) {
+  template.dealFunc = function(dealer, cards) {
 
     // An example game that display six columns of face up cards.
     // Taking a card from the tableau discards your hand.
@@ -52,6 +52,8 @@
     
     // take the top cards as our hand
     cards.hand = deck.take();
+    // face our hand up. Since a hand is a pile of cards, get the first item from this pile.
+    cards.hand.get().up = true;
     
     // add the joker to the deck and reshuffle.
     // the joker value can be 101, 102 or 103, each corresponding
@@ -81,7 +83,7 @@
    * Handles click events on the view.
    * Any game manipulations are done through the controller.
    */
-  rules.clickEvent = function(zone, card) {
+  template.clickEvent = function(zone, card) {
 
     var name = card == null ? '' : card.name;
     
