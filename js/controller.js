@@ -14,6 +14,44 @@
   // Flag if handlers have been set up
   controller.handlersAdded = false;
   
+  
+  controller.onMouseUp = function(e) {
+    
+  };
+  
+  
+  controller.onMouseDown = function(e) {
+    
+  };
+
+
+  controller.onClick = function(event) {
+    // The event position is relative to the document.
+    // Convert to canvas coordinates.
+    var rect = controller.canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    game.view.click(x, y);
+  };
+
+  
+  // Hook into the canvas resize event to retrigger resize calculations
+  controller.onResize = function() {
+    game.view.resize();
+  };
+
+  controller.onResizeLimiter = function(callback) {
+    var windowH = window.innerHeight,
+        windowW = window.innerWidth;
+    setInterval(function(){
+        if( window.innerHeight !== windowH || window.innerWidth !== windowW ){
+          windowH = window.innerHeight;
+          windowW = window.innerWidth;
+          callback();
+        }
+    }, 600);
+  };
+  
   /**
    * Initialize controllers for the canvas element.
    */
@@ -32,152 +70,119 @@
     
     // Initialize the game view.
     game.view.initialize(canvasElement);
+
+    controller.onResize();
     
-    // Hook into the canvas resize event to retrigger resize calculations
-    controller.resizeHandler = function() {
-      game.view.resize();
-    };
-
-    controller.onResize = function(callback) {
-      var windowH = window.innerHeight,
-          windowW = window.innerWidth;
-      setInterval(function(){
-          if( window.innerHeight !== windowH || window.innerWidth !== windowW ){
-            windowH = window.innerHeight;
-            windowW = window.innerWidth;
-            callback();
-          }
-      }, 600);
-    }
-
-    controller.resizeHandler();
-    
-    controller.clickHandler = function(event) {
-      // The event position is relative to the document.
-      // Convert to canvas coordinates.
-      var rect = controller.canvas.getBoundingClientRect();
-      var x = event.clientX - rect.left;
-      var y = event.clientY - rect.top;
-      game.view.click(x, y);
-    };
-
     if (!controller.handlersAdded) {
       controller.handlersAdded = true;
-      canvasElement.addEventListener("click", controller.clickHandler, false);
-      controller.onResize(controller.resizeHandler);
+      canvasElement.addEventListener("click", controller.onClick, false);
+      controller.onResizeLimiter(controller.onResize);
+      //canvasElement.onmousedown = controller.onMouseDown;
+      //canvasElement.onmouseup = controller.onMouseUp;
     };
     
-    
-    /**
-     * Deal.
-     */
-    controller.deal = function() {
+    game.rules.setup();
 
-      game.model.deal(game.rules.dealFunc);
+  };
 
-      // ensure that each of the game zones have an initialized hand.
-      var layout = game.rules.requestLayout();
-      Object.keys(layout.zones).forEach(function(zonename) {
-        if (!model.cards[zonename]) {
-          model.cards[zonename] = game.deck.new();
-        }
-      });
+  /**
+   * Deal.
+   */
+  controller.deal = function() {
 
-      controller.redraw();
+    game.model.deal(game.rules.dealFunc);
 
-    }
-    
-    /**
-     * Redraw.
-     */
-    controller.redraw = function() {
-      requestAnimationFrame(view.draw);
-    };
-    
-    /**
-     * Card manipulation methods.
-     */
-     
-     
-    /**
-     * Takes the top card from a zone.
-     * Returns null if no card is available.
-     */
-    controller.take = function(zone) {
-      // taking from piles returns a new pile.
-      var pile = model.cards[zone].take();
-      if (pile.cards.length == 1) {
-        return pile.cards[0];
+    // ensure that each of the game zones have an initialized hand.
+    var layout = game.rules.requestLayout();
+    Object.keys(layout.zones).forEach(function(zonename) {
+      if (!model.cards[zonename]) {
+        model.cards[zonename] = game.deck.new();
       }
-      else {
-        return null;
-      }
-    }
-    
-    /**
-     * Peek at the top card from a zone.
-     * Returns null if no card is available.
-     */
-    controller.peek = function(zone) {
-      // taking from piles returns a new pile.
-      if (!model.cards) return null;
-      var card = model.cards[zone].get();
-      return card || null;
-    }
-    
-    /**
-     * Place the given card into a zone.
-     * Placing a card into any zone will first remove it from
-     * any existing zone it may be in.
-     */
-    controller.place = function(card, zone) {
-      if (!model.cards) return;
-      if (card != null) {
-        controller.remove(card);
-        model.cards[zone].add(card);
-        //controller.redraw();
-      }
-    };
-    
-    /**
-     * Remove the given card from all zones
-     */
-    controller.remove = function(card) {
-      if (!model.cards) return;
-      if (card != null) {
-        
-        Object.keys(game.model.cards).forEach(function(zone){
-        
-          var zonecards = model.cards[zone];
-          if (zonecards.length) {
-            // an array of piles
-            zonecards.forEach(function(pile){
-              pile.remove(card);
-            });
-          }
-          else {
-            // a single pile
-            zonecards.remove(card);
-          }
+    });
 
-        });
+    controller.redraw();
 
-      }
-    };
-    
-    /**
-     * Returns a card from a pile-array zone by column and row indexes.
-     */
-    controller.byColRow = function(zone, col, row) {
-      var zonepiles = game.model.cards[zone];
-      return zonepiles[col-1].cards[row-1];
-    };
-    
-    
-    //document.addEventListener("DOMContentLoaded", function(event) {
-      game.rules.setup();
-    //});
-    
+  }
+  
+  /**
+   * Redraw.
+   */
+  controller.redraw = function() {
+    requestAnimationFrame(view.draw);
   };
   
+  /**
+   * Takes the top card from a zone.
+   * Returns null if no card is available.
+   */
+  controller.take = function(zone) {
+    // taking from piles returns a new pile.
+    var pile = model.cards[zone].take();
+    if (pile.cards.length == 1) {
+      return pile.cards[0];
+    }
+    else {
+      return null;
+    }
+  }
+  
+  /**
+   * Peek at the top card from a zone.
+   * Returns null if no card is available.
+   */
+  controller.peek = function(zone) {
+    // taking from piles returns a new pile.
+    if (!model.cards) return null;
+    var card = model.cards[zone].get();
+    return card || null;
+  }
+  
+  /**
+   * Place the given card into a zone.
+   * Placing a card into any zone will first remove it from
+   * any existing zone it may be in.
+   */
+  controller.place = function(card, zone) {
+    if (!model.cards) return;
+    if (card != null) {
+      controller.remove(card);
+      model.cards[zone].add(card);
+      //controller.redraw();
+    }
+  };
+  
+  /**
+   * Remove the given card from all zones
+   */
+  controller.remove = function(card) {
+    if (!model.cards) return;
+    if (card != null) {
+      
+      Object.keys(game.model.cards).forEach(function(zone){
+      
+        var zonecards = model.cards[zone];
+        if (zonecards.length) {
+          // an array of piles
+          zonecards.forEach(function(pile){
+            pile.remove(card);
+          });
+        }
+        else {
+          // a single pile
+          zonecards.remove(card);
+        }
+
+      });
+
+    }
+  };
+  
+  /**
+   * Returns a card from a pile-array zone by column and row indexes.
+   */
+  controller.byColRow = function(zone, col, row) {
+    var zonepiles = game.model.cards[zone];
+    return zonepiles[col-1].cards[row-1];
+  };
+    
 })();
