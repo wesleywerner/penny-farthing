@@ -154,6 +154,7 @@
    */
   template.setup = function() {
   
+    newgame = true;
     var ui = game.ui;
     ui.info('This is a card game rules template. It features a very basic game: Pick any card, your hand will be discarded. If you pick up the joker you win the game.');
   
