@@ -11,6 +11,9 @@
   var model = g.model;
   var view = g.view;
   
+  // Flag if handlers have been set up
+  controller.handlersAdded = false;
+  
   /**
    * Initialize controllers for the canvas element.
    */
@@ -53,18 +56,22 @@
       }, 600);
     }
 
-    controller.onResize(controller.resizeHandler);
-    
     controller.resizeHandler();
-
-    canvasElement.addEventListener("click", function( event ) {
+    
+    controller.clickHandler = function(event) {
       // The event position is relative to the document.
       // Convert to canvas coordinates.
       var rect = controller.canvas.getBoundingClientRect();
       var x = event.clientX - rect.left;
       var y = event.clientY - rect.top;
       game.view.click(x, y);
-    }, false);
+    };
+
+    if (!controller.handlersAdded) {
+      controller.handlersAdded = true;
+      canvasElement.addEventListener("click", controller.clickHandler, false);
+      controller.onResize(controller.resizeHandler);
+    };
     
     
     /**
