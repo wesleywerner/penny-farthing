@@ -78,11 +78,10 @@
     for (var i = 0; i <= 5; i++) {
       cards.tableau[i] = deck.take(9);
     };
-        
-    //// we must initialise all 
-    cards.waste = dealer.new();
-    cards.reserve = dealer.new();
     
+    // any zones we do not initialize (reserve, waste) will get set
+    // to empty piles for us when our deal function ends.
+  
   };
   
   

@@ -72,8 +72,19 @@
      * Deal.
      */
     controller.deal = function() {
+
       game.model.deal(game.rules.dealFunc);
+
+      // ensure that each of the game zones have an initialized hand.
+      var layout = game.rules.requestLayout();
+      Object.keys(layout.zones).forEach(function(zonename) {
+        if (!model.cards[zonename]) {
+          model.cards[zonename] = game.deck.new();
+        }
+      });
+
       controller.redraw();
+
     }
     
     /**
