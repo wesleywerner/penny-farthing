@@ -15,23 +15,35 @@
   controller.handlersAdded = false;
   
   
-  controller.onMouseUp = function(e) {
-    
-  };
-  
-  
-  controller.onMouseDown = function(e) {
-    
+  controller.onMouseDown = function(event) {
+    var pos = controller.translateMouse(event);
   };
 
 
+  controller.onMouseMove = function(event) {
+    var pos = controller.translateMouse(event);
+  };
+
+  controller.onMouseUp = function(event) {
+    var pos = controller.translateMouse(event);
+    var card = view.cardAt(pos.x, pos.y);
+    var zone = view.zoneAt(pos.x, pos.y);
+    game.rules.clickEvent(zone, card);
+  };
+  
   controller.onClick = function(event) {
-    // The event position is relative to the document.
-    // Convert to canvas coordinates.
+    var pos = controller.translateMouse(event);
+    game.view.click(pos.x, pos.y);
+  };
+  
+  /**
+   * Translate the event position relative to the document.
+   */
+  controller.translateMouse = function(event) {
     var rect = controller.canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    game.view.click(x, y);
+    return {x:x, y:y};
   };
 
   
@@ -75,10 +87,11 @@
     
     if (!controller.handlersAdded) {
       controller.handlersAdded = true;
-      canvasElement.addEventListener("click", controller.onClick, false);
+      //canvasElement.addEventListener("click", controller.onClick, false);
       controller.onResizeLimiter(controller.onResize);
-      //canvasElement.onmousedown = controller.onMouseDown;
-      //canvasElement.onmouseup = controller.onMouseUp;
+      canvasElement.onmousedown = controller.onMouseDown;
+      canvasElement.onmouseup = controller.onMouseUp;
+      canvasElement.onmousemove = controller.onMouseMove;
     };
     
     game.rules.setup();

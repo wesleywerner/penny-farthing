@@ -333,7 +333,7 @@
   };
   
   /**
-   * Gets the card at position x,y
+   * Get the card at point x,y
    */
   view.cardAt = function(x, y) {
     
@@ -391,16 +391,12 @@
   };
   
   /**
-   * Accepts a position to click and fires an event with the card
-   * and zone it hits.
+   * Get the zone inside the point x,y.
    */
-  view.click = function(x, y) {
-    
-    // get the card at this position
-    var card = view.cardAt(x, y) || null;
+  view.zoneAt = function(x, y) {
     
     // detect zones
-    var match = undefined;
+    var match = null;
 
     Object.keys(view.layout.zones).forEach(function(zonename) {
       var zone = view.layout.zones[zonename];
@@ -410,9 +406,7 @@
     }
     });
     
-    if (game.rules.clickEvent != undefined) {
-      game.rules.clickEvent(match, card);
-    }
+    return match;
     
   };
   
