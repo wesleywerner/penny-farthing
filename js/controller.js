@@ -30,12 +30,6 @@
       game.rules = game.games[gamename];
     }
     
-    // ensure that each of the game zones have an initialized hand.
-    var layout = game.rules.requestLayout();
-    Object.keys(layout.zones).forEach(function(zonename) {
-      model.cards[zonename] = game.deck.new();
-    });
-    
     // Initialize the game view.
     game.view.initialize(canvasElement);
     
