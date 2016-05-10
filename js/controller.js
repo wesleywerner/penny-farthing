@@ -17,18 +17,35 @@
   
   controller.onMouseDown = function(event) {
     var pos = controller.translateMouse(event);
+    var card = view.cardAt(pos.x, pos.y);
+    var zone = view.zoneAt(pos.x, pos.y);
+    if (card) {
+      view.dragged = {zone:zone, card:card};
+      console.log('draggging ' + card.name);
+    }
   };
 
 
   controller.onMouseMove = function(event) {
-    var pos = controller.translateMouse(event);
+    if (view.dragged) {
+      var pos = controller.translateMouse(event);
+      view.dragged.card.dragpos = pos;
+      controller.redraw();
+    }
   };
 
   controller.onMouseUp = function(event) {
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
-    game.rules.clickEvent(zone, card);
+    if (view.dragged) {
+      game.rules.clickEvent({zone:view.dragged.zone, card:view.dragged.card}, {zone:zone, card:card});
+      console.log('released ' + view.dragged.card.name);
+      view.dragged = null;
+    }
+    else {
+      game.rules.clickEvent({zone:null, card:null}, {zone:zone, card:card});
+    }
   };
   
   controller.onClick = function(event) {

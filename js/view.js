@@ -106,17 +106,19 @@
     // We account for padding between the piles.
     var stackRows = view.layout.columnsRequested;
     var widthMinusPad = w - view.pad.side * 2 - view.pad.pileside * stackRows;
-    view.cardWidth = Math.floor( widthMinusPad / stackRows );
-    view.cardHeight = Math.floor(view.cardWidth * 1.4);  // 1.4 is the height ratio of our card images
+    view.size.card = {};
+    view.size.card.width = Math.floor( widthMinusPad / stackRows );
+    view.size.card.height = Math.floor(view.size.card.width * 1.4);  // 1.4 is the height ratio of our card images
+    view.size.card.center = {x:Math.floor(view.size.card.width/2), y:Math.floor(view.size.card.height/2)};
 
     // resize the canvas height to n cards
     var stackRows = view.layout.rowsRequested;
     stackRows = stackRows == undefined ? 3 : stackRows;
-    var stackHeight = stackRows * view.cardHeight;
+    var stackHeight = stackRows * view.size.card.height;
     
     // vertical padding now that we have our height
     view.pad.top = Math.floor(view.pad.ratios.top * h);
-    view.pad.piletop = Math.floor(view.pad.ratios.piletop * view.cardHeight);
+    view.pad.piletop = Math.floor(view.pad.ratios.piletop * view.size.card.height);
     view.pad.stack = Math.floor(view.pad.ratios.stack * h);
 
     // Resize the canvas height
@@ -139,7 +141,7 @@
         // The pad between piles (multiplied per column)
         var x = view.pad.pileside * col;
         // add the card size (multiplied per column)
-        x += col * view.cardWidth;
+        x += col * view.size.card.width;
         // add the edge padding
         x += view.pad.side;
         
@@ -149,7 +151,7 @@
         // The vertical space between pile cards (multiplied per column)
         var y = view.pad.piletop * row;
         // add the card size (multiplied per row)
-        y += row * view.cardHeight;
+        y += row * view.size.card.height;
         // add the edge padding
         y += view.pad.top;
       
@@ -165,8 +167,8 @@
       var grid = view.grid.cells[zone.col-1][zone.row-1];
       zone.x = grid.x;
       zone.y = grid.y;
-      zone.w = Math.floor(zone.width*view.cardWidth + (zone.width-1)*view.pad.pileside);
-      zone.h = Math.floor(zone.height*view.cardHeight + (zone.height-1)*view.pad.piletop);
+      zone.w = Math.floor(zone.width*view.size.card.width + (zone.width-1)*view.pad.pileside);
+      zone.h = Math.floor(zone.height*view.size.card.height + (zone.height-1)*view.pad.piletop);
       // find the center of each zone
       zone.cenx = zone.x + zone.w/2;
       zone.ceny = zone.y + zone.h/2;
@@ -186,8 +188,8 @@
       name:name,
       x:grid.x,
       y:grid.y,
-      w:Math.floor(width*view.cardWidth),
-      h:Math.floor(height*view.cardHeight)
+      w:Math.floor(width*view.size.card.width),
+      h:Math.floor(height*view.size.card.height)
     };
     view.zones.push(zone);
   };
@@ -210,11 +212,11 @@
    */
   view.drawCardBack = function(x, y) {
     if (view.image('cardback')) {
-      view.ctx.drawImage(view.image('cardback'), x, y, view.cardWidth, view.cardHeight);
+      view.ctx.drawImage(view.image('cardback'), x, y, view.size.card.width, view.size.card.height);
     }
     else {
       view.ctx.fillStyle = "gray";
-      view.ctx.fillRect(x, y, view.cardWidth, view.cardHeight);
+      view.ctx.fillRect(x, y, view.size.card.width, view.size.card.height);
     }
   };
   
@@ -230,12 +232,12 @@
       var map = view.facelookup[card.name];
       if (!map || !view.image('faces')) {
         view.ctx.fillStyle = "white";
-        view.ctx.fillRect(x, y, view.cardWidth, view.cardHeight);
+        view.ctx.fillRect(x, y, view.size.card.width, view.size.card.height);
       }
       else {
         view.ctx.drawImage(view.image('faces'),
           map.x, map.y, view.facelookup.gridsize.w, view.facelookup.gridsize.h,
-          x, y, view.cardWidth, view.cardHeight);
+          x, y, view.size.card.width, view.size.card.height);
       }
     }
     else {
@@ -250,6 +252,7 @@
   view.draw = function() {
     
     if (!view.ctx) return;
+    view.ctx.globalAlpha = 1;
     
     // background
     view.ctx.fillStyle = "green";
@@ -305,7 +308,7 @@
         zonepiles.forEach(function(pile, col){
           pile.cards.forEach(function(card, row){
             // position for each column.
-            var x = zone.x + (col*view.pad.pileside) + (col*view.cardWidth);
+            var x = zone.x + (col*view.pad.pileside) + (col*view.size.card.width);
             // offset y for a stack like effect
             var y = zone.y + (row * view.pad.piletop);
             // store the card position
@@ -317,6 +320,15 @@
 
     });
     
+    // Dragging card
+    if (view.dragged) {
+      view.ctx.globalAlpha = 0.5;
+      view.drawCard(view.dragged.card,
+        view.dragged.card.dragpos.x - view.size.card.center.x,
+        view.dragged.card.dragpos.y - view.size.card.center.y
+        );
+    }
+    
     //// Grid
     //view.ctx.strokeStyle = 'blue';
     //for (col=0; col < view.grid.cols; col++) {
@@ -324,8 +336,8 @@
         //view.ctx.strokeRect(
           //view.grid.cells[col][row].x,
           //view.grid.cells[col][row].y,
-          //view.cardWidth,
-          //view.cardHeight
+          //view.size.card.width,
+          //view.size.card.height
           //);
       //}
     //}
@@ -359,8 +371,8 @@
       if (ispile) {
         var pilecount = zonecards.length-1;
         zonecards.forEach(function(card, row){
-          if (x > card.pos.x && x < card.pos.x + view.cardWidth &&
-              y > card.pos.y && y < card.pos.y + view.cardHeight) {
+          if (x > card.pos.x && x < card.pos.x + view.size.card.width &&
+              y > card.pos.y && y < card.pos.y + view.size.card.height) {
             // store the clicked row on the card
             card.clickedColRow = {col:0, row:row+1};
             card.onTop = row == pilecount;
@@ -374,8 +386,8 @@
         zonepiles.forEach(function(pile, col){
           var pilecount = pile.cards.length-1;
           pile.cards.forEach(function(card, row){
-            if (x > card.pos.x && x < card.pos.x + view.cardWidth &&
-                y > card.pos.y && y < card.pos.y + view.cardHeight) {
+            if (x > card.pos.x && x < card.pos.x + view.size.card.width &&
+                y > card.pos.y && y < card.pos.y + view.size.card.height) {
               // store the clicked row and column on the card
               card.clickedColRow = {col:col+1, row:row+1};
               card.onTop = row == pilecount;
