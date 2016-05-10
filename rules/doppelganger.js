@@ -125,7 +125,8 @@
         // turn the hand card face up
         dragged.card.up = true;
         
-        game.ui.info('<p>You can spy on cards of the same suit.</p><p>You can replace with cards of the same color, counting up.</p><p>You can replace cards of the opposite color, counting down.</p><p>You can panic, draw a new hand from the reserve (5 cards in total)</p><p>Find the joker to win</p>');
+        var hand = control.peek('hand');
+        
       }
       
     }
@@ -134,7 +135,7 @@
     if (!hand) return;
     
     // tableau cards can only be acted on if they are the top card, with a facing value.
-    if (dragged.zone == 'tableau' && dragged.card && dragged.card.up && dragged.card.onTop) {
+    if (dragged.card && dragged.card.up && dragged.card.onTop) {
       
       // Dragging from the tableau to the hand does a replace
       if (dragged.zone == 'tableau' && dropped.zone == 'hand') {
@@ -167,6 +168,8 @@
           
           // place new card in hand
           control.place(dragged.card, 'hand');
+          
+          var hand = control.peek('hand');
         }
       
       }
@@ -198,6 +201,13 @@
       }
     
     }
+    
+    // Display game play info
+    var suitnames = {['H']: 'Hearts', ['D']: 'Diamonds', ['S']: 'Spades', ['C']: 'Clubs'};
+    var handSuit = suitnames[hand.suit];
+    
+    game.ui.info('<p>You are holding '+handSuit+'.</p><p>You can spy (tap) on '+handSuit+' in the tableau.</p><p>You can take cards (drag to hand) of the same color, if counting up.</p><p>You can take cards (drag to hand) of the opposite color, if counting down.</p><p>You can panic and draw a new card from the reserve pile (5 cards per game).</p><p>Find the joker to win.</p>');
+
     
     control.redraw();
 
