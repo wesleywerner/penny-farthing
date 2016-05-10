@@ -17,7 +17,7 @@
     side: 0.05,
     piletop: 0.2,
     pileside: 0.02,
-    stack: 0.001,       // x-offset of stacked cards
+    stack: 0.01,       // x-offset of stacked cards
     };
     
   /**
@@ -295,7 +295,7 @@
       if (ispile) {
         zonecards.forEach(function(card, index){
           // offset x to give a pile like effect
-          var x = zone.x-index*view.pad.stack;
+          var x = zone.x - Math.min(index, 3) *view.pad.stack;
           var y = zone.y;
           // store the card position
           card.pos = {x:x, y:y};
