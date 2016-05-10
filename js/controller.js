@@ -13,8 +13,7 @@
   
   // Flag if handlers have been set up
   controller.handlersAdded = false;
-  
-  
+
   controller.onMouseDown = function(event) {
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
@@ -46,6 +45,12 @@
     else {
       game.rules.clickEvent({zone:null, card:null}, {zone:zone, card:card});
     }
+    controller.redraw();
+  };
+  
+  controller.onMouseCancel = function(event) {
+    view.dragged = null;
+    controller.redraw();
   };
   
   controller.onClick = function(event) {
@@ -58,8 +63,16 @@
    */
   controller.translateMouse = function(event) {
     var rect = controller.canvas.getBoundingClientRect();
-    var x = event.clientX - rect.left;
-    var y = event.clientY - rect.top;
+    if (event.type == 'touchstart' || event.type == 'touchmove' || event.type == 'touchend') {
+      // prevent this touch from propagating through as a mouse click event
+      event.preventDefault();
+      var x = event.changedTouches[0].clientX - rect.left;
+      var y = event.changedTouches[0].clientY - rect.top;
+    }
+    else if (event.type == 'mousedown' || event.type == 'mouseup' || event.type == 'mousemove') {
+      var x = event.clientX - rect.left;
+      var y = event.clientY - rect.top;
+    }
     return {x:x, y:y};
   };
 
@@ -104,11 +117,17 @@
     
     if (!controller.handlersAdded) {
       controller.handlersAdded = true;
-      //canvasElement.addEventListener("click", controller.onClick, false);
       controller.onResizeLimiter(controller.onResize);
-      canvasElement.onmousedown = controller.onMouseDown;
-      canvasElement.onmouseup = controller.onMouseUp;
-      canvasElement.onmousemove = controller.onMouseMove;
+
+      canvasElement.addEventListener("mousedown", controller.onMouseDown, false);
+      canvasElement.addEventListener("mouseup", controller.onMouseUp, false);
+      canvasElement.addEventListener("mousemove", controller.onMouseMove, false);
+
+      canvasElement.addEventListener("touchstart", controller.onMouseDown, false);
+      canvasElement.addEventListener("touchend", controller.onMouseUp, false);
+      canvasElement.addEventListener("touchcancel", controller.onMouseCancel, false);
+      canvasElement.addEventListener("touchmove", controller.onMouseMove, false);
+
     };
     
     game.rules.setup();
