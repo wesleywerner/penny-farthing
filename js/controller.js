@@ -19,6 +19,7 @@
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
     if (card) {
+      card.dragpos = pos;
       view.dragged = {zone:zone, card:card};
       console.log('draggging ' + card.name);
     }
@@ -157,7 +158,7 @@
    * Redraw.
    */
   controller.redraw = function() {
-    requestAnimationFrame(view.draw);
+    view.requestDraw();
   };
   
   /**

@@ -8,6 +8,12 @@
   var g = window.game = window.game == undefined ? { } : window.game;
   var view = g.view = { }
   
+  // Enable moving card animations. Turn this off to save processing.
+  view.animate = true;
+  
+  // Limit animation requests to one at a time.
+  view.hasAnimationRequest = false;
+  
   /**
    * Define padding ratios.
    */
@@ -245,6 +251,16 @@
     }
 
   }
+  
+  /**
+   * Request an animation frame.
+   */
+  view.requestDraw = function() {
+    if (!view.hasAnimationRequest) {
+      view.hasAnimationRequest = true;
+      requestAnimationFrame(view.draw);
+    }
+  };
 
   /**
    * Draw the canvas
@@ -252,6 +268,8 @@
   view.draw = function() {
     
     if (!view.ctx) return;
+    
+    // Reset alpha
     view.ctx.globalAlpha = 1;
     
     // background
@@ -277,6 +295,9 @@
     });
     
     if (!game.model.cards) return;
+    
+    // If cards with position != draw position we must animate them
+    var mustAnimate = false;
 
     // Cards
     Object.keys(view.layout.zones).forEach(function(zonename) {
@@ -299,7 +320,15 @@
           var y = zone.y;
           // store the card position
           card.pos = {x:x, y:y};
-          view.drawCard(card, x, y);
+          // draw animating cards
+          if (view.animate) {
+            card.drawpos = card.drawpos || {x:view.element.clientWidth/2, y:0};
+            if (view.updateDrawPosition(card)) mustAnimate = true;
+            view.drawCard(card, card.drawpos.x, card.drawpos.y);
+          }
+          else {
+            view.drawCard(card, x, y);
+          }
         });
       }
 
@@ -313,7 +342,15 @@
             var y = zone.y + (row * view.pad.piletop);
             // store the card position
             card.pos = {x:x, y:y};
-            view.drawCard(card, x, y);
+            // draw animating cards
+            if (view.animate) {
+              card.drawpos = card.drawpos || {x:view.element.clientWidth/2, y:0};
+              if (view.updateDrawPosition(card)) mustAnimate = true;
+              view.drawCard(card, card.drawpos.x, card.drawpos.y);
+            }
+            else {
+              view.drawCard(card, x, y);
+            }
           });
         });
       }
@@ -341,8 +378,32 @@
           //);
       //}
     //}
+    
+    // Clear animation request flag
+    view.hasAnimationRequest = false;
+    
+    // Request another draw if there are still cards to animate
+    if (view.animate && mustAnimate) view.requestDraw();
 
   };
+  
+  /**
+   * Update draw positions for animating cards
+   */
+  view.updateDrawPosition = function(card) {
+    if (view.animate) {
+      var xDelta = Math.floor(card.pos.x - card.drawpos.x);
+      var yDelta = Math.floor(card.pos.y - card.drawpos.y);
+      if (xDelta != 0) card.drawpos.x += xDelta * 0.05;
+      if (yDelta != 0) card.drawpos.y += yDelta * 0.05;
+      return xDelta != 0 || yDelta != 0;
+    }
+    else {
+      card.drawpos = card.pos;
+      return false;
+    }
+  };
+
   
   /**
    * Get the card at point x,y
