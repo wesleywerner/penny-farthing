@@ -89,13 +89,10 @@
    * Handles click events on the view.
    * Any game manipulations are done through the controller.
    */
-  template.clickEvent = function(zone, card) {
+  template.clickEvent = function(dragged, dropped) {
 
-    var name = card == null ? '' : card.name;
-    
-    if (zone != undefined) {
-      console.log('click hit in zone ' + zone + ' - ' + name);
-    }
+    // The dragged and dropped objects specify the zone and card where this action took place.
+    // dragged.zone is where the action began, dropped.zone is where the action ended.
     
     // look at our hand
     var hand = control.peek('hand');
@@ -108,39 +105,23 @@
       return;
     }
 
-    if (zone == 'reserve') {
+    // tableau cards can only be acted on if they are the top card, with a facing value.
+    if (dragged.zone == 'tableau' && dropped.zone == 'hand') {
       
-      // take from reserve
-      if (card) {
+      if (dragged.card) {
+      
+        // win condition
+        if (dragged.card.value > 100) {
+          newgame = true;
+          game.ui.info('You won! Click for another game.');
+        }
 
         // discard our hand
         control.place(hand, 'waste')
-        
-        // place selected card into hand
-        control.place(card, 'hand');
-
-        // turn the hand card face up
-        card.up = true;
-        
-        game.ui.info('<p>You can spy on cards of the same suit.</p><p>You can replace with cards of the same color, counting up.</p><p>You can replace cards of the opposite color, counting down.</p><p>You can panic, draw a new hand from the reserve (5 cards in total)</p><p>Find the joker to win</p>');
-      }
-      
-    }
+        // place new card in hand
+        control.place(dragged.card, 'hand');
     
-    // tableau cards can only be acted on if they are the top card, with a facing value.
-    if (zone == 'tableau' && card && card.up && card.onTop) {
-      
-      // win condition
-      if (card.value > 100) {
-        newgame = true;
-        game.ui.info('You won! Click for another game.');
       }
-
-      // discard our hand
-      control.place(hand, 'waste')
-      // place new card in hand
-      control.place(card, 'hand');
-    
     }
     
     // Tell the game to redraw the canvas.
