@@ -96,13 +96,9 @@
    * Handles click events on the view.
    * Any game manipulations are done through the controller.
    */
-  doppel.clickEvent = function(zone, card) {
+  doppel.clickEvent = function(dragged, dropped) {
 
-    var name = card == null ? '' : card.name;
-    
-    if (zone != undefined) {
-      console.log('click hit in zone ' + zone + ' - ' + name);
-    }
+    console.log(dragged, dropped);
     
     // look at our hand
     var hand = control.peek('hand');
@@ -118,19 +114,19 @@
       return;
     }
 
-    if (zone == 'reserve') {
+    if (dragged.zone == 'reserve') {
       
       // take from reserve
-      if (card) {
+      if (dragged.card) {
 
         // discard our hand
         control.place(hand, 'waste')
         
         // place selected card into hand
-        control.place(card, 'hand');
+        control.place(dragged.card, 'hand');
 
         // turn the hand card face up
-        card.up = true;
+        dragged.card.up = true;
         
         game.ui.info('<p>You can spy on cards of the same suit.</p><p>You can replace with cards of the same color, counting up.</p><p>You can replace cards of the opposite color, counting down.</p><p>You can panic, draw a new hand from the reserve (5 cards in total)</p><p>Find the joker to win</p>');
       }
@@ -138,9 +134,10 @@
     }
     
     // tableau cards can only be acted on if they are the top card, with a facing value.
-    if (zone == 'tableau' && card && card.up && card.onTop) {
+    if (dragged.zone == 'tableau' && dragged.card && dragged.card.up && dragged.card.onTop) {
       
-      if (doppel.action == 'replace') {
+      // Dragging from the tableau to the hand does a replace
+      if (dragged.zone == 'tableau' && dropped.zone == 'hand') {
         
         // If the target card is the same color as your Shape, your Shape's value
         // must be lower than the target card's value.
@@ -148,17 +145,17 @@
         // Shape's value must be higher than the target card's value.
         
         var handcolor = (hand.suit == 'D' || hand.suit == 'H' ? 'red' : 'black');
-        var cardcolor = (card.suit == 'D' || card.suit == 'H' ? 'red' : 'black');
+        var cardcolor = (dragged.card.suit == 'D' || dragged.card.suit == 'H' ? 'red' : 'black');
         
         if (handcolor == cardcolor) {
-          var canSwitch = card.up && (card.value > hand.value)
+          var canSwitch = (dragged.card.value > hand.value)
         }
         else {
-          var canSwitch = card.up && (card.value < hand.value)
+          var canSwitch = (dragged.card.value < hand.value)
         }
         
         // win condition
-        if (card.value > 100) {
+        if (dragged.card.value > 100) {
           canSwitch = true;
           game.ui.info('You won!');
         }
@@ -169,19 +166,20 @@
           control.place(hand, 'waste')
           
           // place new card in hand
-          control.place(card, 'hand');
+          control.place(dragged.card, 'hand');
         }
       
       }
       
-      if (doppel.action == 'spy') {
+      // Clicking on a tableau card performs a spy action
+      if (dragged.zone == 'tableau' && dropped.zone == 'tableau') {
         
         // cards receive the clickedColRow property of the column / row of the pile(s) the live in.
         
-        if (card.suit == hand.suit) {
+        if (dragged.card.suit == hand.suit) {
           
           // show adjacent cards
-          var pos = card.clickedColRow;
+          var pos = dragged.card.clickedColRow;
           
           // directly above
           var acard = control.byColRow('tableau', pos.col, Math.max(1, pos.row-1) );
