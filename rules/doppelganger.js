@@ -16,7 +16,6 @@
   // create our rules object
   var doppel = game.games.doppelganger = { };
   
-  doppel.action = 'spy';
   doppel.newgame = true;
   
   // The game model will request the requirements for your game.
@@ -98,8 +97,6 @@
    */
   doppel.clickEvent = function(dragged, dropped) {
 
-    console.log(dragged, dropped);
-    
     // look at our hand
     var hand = control.peek('hand');
     
@@ -113,8 +110,8 @@
       game.ui.info('Draw a card from the reserve');
       return;
     }
-
-    if (dragged.zone == 'reserve') {
+    
+    if (dragged.zone == 'reserve' && dropped.zone == 'hand') {
       
       // take from reserve
       if (dragged.card) {
@@ -132,6 +129,9 @@
       }
       
     }
+    
+    // nothing below can happen without a card in hand
+    if (!hand) return;
     
     // tableau cards can only be acted on if they are the top card, with a facing value.
     if (dragged.zone == 'tableau' && dragged.card && dragged.card.up && dragged.card.onTop) {
@@ -207,13 +207,6 @@
   doppel.setup = function() {
   
     doppel.newgame = true;
-    doppel.action = 'spy';
-    var ui = game.ui;
-    
-    var buttons = [ ];
-    buttons.push({title:'Spy', onclick:function(){ doppel.action='spy'; } });
-    buttons.push({title:'Replace', onclick:function(){ doppel.action='replace'; } });
-    ui.radioButtons(buttons);
     
   };
 
