@@ -261,6 +261,81 @@
       requestAnimationFrame(view.draw);
     }
   };
+  
+  /**
+   * Calculate the positions of cards based on the zone they are in.
+   */
+  view.calculateCardPositions = function() {
+    
+    if (!game.model.cards) return;
+    
+    var eachStackCard = function(card, index){
+      
+      // 'this' is the zone object
+      var zone = this;
+      
+      // offset x to give a pile like effect
+      var x = zone.x - Math.min(index, 3) *view.pad.stack;
+      var y = zone.y;
+      
+      // store the card position
+      card.pos = {x:x, y:y, col:null, row:null};
+      
+      // set the draw position
+      card.drawpos = card.drawpos || {x:view.element.clientWidth/2, y:0};
+
+    };
+    
+    var eachPile = function(pile, col) {
+      
+      // 'this' is the zone object
+      var zone = this;
+      
+      pile.cards.forEach(function(card, row){
+        
+        // position for each column.
+        var x = zone.x + (col*view.pad.pileside) + (col*view.size.card.width);
+        
+        // offset y for a stack like effect
+        var y = zone.y + (row * view.pad.piletop);
+        
+        // store the card position
+        card.pos = {x:x, y:y, col:col, row:row};
+        
+        // set the draw position
+        card.drawpos = card.drawpos || {x:view.element.clientWidth/2, y:0};
+        
+      });
+    };
+    
+    var eachZone = function(zonename) {
+      
+      // Get the zone definition
+      var zone = view.layout.zones[zonename];
+      
+      // Get the cards linked to this zone
+      var zoneCards = game.model.cards[zonename];
+      
+      // Determine if the cards are in one pile (stack), or an array of piles (ladder)
+      var isStack = zoneCards.cards;
+      var isLadder = !isStack && zoneCards.length > 0;
+      
+      // Store the zone card state
+      zoneCards.isStack = isStack;
+      zoneCards.isLadder = isLadder;
+      
+      if (isStack) {
+        zoneCards.cards.forEach(eachStackCard, zone);
+      }
+      else if (isLadder) {
+        zoneCards.forEach(eachPile, zone);
+      }
+  
+    }
+    
+    Object.keys(view.layout.zones).forEach(eachZone);
+    
+  };
 
   /**
    * Draw the canvas
@@ -296,66 +371,29 @@
     
     if (!game.model.cards) return;
     
-    // If cards with position != draw position we must animate them
+    // Request another animation loop while any cards are moving.
     var mustAnimate = false;
-
-    // Cards
-    Object.keys(view.layout.zones).forEach(function(zonename) {
-      
-      var zone = view.layout.zones[zonename];
-      var ispile = game.model.cards[zonename].cards != undefined;
-      var ismanypiles = !ispile && game.model.cards[zonename].length > 0;
-      
-      if (ispile) {
-        var zonecards = game.model.cards[zonename].cards;
-      }
-      else if (ismanypiles) {
-        var zonepiles = game.model.cards[zonename];
-      }
-  
-      if (ispile) {
-        zonecards.forEach(function(card, index){
-          // offset x to give a pile like effect
-          var x = zone.x - Math.min(index, 3) *view.pad.stack;
-          var y = zone.y;
-          // store the card position
-          card.pos = {x:x, y:y};
-          // draw animating cards
-          if (view.animate) {
-            card.drawpos = card.drawpos || {x:view.element.clientWidth/2, y:0};
-            if (view.updateDrawPosition(card)) mustAnimate = true;
-            view.drawCard(card, card.drawpos.x, card.drawpos.y);
-          }
-          else {
-            view.drawCard(card, x, y);
-          }
+    
+    // Draw each card for every zone
+    var eachZonePile = function(zoneName) {
+      var zoneCards = game.model.cards[zoneName];
+      if (zoneCards.isStack) {
+        zoneCards.cards.forEach(function(card, index){
+          if (view.updateDrawPosition(card)) mustAnimate = true;
+          view.drawCard(card, card.drawpos.x, card.drawpos.y);
         });
       }
-
-      if (ismanypiles) {
-        // this is an array of piles
-        zonepiles.forEach(function(pile, col){
-          pile.cards.forEach(function(card, row){
-            // position for each column.
-            var x = zone.x + (col*view.pad.pileside) + (col*view.size.card.width);
-            // offset y for a stack like effect
-            var y = zone.y + (row * view.pad.piletop);
-            // store the card position
-            card.pos = {x:x, y:y, col:col, row:row};
-            // draw animating cards
-            if (view.animate) {
-              card.drawpos = card.drawpos || {x:view.element.clientWidth/2, y:0};
-              if (view.updateDrawPosition(card)) mustAnimate = true;
-              view.drawCard(card, card.drawpos.x, card.drawpos.y);
-            }
-            else {
-              view.drawCard(card, x, y);
-            }
+      else if (zoneCards.isLadder) {
+        zoneCards.forEach(function(ladder, col){
+          ladder.cards.forEach(function(card, row){
+            if (view.updateDrawPosition(card)) mustAnimate = true;
+            view.drawCard(card, card.drawpos.x, card.drawpos.y);
           });
         });
       }
-
-    });
+    };
+    
+    Object.keys(game.model.cards).forEach(eachZonePile);
     
     // Dragging card
     if (view.dragged) {
@@ -382,13 +420,14 @@
     // Clear animation request flag
     view.hasAnimationRequest = false;
     
-    // Request another draw if there are still cards to animate
+    // Request another draw if animations are enable, and there are moving cards
     if (view.animate && mustAnimate) view.requestDraw();
 
   };
   
   /**
-   * Update draw positions for animating cards
+   * Update the draw position for cards if animations are enabled,
+   * and if not enabled then simply use the current card position.
    */
   view.updateDrawPosition = function(card) {
     if (view.animate) {

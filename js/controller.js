@@ -46,6 +46,7 @@
     else {
       game.rules.clickEvent({zone:null, card:null}, {zone:zone, card:card});
     }
+    game.view.calculateCardPositions();
     controller.redraw();
   };
   
@@ -160,6 +161,7 @@
       }
     });
 
+    game.view.calculateCardPositions();
     controller.redraw();
 
   }
@@ -243,6 +245,14 @@
   controller.byColRow = function(zone, col, row) {
     var zonepiles = game.model.cards[zone];
     return zonepiles[col-1].cards[row-1];
+  };
+  
+  /**
+   * Gets the stack of cards on top of this given card.
+   */
+  controller.getCardsOnTopOf = function(card) {
+    var stack = [ ];
+    
   };
     
 })();
