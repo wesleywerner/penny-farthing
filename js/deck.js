@@ -37,6 +37,13 @@
     card.name = value.toString() + suit;
     // the card is face up
     card.up = false;
+    // check color helpers
+    card.isRed = function() {
+      return this.suit == 'D' || this.suit == 'H';
+    };
+    card.isBlack = function() {
+      return this.suit == 'S' || this.suit == 'C';
+    };
     return card;
   };
 
