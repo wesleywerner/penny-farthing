@@ -180,6 +180,9 @@
       zone.ceny = zone.y + zone.h/2;
     });
     
+    // Recalculate card positions
+    view.calculateCardPositions();
+    
     // Request to redraw
     requestAnimationFrame(view.draw);
   };
