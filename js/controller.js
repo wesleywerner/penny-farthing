@@ -41,6 +41,8 @@
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
     if (view.dragged) {
+      // TODO Get the COLUMN of the pos to pass to the event.
+      // We will need this when dropping on empty columns.
       game.rules.dropEvent({zone:view.dragged.zone, cards:view.dragged.cards}, {zone:zone, card:card});
       view.dragged = null;
     }
