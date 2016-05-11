@@ -45,7 +45,7 @@
       view.dragged = null;
     }
     else {
-      game.rules.dropEvent({zone:null, card:null}, {zone:zone, card:card});
+      game.rules.dropEvent({zone:null, cards:[]}, {zone:zone, card:card});
     }
     game.view.calculateCardPositions();
     controller.redraw();
