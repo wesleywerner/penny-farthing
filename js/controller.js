@@ -19,9 +19,12 @@
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
     if (card) {
-      card.dragpos = pos;
-      view.dragged = {zone:zone, card:card};
-      console.log('draggging ' + card.name);
+      var cardsOnTop = controller.getCardsOnTopOf(zone, card);
+      if (game.rules.allowDragEvent({zone:zone, card:card, topStack:cardsOnTop})) {
+        //card.dragpos = pos;
+        view.dragged = {zone:zone, pos:pos, cards:[card].concat(cardsOnTop)};
+        console.log('draggging ' + card.name);
+      };
     }
   };
 
@@ -29,7 +32,7 @@
   controller.onMouseMove = function(event) {
     if (view.dragged) {
       var pos = controller.translateMouse(event);
-      view.dragged.card.dragpos = pos;
+      view.dragged.pos = pos;
       controller.redraw();
     }
   };
@@ -39,12 +42,11 @@
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
     if (view.dragged) {
-      game.rules.clickEvent({zone:view.dragged.zone, card:view.dragged.card}, {zone:zone, card:card});
-      console.log('released ' + view.dragged.card.name);
+      game.rules.dropEvent({zone:view.dragged.zone, cards:view.dragged.cards}, {zone:zone, card:card});
       view.dragged = null;
     }
     else {
-      game.rules.clickEvent({zone:null, card:null}, {zone:zone, card:card});
+      game.rules.dropEvent({zone:null, card:null}, {zone:zone, card:card});
     }
     game.view.calculateCardPositions();
     controller.redraw();
@@ -249,10 +251,22 @@
   
   /**
    * Gets the stack of cards on top of this given card.
+   * This only works for cards in a tableau layout.
    */
-  controller.getCardsOnTopOf = function(card) {
+  controller.getCardsOnTopOf = function(zone, card) {
+    
     var stack = [ ];
     
+    // If this card is in a tableau with rows and columns
+    if (card.pos.col != null) {
+      var column = game.model.cards[zone][card.pos.col].cards;
+      for (i=card.pos.row+1; i<column.length; i++) {
+        stack.push(column[i]);
+      }
+    
+    }
+    
+    return stack;
   };
     
 })();

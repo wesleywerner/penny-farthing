@@ -395,13 +395,15 @@
     
     Object.keys(game.model.cards).forEach(eachZonePile);
     
-    // Dragging card
+    // Dragging a stack of cards
     if (view.dragged) {
       view.ctx.globalAlpha = 0.5;
-      view.drawCard(view.dragged.card,
-        view.dragged.card.dragpos.x - view.size.card.center.x,
-        view.dragged.card.dragpos.y - view.size.card.center.y
-        );
+      view.dragged.cards.forEach(function(card, row) {
+        view.drawCard(card,
+          view.dragged.pos.x - view.size.card.center.x,
+          view.dragged.pos.y - view.size.card.center.y + (row*view.pad.piletop)
+          );
+      });
     }
     
     //// Grid
