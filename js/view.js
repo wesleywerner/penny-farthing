@@ -341,7 +341,7 @@
             // offset y for a stack like effect
             var y = zone.y + (row * view.pad.piletop);
             // store the card position
-            card.pos = {x:x, y:y};
+            card.pos = {x:x, y:y, col:col, row:row};
             // draw animating cards
             if (view.animate) {
               card.drawpos = card.drawpos || {x:view.element.clientWidth/2, y:0};
