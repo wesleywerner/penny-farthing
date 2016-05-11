@@ -70,14 +70,16 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             
+            <li><a href="#" onclick="initialize()">Restart Current Game</a></li>
+            
             <!-- Select Card Game -->
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Play <span class="caret"></span></a>
               <ul class="dropdown-menu" id="all-games-list">
-                <li><a href="#">Restart Current Game</a></li>
+                
                 <li role="separator" class="divider"></li>
-                <li><a data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" href="#" onclick="initialize('doppelganger')">Doppelganger</a></li>
-                <li><a data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" href="#" onclick="initialize('template')">Template Game</a></li>
+                <li><a href="#" onclick="initialize('doppelganger')">Doppelganger</a></li>
+                <li><a href="#" onclick="initialize('template')">Template Game</a></li>
               </ul>
             </li>
           </ul>
@@ -118,10 +120,25 @@
 
     <!-- Call to Initialize the game engine -->
     <script type="text/javascript">
+      
       function initialize(gamename) {
+        // prompt on restart
+        if (!gamename) {
+          if (!confirm('Restart your game?')) return;
+        }
         var el = document.getElementById('playfield');
         game.controller.initialize(el, gamename);
-      }
+      };
+      
+      // This hook collapses the navbar after clicking a link,
+      // but only if the nav is expanded. This hides the nav bar nicely
+      // on mobile devices after link clicks.
+      $(document).on('click','.navbar-collapse.in',function(e) {
+          if( $(e.target).is('a') ) {
+              $(this).collapse('hide');
+          }
+      });
+
     </script>
 
   </body>

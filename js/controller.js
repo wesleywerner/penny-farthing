@@ -103,6 +103,16 @@
     game.ui.reset();
     controller.canvas = canvasElement;
     
+    // Remember the game we are playing
+    if (gamename) {
+      controller.gameName = gamename;
+    }
+    
+    // Reload the current game
+    if (!gamename) {
+      gamename = controller.gameName;
+    }
+    
     // default to the first game if none set
     if (!game.games[gamename]) {
       alert('No game named ' + gamename);

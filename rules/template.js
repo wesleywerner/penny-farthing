@@ -16,9 +16,6 @@
   // create our rules object
   var template = game.games.template = { };
   
-  // deal a new game on first click
-  var newgame = true;
-  
   // The game model will request the requirements for your game.
   template.requestLayout = function() {
     
@@ -96,15 +93,10 @@
     
     // look at our hand
     var hand = control.peek('hand');
-    
-    // start a new game
-    if (newgame) {
-      game.ui.info('Find the joker to win the game.');
-      newgame = false;
-      control.deal();
-      return;
-    }
 
+    // win condition
+    if (hand && hand.value > 100) return;
+    
     // tableau cards can only be acted on if they are the top card, with a facing value.
     if (dragged.zone == 'tableau' && dropped.zone == 'hand') {
       
@@ -112,8 +104,7 @@
       
         // win condition
         if (dragged.card.value > 100) {
-          newgame = true;
-          game.ui.info('You won! Click for another game.');
+          game.ui.info('You won!');
         }
 
         // discard our hand
@@ -134,9 +125,9 @@
    */
   template.setup = function() {
   
-    newgame = true;
     var ui = game.ui;
     ui.info('This is a card game rules template. It features a very basic game: Pick any card, your hand will be discarded. If you pick up the joker you win the game.');
+    control.deal();
   
   };
 

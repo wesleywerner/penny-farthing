@@ -16,8 +16,6 @@
   // create our rules object
   var doppel = game.games.doppelganger = { };
   
-  doppel.newgame = true;
-  
   // The game model will request the requirements for your game.
   doppel.requestLayout = function() {
     
@@ -102,14 +100,6 @@
     
     // win condition
     if (hand && hand.value > 100) return;
-    
-    // start a new game
-    if (doppel.newgame) {
-      doppel.newgame = false;
-      control.deal();
-      game.ui.info('Draw a card from the reserve');
-      return;
-    }
     
     if (dragged.zone == 'reserve' && dropped.zone == 'hand') {
       
@@ -216,7 +206,8 @@
 
   doppel.setup = function() {
   
-    doppel.newgame = true;
+    control.deal();
+    game.ui.info('Draw a card from the reserve');
     
   };
 
