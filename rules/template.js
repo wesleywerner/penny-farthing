@@ -81,9 +81,15 @@
   
   };
   
+  
+  /**
+   * Called when the game needs to consult if a drag action is allowed.
+   * The dragged object contains the zone, and a cards array.
+   */
   template.allowDragEvent = function(dragged) {
     
-    // {zone:zone, card:card, topStack:cardsOnTop}
+    // Only allow single drags:
+    // return dragged.cards.length == 1;
     
     return true;
     
