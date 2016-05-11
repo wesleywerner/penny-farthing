@@ -205,12 +205,24 @@
    * Placing a card into any zone will first remove it from
    * any existing zone it may be in.
    */
-  controller.place = function(card, zone) {
+  controller.place = function(card, zone, col) {
+    
     if (!model.cards) return;
+    
     if (card != null) {
+    
+      // Remove card from current zone
       controller.remove(card);
-      model.cards[zone].add(card);
-      //controller.redraw();
+      
+      var zonePile = model.cards[zone];
+      
+      if (zonePile.isStack) {
+        zonePile.add(card);
+      }
+      else if (zonePile.isLadder) {
+        zonePile[col].add(card);
+      }
+      
     }
   };
   
