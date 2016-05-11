@@ -29,7 +29,7 @@
     layout.zones = {
       'tableau': { col:1, row:2, width:6, height:2},  // entire top row
       'reserve': { col:1, row:1, width:1, height:1},  // bottom left
-      'waste': { col:2, row:1, width:1, height:1},    // next to reserve
+      'discard': { col:2, row:1, width:1, height:1},    // next to reserve
       'hand': { col:6, row:1, width:1, height:1}     // bottom right
     };
 
@@ -76,17 +76,25 @@
       cards.tableau[i] = deck.take(9);
     };
     
-    // any zones we do not initialize (reserve, waste) will get set
+    // any zones we do not initialize (reserve, discard) will get set
     // to empty piles for us when our deal function ends.
   
   };
   
+  template.allowDragEvent = function(dragged) {
+    
+    // {zone:zone, card:card, topStack:cardsOnTop}
+    
+    return true;
+    
+  };
   
+    
   /**
    * Handles click events on the view.
    * Any game manipulations are done through the controller.
    */
-  template.clickEvent = function(dragged, dropped) {
+  template.dropEvent = function(dragged, dropped) {
 
     // The dragged and dropped objects specify the zone and card where this action took place.
     // dragged.zone is where the action began, dropped.zone is where the action ended.
@@ -100,19 +108,27 @@
     // tableau cards can only be acted on if they are the top card, with a facing value.
     if (dragged.zone == 'tableau' && dropped.zone == 'hand') {
       
-      if (dragged.card) {
-      
+      // move each card in the drag pile
+      var len = dragged.cards.length;
+      if (len > 1) {
+        game.ui.info('You dragged '+len+' cards. This is a feature of our game engine, but for this template game, play one card at a time, please ;)');
+      }
+      else if (len == 1) {
+        
+        var card = dragged.cards[0];
+        
         // win condition
-        if (dragged.card.value > 100) {
+        if (card.value > 100) {
           game.ui.info('You won!');
         }
 
         // discard our hand
-        control.place(hand, 'waste')
+        control.place(control.take('hand'), 'discard')
+        
         // place new card in hand
-        control.place(dragged.card, 'hand');
+        control.place(card, 'hand');
     
-      }
+      };
     }
     
     // Tell the game to redraw the canvas.
