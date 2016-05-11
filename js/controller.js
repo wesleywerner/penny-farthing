@@ -19,10 +19,9 @@
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
     if (card) {
-      var cardsOnTop = controller.getCardsOnTopOf(zone, card);
-      if (game.rules.allowDragEvent({zone:zone, card:card, topStack:cardsOnTop})) {
-        //card.dragpos = pos;
-        view.dragged = {zone:zone, pos:pos, cards:[card].concat(cardsOnTop)};
+      var cardsOnTop = [card].concat(controller.getCardsOnTopOf(zone, card));
+      if (game.rules.allowDragEvent({zone:zone, cards:cardsOnTop})) {
+        view.dragged = {zone:zone, pos:pos, cards:cardsOnTop};
         console.log('draggging ' + card.name);
       };
     }
