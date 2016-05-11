@@ -393,7 +393,7 @@
       }
     };
     
-    Object.keys(game.model.cards).forEach(eachZonePile);
+    Object.keys(game.model.cards).sort().reverse().forEach(eachZonePile);
     
     // Dragging a stack of cards
     if (view.dragged) {
