@@ -84,6 +84,40 @@
     //t.printDeck(reserve);
   };
   
+  t.testRandomSeed = function() {
+    console.log('test random seed');
+    
+    // test n iterations of randomness
+    var howManyRoads = 42;
+    var n = [ ];
+    var o = [ ];
+    
+    // Gather initial values
+    game.lcg.setSeed(42);
+    for (i=howManyRoads; i; i--) {
+      n[i] = game.lcg.rand();
+    };
+    
+    // Intermission
+    game.lcg.setSeed();
+    game.lcg.rand();
+    game.lcg.rand();
+    game.lcg.rand();
+    
+    // Repeat
+    game.lcg.setSeed(42);
+    for (i=howManyRoads; i; i--) {
+      o[i] = game.lcg.rand();
+    };
+    
+    // Verify
+    for (i=howManyRoads; i; i--) {
+      console.assert(n[i] == o[i], 'Random value is too random');
+    };
+    
+  };
+  
+  t.testRandomSeed();
   t.testDeckCreation();
   t.testDeckShuffle();
   t.testDeckTake();
