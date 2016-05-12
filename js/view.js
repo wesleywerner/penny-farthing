@@ -566,4 +566,21 @@
     
   };
   
+  /**
+   * Get the grid column and row at the given position.
+   */
+  view.gridAt = function(x, y) {
+    for (col=0; col < view.grid.cols; col++) {
+      for (row=0; row < view.grid.rows; row++) {
+        var cell = view.grid.cells[col][row];
+        if (x > cell.x && x < cell.x+view.size.card.width) {
+          if (y > cell.y && y < cell.y+view.size.card.height) {
+            return {col:col, row:row, pos:cell};
+          }
+        }
+      }
+    }
+    return null;
+  };
+  
 })();

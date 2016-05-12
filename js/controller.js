@@ -22,7 +22,7 @@
       var cardsOnTop = [card].concat(controller.getCardsOnTopOf(zone, card));
       if (game.rules.allowDragEvent({zone:zone, cards:cardsOnTop})) {
         view.dragged = {zone:zone, pos:pos, cards:cardsOnTop};
-        console.log('draggging ' + card.name);
+        //console.log('draggging ' + card.name);
       };
     }
   };
@@ -40,10 +40,12 @@
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
+    var grid = view.gridAt(pos.x, pos.y);
     if (view.dragged) {
-      // TODO Get the COLUMN of the pos to pass to the event.
-      // We will need this when dropping on empty columns.
-      game.rules.dropEvent({zone:view.dragged.zone, cards:view.dragged.cards}, {zone:zone, card:card});
+      // When not dropped on a valid grid then avoid notifying the rules about nothing
+      if (grid) {
+        game.rules.dropEvent({zone:view.dragged.zone, cards:view.dragged.cards}, {zone:zone, card:card, grid:grid});
+      }
       view.dragged = null;
     }
     else {
@@ -253,7 +255,7 @@
   };
   
   /**
-   * Returns a card from a pile-array zone by column and row indexes.
+   * Get a card from a pile-array zone by column and row indexes.
    */
   controller.byColRow = function(zone, col, row) {
     var zonepiles = game.model.cards[zone];
@@ -261,7 +263,7 @@
   };
   
   /**
-   * Gets the stack of cards on top of this given card.
+   * Get the stack of cards on top of this given card.
    * This only works for cards in a tableau layout.
    */
   controller.getCardsOnTopOf = function(zone, card) {
