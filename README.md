@@ -42,23 +42,6 @@ GAME RULES.JS contains game logic that determines how cards are dealt, moved, fl
 CONTROLLER.JS handles user input and translates it to the methods that changes the model.
 VIEW.JS draw the state of the model. It consults GAME RULES when it has to determine the postition of a deck of cards.
 
-# V1
-+----------+
-|  DECK.JS <----+
-+----------+    |
-                |
-+----------+  +-+----------+                   +---------+
-| TABLE.JS <--+  MODEL.JS  <-------------------+ VIEW.JS |
-+----------+  +-+--------+-+                   +-+----+--+
-                |        |                       |    ^
-+----------+    |        |   +---------------+   |    |
-| RULES.JS <----+        +---+ CONTROLLER.JS <---+    |
-+----------+                 +-------+-------+        |
-                                     |                |
-                                EVENT|DRIVEN          |
-                                     |                |
-                             +-------v-------+        |
-                             |               +--------+
-                             |   GAME LOOP   |
-                             |               |
-                             +---------------+
+# References
+
+Random number generator source code: https://gist.github.com/Protonk/5367430

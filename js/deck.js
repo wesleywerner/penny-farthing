@@ -6,6 +6,10 @@
 ;(function(){
   var g = window.game = window.game == undefined ? { } : window.game;
   var deck = g.deck = { }
+  
+  // Pick a random game
+  deck.seed = Math.floor( Math.random() * 1000 );
+  game.lcg.setSeed(deck.seed);
 
   /**
    * Returns a deck object exposing helper methods to manage the deck.
@@ -90,7 +94,7 @@
     var j, x, i;
     var a = this.cards;
     for (i = a.length; i; i -= 1) {
-        j = Math.floor(Math.random() * i);
+        j = Math.floor(game.lcg.rand() * i);
         x = a[i - 1];
         a[i - 1] = a[j];
         a[j] = x;
