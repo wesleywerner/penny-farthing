@@ -195,6 +195,9 @@
     // Recalculate card positions
     view.calculateCardPositions();
     
+    // Prerender the background
+    view.predrawBackground();
+    
     // Request to redraw
     requestAnimationFrame(view.draw);
   };
@@ -216,7 +219,7 @@
   };
   
   /**
-   * Get the faces imagemap.
+   * Get a document image
    */
   view.image = function(name) {
     
@@ -284,6 +287,48 @@
       view.hasAnimationRequest = true;
       requestAnimationFrame(view.draw);
     }
+  };
+  
+  /**
+   * Predraw the background image
+   */
+  view.predrawBackground = function() {
+    
+    if (!view.backgroundImage) {
+      view.backgroundImage = document.createElement('canvas');
+    };
+    
+    view.backgroundImage.width = view.element.clientWidth;
+    view.backgroundImage.height = view.element.clientHeight;
+    
+    var ctx = view.backgroundImage.getContext('2d');
+    
+    if (!ctx) {
+      console.log('no context received for drawing the background image');
+      return;
+    }
+    
+    // background
+    ctx.fillStyle = "green";
+    ctx.fillRect(0, 0, view.width, view.height);
+
+    // iterate over the game zones
+    Object.keys(view.layout.zones).forEach(function(zonename) {
+      
+      var zone = view.layout.zones[zonename];
+      
+      // outline
+      ctx.fillStyle = 'darkgreen';
+      ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+      
+      // title
+      ctx.fillStyle = 'green';
+      ctx.textAlign = 'center';
+      ctx.font = view.size.font.toString() + 'px serif';
+      ctx.fillText(zonename, zone.cenx, zone.ceny);
+      
+    });
+    
   };
   
   /**
@@ -371,27 +416,8 @@
     // Reset alpha
     view.ctx.globalAlpha = 1;
     
-    // background
-    view.ctx.fillStyle = "green";
-    view.ctx.fillRect(0, 0, view.width, view.height);
-
-    // draw zones
-    // TODO predraw this loop to an off screen images for blitting here
-    Object.keys(view.layout.zones).forEach(function(zonename) {
-      
-      var zone = view.layout.zones[zonename];
-      
-      // outline
-      view.ctx.fillStyle = 'darkgreen';
-      view.ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
-      
-      // title
-      view.ctx.fillStyle = 'green';
-      view.ctx.textAlign = 'center';
-      view.ctx.font = view.size.font.toString() + 'px serif';
-      view.ctx.fillText(zonename, zone.cenx, zone.ceny);
-      
-    });
+    // Draw background
+    view.ctx.drawImage(view.backgroundImage, 0, 0);
     
     if (!game.model.cards) return;
     
