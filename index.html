@@ -78,9 +78,8 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Play <span class="caret"></span></a>
               <ul class="dropdown-menu" id="all-games-list">
                 
-                <li role="separator" class="divider"></li>
-                <li><a href="#" onclick="initialize('doppelganger')">Doppelganger</a></li>
-                <li><a href="#" onclick="initialize('template')">Template Game</a></li>
+                <!-- New games get built here via UI.JS -->
+
               </ul>
             </li>
           </ul>
@@ -121,6 +120,8 @@
 
     <!-- Call to Initialize the game engine -->
     <script type="text/javascript">
+      
+      game.ui.buildMenu();
       
       function initialize(gamename) {
         // prompt on restart

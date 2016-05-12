@@ -80,4 +80,22 @@
     };
   };
   
+  /**
+   * Build a menu from all game objects.
+   */
+  ui.buildMenu = function() {
+    var gameNames = Object.keys(game.games);
+    var el = document.getElementById('all-games-list');
+    gameNames.forEach(function(name) {
+      // <li><a href="#" onclick="initialize('template')">Template Game</a></li>
+      var anchor = document.createElement('a');
+      anchor.innerHTML = name.toUpperCase();
+      anchor.setAttribute("onclick", "initialize('"+name+"')");
+      anchor.setAttribute("href", "#");
+      var listItem = document.createElement('li');
+      listItem.appendChild(anchor);
+      el.appendChild(listItem);
+    });
+  }
+  
 })();
