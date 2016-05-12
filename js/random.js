@@ -31,7 +31,9 @@
       }
     };
 
-}());
+  }());
 
+  // Initialize the RNG
+  g.lcg.setSeed();
 
 })();
