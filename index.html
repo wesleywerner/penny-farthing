@@ -47,7 +47,7 @@
         
   </head>
   
-  <body onload="initialize('freecell')">
+  <body onload="game.ui.initialize('freecell')">
   
     <!-- Navigation Bar -->
     <nav class="navbar navbar-default">
@@ -67,7 +67,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             
-            <li><a href="#" onclick="initialize()">Restart Current Game</a></li>
+            <li><a href="#" onclick="game.ui.initialize()">New Game</a></li>
             
             <!-- Select Card Game -->
             <li class="dropdown">
@@ -126,25 +126,6 @@
       
       game.ui.buildMenu();
       
-      function initialize(gamename, newseed) {
-        // prompt on restart
-        if (!gamename) {
-          if (!confirm('Restart your game?')) return;
-        }
-        var el = document.getElementById('playfield');
-        game.controller.initialize(el, gamename, newseed);
-        game.ui.displayGameNumber(game.controller.seed);
-      };
-      
-      // This hook collapses the navbar after clicking a link,
-      // but only if the nav is expanded. This hides the nav bar nicely
-      // on mobile devices after link clicks.
-      $(document).on('click','.navbar-collapse.in',function(e) {
-          if( $(e.target).is('a') ) {
-              $(this).collapse('hide');
-          }
-      });
-
     </script>
 
   </body>
