@@ -31,7 +31,7 @@
    */
   view.size = { };
   view.size.ratios = {
-    font: 0.03,
+    font: 0.025,
     cardZoom: 1.5
   }
   
