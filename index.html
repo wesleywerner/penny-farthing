@@ -43,11 +43,6 @@
       canvas {
         width: 80%;
       }
-      #game-actions {
-        display: inline-block;
-        vertical-align:top;
-        width: 20%;
-      }
     </style>
         
   </head>
@@ -105,6 +100,13 @@
             <div class="panel-heading">Game Info<a class="pull-right hidden-md hidden-lg" href="#playfield">Back to game</a></div>
             <div class="panel-body" id="game-info"></div>
           </div>
+          <div class="panel panel-info">
+            <div class="panel-heading">Game Number</div>
+            <div class="panel-body">
+              <input id="game-number" type="number" class="form-control" />
+              <button id="set-game-number" class="btn btn-default btn-block">Play</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -124,13 +126,14 @@
       
       game.ui.buildMenu();
       
-      function initialize(gamename) {
+      function initialize(gamename, newseed) {
         // prompt on restart
         if (!gamename) {
           if (!confirm('Restart your game?')) return;
         }
         var el = document.getElementById('playfield');
-        game.controller.initialize(el, gamename);
+        game.controller.initialize(el, gamename, newseed);
+        game.ui.displayGameNumber(game.controller.seed);
       };
       
       // This hook collapses the navbar after clicking a link,

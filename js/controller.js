@@ -116,7 +116,7 @@
    */
   controller.initialize = function(canvasElement, gamename, seed) {
     
-    controller.reseed(110);
+    controller.reseed(seed);
 
     game.ui.reset();
     controller.canvas = canvasElement;
