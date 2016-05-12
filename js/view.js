@@ -170,7 +170,17 @@
     // Calculate zone positions from grid positions
     Object.keys(view.layout.zones).forEach(function(zonename) {
       var zone = view.layout.zones[zonename];
-      var grid = view.grid.cells[zone.col-1][zone.row-1];
+      var col = zone.col-1;
+      var row = zone.row-1;
+      if (col >= view.grid.cells.length) {
+        console.log('Check your zone definition. The grid does not have a column ' + zone.col);
+        return;
+      }
+      if (row >= view.grid.cells[col].length) {
+        console.log('Check your zone definition. The grid does not have a row ' + zone.row);
+        return;
+      }
+      var grid = view.grid.cells[col][row];
       zone.x = grid.x;
       zone.y = grid.y;
       zone.w = Math.floor(zone.width*view.size.card.width + (zone.width-1)*view.pad.pileside);
