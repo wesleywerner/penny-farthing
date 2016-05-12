@@ -198,6 +198,12 @@
     // Prerender the background
     view.predrawBackground();
     
+    // Prerender cards to set up the canvas initially
+    view.predrawCards();
+    
+    // Assume we need to animate cards into their new positions
+    view.animationsRunning = true;
+    
     // Request to redraw
     requestAnimationFrame(view.draw);
   };
@@ -230,26 +236,13 @@
     return view.images[name] || null;
     
   };
-  
-  /**
-   * Draw a card back
-   */
-  view.drawCardBack = function(x, y) {
-    if (view.image('cardback')) {
-      view.ctx.drawImage(view.image('cardback'), x, y, view.size.card.width, view.size.card.height);
-    }
-    else {
-      view.ctx.fillStyle = "gray";
-      view.ctx.fillRect(x, y, view.size.card.width, view.size.card.height);
-    }
-  };
-  
+    
   /**
    * Draw a card.
    * Zoom indicates a close-up of a card (likely a touch dragged card)
    * And we draw it scaled up, and offset for a better view.
    */
-  view.drawCard = function(card, x, y, zoom) {
+  view.drawCard = function(context, card, x, y, zoom) {
     
     if (card == undefined) return;
     
@@ -261,11 +254,11 @@
     if (card.up) {
       var map = view.facelookup[card.name];
       if (!map || !view.image('faces')) {
-        view.ctx.fillStyle = "white";
-        view.ctx.fillRect(x, y, w, h);
+        context.fillStyle = "white";
+        context.fillRect(x, y, w, h);
       }
       else {
-        view.ctx.drawImage(view.image('faces'),
+        context.drawImage(view.image('faces'),
           map.x, map.y,
           view.facelookup.gridsize.w,
           view.facelookup.gridsize.h,
@@ -274,7 +267,16 @@
       }
     }
     else {
-      view.drawCardBack(x, y);
+      
+      // draw the card back
+      if (view.image('cardback')) {
+        context.drawImage(view.image('cardback'), x, y, view.size.card.width, view.size.card.height);
+      }
+      else {
+        context.fillStyle = "gray";
+        context.fillRect(x, y, view.size.card.width, view.size.card.height);
+      }
+      
     }
 
   }
@@ -294,14 +296,14 @@
    */
   view.predrawBackground = function() {
     
-    if (!view.backgroundImage) {
-      view.backgroundImage = document.createElement('canvas');
+    if (!view.backgroundCanvas) {
+      view.backgroundCanvas = document.createElement('canvas');
     };
     
-    view.backgroundImage.width = view.element.clientWidth;
-    view.backgroundImage.height = view.element.clientHeight;
+    view.backgroundCanvas.width = view.element.clientWidth;
+    view.backgroundCanvas.height = view.element.clientHeight;
     
-    var ctx = view.backgroundImage.getContext('2d');
+    var ctx = view.backgroundCanvas.getContext('2d');
     
     if (!ctx) {
       console.log('no context received for drawing the background image');
@@ -405,6 +407,54 @@
     Object.keys(view.layout.zones).forEach(eachZone);
     
   };
+  
+  /**
+   * Predraw the cards on to a canvas.
+   * Returns true if any cards are still animating.
+   */
+  view.predrawCards = function() {
+    
+    if (!view.cardsCanvas) {
+      view.cardsCanvas = document.createElement('canvas');
+    };
+    
+    view.cardsCanvas.width = view.element.clientWidth;
+    view.cardsCanvas.height = view.element.clientHeight;
+    
+    var ctx = view.cardsCanvas.getContext('2d');
+    
+    if (!ctx) {
+      console.log('no context received for drawing the cards canvas');
+      return;
+    }
+    
+    // Request another animation loop while any cards are moving.
+    var mustAnimate = false;
+    
+    // Draw each card for every zone
+    var eachZonePile = function(zoneName) {
+      var zoneCards = game.model.cards[zoneName];
+      if (zoneCards.isStack) {
+        zoneCards.cards.forEach(function(card, index){
+          if (view.updateDrawPosition(card)) mustAnimate = true;
+          view.drawCard(ctx, card, card.drawpos.x, card.drawpos.y);
+        });
+      }
+      else if (zoneCards.isLadder) {
+        zoneCards.forEach(function(ladder, col){
+          ladder.cards.forEach(function(card, row){
+            if (view.updateDrawPosition(card)) mustAnimate = true;
+            view.drawCard(ctx, card, card.drawpos.x, card.drawpos.y);
+          });
+        });
+      }
+    };
+    
+    Object.keys(game.model.cards).sort().reverse().forEach(eachZonePile);
+    
+    return mustAnimate;
+    
+  };
 
   /**
    * Draw the canvas
@@ -417,33 +467,18 @@
     view.ctx.globalAlpha = 1;
     
     // Draw background
-    view.ctx.drawImage(view.backgroundImage, 0, 0);
+    view.ctx.drawImage(view.backgroundCanvas, 0, 0);
     
     if (!game.model.cards) return;
     
-    // Request another animation loop while any cards are moving.
-    var mustAnimate = false;
+    // Redraw the cards image buffer.
+    // Store if there are animating cards, to request another redraw.
+    if (view.animationsRunning) {
+      view.animationsRunning = view.predrawCards();
+    }
     
-    // Draw each card for every zone
-    var eachZonePile = function(zoneName) {
-      var zoneCards = game.model.cards[zoneName];
-      if (zoneCards.isStack) {
-        zoneCards.cards.forEach(function(card, index){
-          if (view.updateDrawPosition(card)) mustAnimate = true;
-          view.drawCard(card, card.drawpos.x, card.drawpos.y);
-        });
-      }
-      else if (zoneCards.isLadder) {
-        zoneCards.forEach(function(ladder, col){
-          ladder.cards.forEach(function(card, row){
-            if (view.updateDrawPosition(card)) mustAnimate = true;
-            view.drawCard(card, card.drawpos.x, card.drawpos.y);
-          });
-        });
-      }
-    };
-    
-    Object.keys(game.model.cards).sort().reverse().forEach(eachZonePile);
+    // Draw the cards image buffer
+    view.ctx.drawImage(view.cardsCanvas, 0, 0);
     
     // Dragging a stack of cards
     if (view.dragged) {
@@ -455,7 +490,9 @@
       view.dragged.cards.forEach(function(card, row) {
         
         // Draw the dragged card at the dragging position. Scaled is true.
-        view.drawCard(card,
+        view.drawCard(
+          view.ctx,
+          card,
           view.dragged.pos.x - view.size.card.center.x,
           view.dragged.pos.y - view.size.card.center.y + (row*view.pad.piletop*1.5),
           true
@@ -491,7 +528,7 @@
     view.hasAnimationRequest = false;
     
     // Request another draw if animations are enable, and there are moving cards
-    if (view.animate && mustAnimate) view.requestDraw();
+    if (view.animate && view.animationsRunning) view.requestDraw();
 
   };
   

@@ -52,7 +52,9 @@
       game.rules.dropEvent({zone:null, cards:[]}, {zone:zone, card:card});
     }
     game.view.calculateCardPositions();
-    controller.redraw();
+    
+    // Up events usually trigger card movements, so indicate to the redraw to expect animations.
+    controller.redraw(true);
   };
   
   controller.onMouseCancel = function(event) {
@@ -176,13 +178,19 @@
         model.cards[zonename] = game.deck.new();
       }
     });
+    
+    // Tell the view to begin animating
+    controller.redraw(true);
 
   }
   
   /**
    * Redraw.
    */
-  controller.redraw = function() {
+  controller.redraw = function(mayRequireAnimation) {
+    if (mayRequireAnimation) {
+      view.animationsRunning = true;
+    }
     view.requestDraw();
   };
   
