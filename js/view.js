@@ -318,17 +318,30 @@
     Object.keys(view.layout.zones).forEach(function(zonename) {
       
       var zone = view.layout.zones[zonename];
+
+      var storedAlpha = view.ctx.globalAlpha;
+      
+      // fill
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = zone.tint || '#000';
+      ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+      ctx.globalAlpha = storedAlpha;
       
       // outline
-      ctx.fillStyle = 'darkgreen';
-      ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+      ctx.globalAlpha = 0.3;
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = zone.tint || '#090';
+      ctx.strokeRect(zone.x, zone.y, zone.w, zone.h);
+      ctx.globalAlpha = storedAlpha;
       
       // title
-      ctx.fillStyle = 'green';
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = 'white';
       ctx.textAlign = 'center';
       ctx.font = view.size.font.toString() + 'px serif';
       ctx.fillText(zonename, zone.cenx, zone.ceny);
       
+      ctx.globalAlpha = storedAlpha;
     });
     
   };
