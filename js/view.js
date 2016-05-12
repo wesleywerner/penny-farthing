@@ -32,6 +32,7 @@
   view.size = { };
   view.size.ratios = {
     font: 0.03,
+    cardZoom: 1.5
   }
   
   /**
@@ -116,6 +117,7 @@
     view.size.card.width = Math.floor( widthMinusPad / stackRows );
     view.size.card.height = Math.floor(view.size.card.width * 1.4);  // 1.4 is the height ratio of our card images
     view.size.card.center = {x:Math.floor(view.size.card.width/2), y:Math.floor(view.size.card.height/2)};
+    view.size.card.zoom = {w:view.size.card.width*view.size.ratios.cardZoom, h:view.size.card.height*view.size.ratios.cardZoom}
 
     // resize the canvas height to n cards
     var stackRows = view.layout.rowsRequested;
@@ -241,22 +243,31 @@
   
   /**
    * Draw a card.
+   * Zoom indicates a close-up of a card (likely a touch dragged card)
+   * And we draw it scaled up, and offset for a better view.
    */
-  view.drawCard = function(card, x, y) {
+  view.drawCard = function(card, x, y, zoom) {
     
     if (card == undefined) return;
+    
+    var w = zoom ? view.size.card.zoom.w : view.size.card.width;
+    var h = zoom ? view.size.card.zoom.h : view.size.card.height;
+    var offset = zoom ? view.size.card.zoom.w : 0;
     
     // draw card shape
     if (card.up) {
       var map = view.facelookup[card.name];
       if (!map || !view.image('faces')) {
         view.ctx.fillStyle = "white";
-        view.ctx.fillRect(x, y, view.size.card.width, view.size.card.height);
+        view.ctx.fillRect(x, y, w, h);
       }
       else {
         view.ctx.drawImage(view.image('faces'),
-          map.x, map.y, view.facelookup.gridsize.w, view.facelookup.gridsize.h,
-          x, y, view.size.card.width, view.size.card.height);
+          map.x, map.y,
+          view.facelookup.gridsize.w,
+          view.facelookup.gridsize.h,
+          x-offset, y, w, h
+          );
       }
     }
     else {
@@ -410,13 +421,31 @@
     
     // Dragging a stack of cards
     if (view.dragged) {
-      view.ctx.globalAlpha = 0.5;
+      
+      // Transparent dragging
+      view.ctx.globalAlpha = 0.8;
+      
+      // Multiple cards involved
       view.dragged.cards.forEach(function(card, row) {
+        
+        // Draw the dragged card at the dragging position. Scaled is true.
         view.drawCard(card,
           view.dragged.pos.x - view.size.card.center.x,
-          view.dragged.pos.y - view.size.card.center.y + (row*view.pad.piletop)
+          view.dragged.pos.y - view.size.card.center.y + (row*view.pad.piletop*1.5),
+          true
           );
+        
       });
+
+      // Draw an arc around the finger/cursor
+      view.ctx.strokeStyle = "black";
+      view.ctx.lineWidth = 4;
+      view.ctx.setLineDash([20, 10]);
+      view.ctx.lineDashOffset = -(view.dragged.pos.x + view.dragged.pos.y);
+      view.ctx.beginPath();
+      view.ctx.arc(view.dragged.pos.x, view.dragged.pos.y, 50, 0, 2 * Math.PI);
+      view.ctx.stroke();
+
     }
     
     //// Grid
