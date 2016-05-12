@@ -128,8 +128,6 @@
     // Initialize the game view.
     game.view.initialize(canvasElement);
 
-    controller.onResize();
-    
     if (!controller.handlersAdded) {
       controller.handlersAdded = true;
       controller.onResizeLimiter(controller.onResize);
@@ -146,6 +144,9 @@
     };
     
     game.rules.setup();
+    
+    // Call view resize so that it recalculates the zones and card positions.
+    controller.onResize();
 
   };
 
@@ -163,9 +164,6 @@
         model.cards[zonename] = game.deck.new();
       }
     });
-
-    game.view.calculateCardPositions();
-    controller.redraw();
 
   }
   
