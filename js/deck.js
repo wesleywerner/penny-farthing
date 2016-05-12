@@ -7,10 +7,6 @@
   var g = window.game = window.game == undefined ? { } : window.game;
   var deck = g.deck = { }
   
-  // Pick a random game
-  deck.seed = Math.floor( Math.random() * 1000 );
-  game.lcg.setSeed(deck.seed);
-
   /**
    * Returns a deck object exposing helper methods to manage the deck.
    */

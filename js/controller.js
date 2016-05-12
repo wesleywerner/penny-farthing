@@ -100,12 +100,22 @@
         }
     }, 600);
   };
+
+  /**
+   * Reseed the deck.
+   */
+  controller.reseed = function(seed) {
+    controller.seed = seed || Math.floor( Math.random() * 1000 );
+    game.lcg.setSeed(controller.seed);
+  };
   
   /**
    * Initialize controllers for the canvas element.
    */
-  controller.initialize = function(canvasElement, gamename) {
+  controller.initialize = function(canvasElement, gamename, seed) {
     
+    controller.reseed(110);
+
     game.ui.reset();
     controller.canvas = canvasElement;
     
