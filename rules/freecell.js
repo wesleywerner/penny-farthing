@@ -23,20 +23,20 @@
     var layout = { };
     
     // Number of columns and rows our game will need.
-    layout.columnsRequested = 9;
-    layout.rowsRequested = 3;
+    layout.columnsRequested = 8;
+    layout.rowsRequested = 4;
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:2, width:8, height:2},
-      'Free1': { col:1, row:1, width:1, height:1},
-      'Free2': { col:2, row:1, width:1, height:1},
-      'Free3': { col:3, row:1, width:1, height:1},
-      'Free4': { col:4, row:1, width:1, height:1},
-      'A': { col:6, row:1, width:1, height:1},
-      'B': { col:7, row:1, width:1, height:1},
-      'C': { col:8, row:1, width:1, height:1},
-      'D': { col:9, row:1, width:1, height:1}
+      'tableau': { col:1, row:2, width:8, height:3 },
+      'Free1': { col:1, row:1, width:1, height:1, tint: 'cyan' },
+      'Free2': { col:2, row:1, width:1, height:1, tint: 'cyan' },
+      'Free3': { col:3, row:1, width:1, height:1, tint: 'cyan' },
+      'Free4': { col:4, row:1, width:1, height:1, tint: 'cyan' },
+      'A': { col:5, row:1, width:1, height:1 },
+      'B': { col:6, row:1, width:1, height:1 },
+      'C': { col:7, row:1, width:1, height:1 },
+      'D': { col:8, row:1, width:1, height:1 }
     };
 
     return layout;
@@ -130,15 +130,29 @@
 
     }
     
-    if (dropped.zone == 'tableau' && dropped.card) {
+    // Move a card or stack of cards onto another in the tableau
+    if (dropped.zone == 'tableau') {
       
-      // Allow the move if the dropped card is opposite color
-      // and one lower in value.
-      var sameColor = (card.isRed() && dropped.card.isRed()) || (card.isBlack() && dropped.card.isBlack());
-      var oneLower = dropped.card.value - card.value == 1;
-      if (!sameColor && oneLower) {
-        control.place(card, dropped.zone, dropped.card.pos.col);
+      // Allow on empty columns
+      if (!dropped.card) {
+        // move the entire dragged stack
+        dragged.cards.forEach(function(card) {
+          control.place(card, dropped.zone, dropped.grid.col);
+        });
       }
+      
+      // Allow if the dropped card is opposite color and one lower in value.
+      if (dropped.card) {
+        var sameColor = (card.isRed() && dropped.card.isRed()) || (card.isBlack() && dropped.card.isBlack());
+        var oneLower = dropped.card.value - card.value == 1;
+        if (!sameColor && oneLower) {
+          // move the entire dragged stack
+          dragged.cards.forEach(function(card) {
+            control.place(card, dropped.zone, dropped.grid.col);
+          });
+        }
+        
+    }
       
     }
     
