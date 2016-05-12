@@ -28,6 +28,7 @@
     var el = document.getElementById('set-game-number');
     el.addEventListener("click", function() {
         var el = document.getElementById('game-number');
+        document.getElementById('playfield').scrollIntoView();
         game.ui.initialize(null, parseInt(el.value));
       });
     
