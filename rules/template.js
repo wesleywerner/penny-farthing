@@ -44,7 +44,7 @@
    *   + an array of piles
    */
   template.dealFunc = function(dealer, cards) {
-
+    
     // An example game that display six columns of face up cards.
     // Taking a card from the tableau discards your hand.
     // Taking the joker winds the game.
@@ -106,7 +106,9 @@
     // dragged.zone is where the action began, dropped.zone is where the action ended.
     
     // look at our hand
-    var hand = control.peek('hand');
+    var hand = control.peekByPile('hand');
+    
+    if (dropped.card) console.log('Dropped on card ' + dropped.card.name);
 
     // win condition
     if (hand && hand.value > 100) return;

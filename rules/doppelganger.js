@@ -183,15 +183,15 @@
           var pos = draggedCard.clickedColRow;
           
           // directly above
-          var acard = control.byColRow('tableau', pos.col, Math.max(1, pos.row-1) );
+          var acard = control.peekByRow('tableau', pos.col, Math.max(1, pos.row-1) );
           if (acard) acard.up = true;
 
           // to the left
-          acard = control.byColRow('tableau', Math.max(1, pos.col-1), pos.row );
+          acard = control.peekByRow('tableau', Math.max(1, pos.col-1), pos.row );
           if (acard) acard.up = true;
           
           // to the right
-          acard = control.byColRow('tableau', Math.min(6, pos.col+1), pos.row );
+          acard = control.peekByRow('tableau', Math.min(6, pos.col+1), pos.row );
           if (acard) acard.up = true;
           
         }

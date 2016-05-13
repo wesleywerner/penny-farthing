@@ -84,10 +84,10 @@
     // Allow moving n cards, where n is the count of free cells + 1.
     // Also only allow moving if the dragged cards are in descending order
     // and of alternating color.
-    var maxCards = control.peek('Free1') ? 0 : 1;
-    maxCards += control.peek('Free2') ? 0 : 1;
-    maxCards += control.peek('Free3') ? 0 : 1;
-    maxCards += control.peek('Free4') ? 0 : 1;
+    var maxCards = control.peekByPile('Free1') ? 0 : 1;
+    maxCards += control.peekByPile('Free2') ? 0 : 1;
+    maxCards += control.peekByPile('Free3') ? 0 : 1;
+    maxCards += control.peekByPile('Free4') ? 0 : 1;
     maxCards += 1;
     game.ui.info('You have enough free cells to move '+maxCards+' card'+(maxCards==1 ? '':'s'));
     if (dragged.cards.length > maxCards) return false;
