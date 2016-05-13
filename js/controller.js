@@ -36,11 +36,23 @@
     }
   };
 
+  /**
+   * Mouse or Touch up Event
+   */
   controller.onMouseUp = function(event) {
+    
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
     var grid = view.gridAt(pos.x, pos.y);
+    
+    // If the zone is a tableau-like layout, try get the card
+    // at the grid position too. This handles when dragging cards
+    // below valid piles.
+    if (grid && !card) {
+      card = controller.peekByCol(zone, grid.col);
+    }
+    
     if (view.dragged) {
       // When not dropped on a valid grid then avoid notifying the rules about nothing
       if (grid) {
@@ -210,17 +222,6 @@
   }
   
   /**
-   * Peek at the top card from a zone.
-   * Returns null if no card is available.
-   */
-  controller.peek = function(zone) {
-    // taking from piles returns a new pile.
-    if (!model.cards) return null;
-    var card = model.cards[zone].get();
-    return card || null;
-  }
-  
-  /**
    * Place the given card into a zone.
    * Placing a card into any zone will first remove it from
    * any existing zone it may be in.
@@ -273,11 +274,37 @@
   };
   
   /**
+   * Peek at the top card from a zone.
+   * Returns null if no card is available.
+   */
+  controller.peekByPile = function(zone) {
+    var zonepile = game.model.cards[zone];
+    if (zonepile.isStack) {
+      return zonepile.get();
+    }
+    return null;
+  }
+  
+  /**
    * Get a card from a pile-array zone by column and row indexes.
    */
-  controller.byColRow = function(zone, col, row) {
-    var zonepiles = game.model.cards[zone];
-    return zonepiles[col-1].cards[row-1];
+  controller.peekByRow = function(zone, col, row) {
+    var zonepile = game.model.cards[zone];
+    if (zonepile.isLaddder) {
+      return zonepile[col-1].get(row);
+    }
+    return null;
+  };
+  
+  /**
+   * Get a card from a pile-array zone by column
+   */
+  controller.peekByCol = function(zone, col) {
+    var zonepile = game.model.cards[zone];
+    if (zonepile.isLadder) {
+      return zonepile[col].get();
+    }
+    return null;
   };
   
   /**
