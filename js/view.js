@@ -23,7 +23,7 @@
     side: 0.02,
     piletop: 0.2,
     pileside: 0.02,
-    stack: 0.01,       // x-offset of stacked cards
+    stack: 0.005,       // x-offset of stacked cards
     };
     
   /**
