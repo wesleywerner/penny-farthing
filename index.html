@@ -31,9 +31,7 @@
     <script type="text/javascript" src="rules/doppelganger.js"></script>
     <script type="text/javascript" src="rules/freecell.js"></script>
 
-<!--
     <script type="text/javascript" src="js/tests.js"></script>
--->
 
     <style type="text/css">
       html, body {
@@ -47,7 +45,7 @@
         
   </head>
   
-  <body onload="game.ui.initialize('freecell')">
+  <body>
   
     <!-- Navigation Bar -->
     <nav class="navbar navbar-default">
@@ -125,6 +123,7 @@
     <script type="text/javascript">
       
       game.ui.buildMenu();
+      game.ui.initialize('freecell');
       
     </script>
 
