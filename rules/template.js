@@ -147,9 +147,6 @@
       };
     }
     
-    // Tell the game to redraw the canvas.
-    control.redraw();
-
   };
 
   /**
