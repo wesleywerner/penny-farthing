@@ -65,7 +65,8 @@
     // at the grid position too. This handles when dragging cards
     // below valid piles.
     if (grid && !card) {
-      card = controller.peekByCol(zone, grid.col);
+      // The controlled peek functions are 1-based.
+      card = controller.peekByCol(zone, grid.col+1);
     }
     
     if (view.dragged) {
