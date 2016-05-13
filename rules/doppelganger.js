@@ -32,6 +32,12 @@
       'waste': { col:2, row:1, width:1, height:1},    // next to reserve
       'hand': { col:6, row:1, width:1, height:1}     // bottom right
     };
+    
+    layout.victory = {
+      text:'Victory',
+      color:'yellow',
+      card:'101JOKER'
+      };
 
     return layout;
     
@@ -108,7 +114,7 @@
     var draggedCard = dragged.cards[0];
     
     // look at our hand
-    var hand = control.peek('hand');
+    var hand = control.peekByPile('hand');
     
     // win condition
     if (hand && hand.value > 100) return;
@@ -125,7 +131,7 @@
       // turn the hand card face up
       draggedCard.up = true;
       
-      var hand = control.peek('hand');
+      hand = draggedCard;
       
     }
     
@@ -155,6 +161,7 @@
         
         // win condition
         if (draggedCard.value > 100) {
+          control.won();
           canSwitch = true;
           game.ui.info('You won!');
         }
@@ -167,7 +174,7 @@
           // place new card in hand
           control.place(draggedCard, 'hand');
           
-          var hand = control.peek('hand');
+          hand = draggedCard;
         }
       
       }
@@ -201,14 +208,15 @@
     }
     
     // Display game play info
-    var suitnames = {['H']: 'Hearts', ['D']: 'Diamonds', ['S']: 'Spades', ['C']: 'Clubs'};
-    var handSuit = suitnames[hand.suit];
+    if (hand.value > 100) {
+      game.ui.info('You found the joker, congrats!');
+    }
+    else {
+      var suitnames = {['H']: 'Hearts', ['D']: 'Diamonds', ['S']: 'Spades', ['C']: 'Clubs'};
+      var handSuit = suitnames[hand.suit];
+      game.ui.info('<p>You are holding '+handSuit+'.</p><p>You can spy (tap) on '+handSuit+' in the tableau.</p><p>You can take cards (drag to hand) of the same color, if counting up.</p><p>You can take cards (drag to hand) of the opposite color, if counting down.</p><p>You can panic and draw a new card from the reserve pile (5 cards per game).</p><p>Find the joker to win.</p>');
+    }
     
-    game.ui.info('<p>You are holding '+handSuit+'.</p><p>You can spy (tap) on '+handSuit+' in the tableau.</p><p>You can take cards (drag to hand) of the same color, if counting up.</p><p>You can take cards (drag to hand) of the opposite color, if counting down.</p><p>You can panic and draw a new card from the reserve pile (5 cards per game).</p><p>Find the joker to win.</p>');
-
-    
-    control.redraw();
-
   };
 
 
