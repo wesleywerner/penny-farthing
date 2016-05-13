@@ -166,11 +166,24 @@
         // stack on foundation
         control.place(card, dropped.zone);
       }
+      freecell.testWinCondition();
     }
     
     // Tell the game to redraw the canvas.
     control.redraw();
 
+  };
+  
+  /**
+   * Tests for the game win condition: the top card in each foundation is a King.
+   */
+  freecell.testWinCondition = function() {
+    var f1 = control.peekByPile('A');
+    var f2 = control.peekByPile('B');
+    var f3 = control.peekByPile('C');
+    var f4 = control.peekByPile('D');
+    var won = (f1 && f1.value==13 && f2 && f2.value==13 && f3 && f3.value==13 && f4&&f4.value==13);
+    if (won) control.won();
   };
 
   /**

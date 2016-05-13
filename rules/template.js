@@ -32,6 +32,12 @@
       'discard': { col:2, row:1, width:1, height:1},    // next to reserve
       'hand': { col:6, row:1, width:1, height:1}     // bottom right
     };
+    
+    layout.victory = {
+      text: 'Winner!',
+      color: 'cyan',
+      card: '12H'
+      };
 
     return layout;
     
@@ -127,6 +133,8 @@
         
         // win condition
         if (card.value > 100) {
+          // Show the win screen
+          control.won();
           game.ui.info('You won!');
         }
 
