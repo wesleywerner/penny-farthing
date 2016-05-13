@@ -21,13 +21,20 @@
     cards.hand = hand;
   };
 
-  model.deal = function(dealFunc) {
+  model.deal = function(dealFunc, zones) {
 
     model.cards = { };
 
     // Call the rules deal function
     dealFunc(game.deck, model.cards);
 
+    // ensure that each of the game zones have an initialized hand.
+    zones.forEach(function(zoneName) {
+      if (!model.cards[zoneName]) {
+        model.cards[zoneName] = game.deck.new();
+      }
+    });
+    
     // Determine if the cards are in one pile (stack), or an array of piles (ladder)
     Object.keys(model.cards).forEach(function(pileName) {
       
