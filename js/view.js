@@ -90,6 +90,8 @@
     // Request the rules layout
     view.layout = game.rules.requestLayout();
     
+    view.layout.victory = view.layout.victory || {text:'Victory', color:'yellow', card:'101JOKER'};
+    
     var w = view.element.clientWidth;
     var h = view.element.clientHeight;
     
@@ -198,6 +200,9 @@
     // Prerender the background
     view.predrawBackground();
     
+    // Prerender victory image
+    view.predrawVictory();
+    
     // Prerender cards to set up the canvas initially
     view.predrawCards();
     
@@ -289,6 +294,81 @@
       view.hasAnimationRequest = true;
       requestAnimationFrame(view.draw);
     }
+  };
+  
+  /**
+   * Predraw victory screen.
+   */
+  view.predrawVictory = function() {
+    
+    if (!view.victoryCanvas) {
+      view.victoryCanvas = document.createElement('canvas');
+    };
+    
+    view.victoryCanvas.width = w = view.element.clientWidth;
+    view.victoryCanvas.height = h = view.element.clientHeight;
+    
+    var ctx = view.victoryCanvas.getContext('2d');
+    
+    if (!ctx) {
+      console.log('no context received for drawing the victory canvas');
+      return;
+    }
+    
+    // measure wording
+    var victoryText = view.layout.victory.text;
+    
+    // scale font to screen
+    var ratio = 70 / 600;
+    var size = w * ratio;
+    var cardRatio = 1.5;
+    var cardWidth = view.size.card.width * cardRatio;
+    var cardHeight = view.size.card.height * cardRatio;
+    
+    // center text
+    w=w/2;
+    h=h/2;
+    
+    ctx.font = (size|20)+'px serif';
+    ctx.textAlign = 'center';
+
+    // shadow
+    ctx.globalAlpha = 0.2;
+    ctx.fillStyle = 'black';
+    ctx.fillText(victoryText, w+4, h+4);
+
+    ctx.globalAlpha = 1;
+
+    // outline
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 3;
+    ctx.strokeText(victoryText, w, h);
+    
+    // text
+    ctx.fillStyle = view.layout.victory.color;
+    ctx.fillText(victoryText, w, h);
+    
+    // card face
+    var map = view.facelookup[view.layout.victory.card];
+    if (map) {
+      ctx.save();
+      ctx.translate(w, h);
+      ctx.rotate(Math.PI / 5);
+      ctx.globalAlpha = 0.2;
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(-1, -1, cardWidth, cardHeight);
+      ctx.globalAlpha = 1;
+      ctx.drawImage(view.image('faces'),
+            map.x, map.y,
+            view.facelookup.gridsize.w,
+            view.facelookup.gridsize.h,
+            0, 0,
+            cardWidth, cardHeight
+            );
+      ctx.restore();
+    }
+
   };
   
   /**
@@ -514,6 +594,11 @@
       view.ctx.arc(view.dragged.pos.x, view.dragged.pos.y, 50, 0, 2 * Math.PI);
       view.ctx.stroke();
 
+    }
+    
+    if (view.showWinScreen) {
+      view.ctx.globalAlpha = 1;
+      view.ctx.drawImage(view.victoryCanvas, 0, 0);
     }
     
     //// Grid

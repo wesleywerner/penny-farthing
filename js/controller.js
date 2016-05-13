@@ -14,20 +14,35 @@
   // Flag if handlers have been set up
   controller.handlersAdded = false;
 
+
+  /**
+   * Mouse or Touch down event.
+   */
   controller.onMouseDown = function(event) {
+    
+    // Skip drags on the win screen
+    if (view.showWinScreen) return;
+    
+    // Get the touch position, card and zone
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
     if (card) {
+      
+      // Include the stack of cards on top of the selected card
       var cardsOnTop = [card].concat(controller.getCardsOnTopOf(zone, card));
+      
+      // Consult the rules if we can do this drag
       if (game.rules.allowDragEvent({zone:zone, cards:cardsOnTop})) {
         view.dragged = {zone:zone, pos:pos, cards:cardsOnTop};
-        //console.log('draggging ' + card.name);
       };
     }
   };
 
 
+  /**
+   * Mouse or Touch move event.
+   */
   controller.onMouseMove = function(event) {
     if (view.dragged) {
       var pos = controller.translateMouse(event);
@@ -37,7 +52,7 @@
   };
 
   /**
-   * Mouse or Touch up Event
+   * Mouse or Touch up event.
    */
   controller.onMouseUp = function(event) {
     
@@ -186,9 +201,17 @@
     game.model.deal(game.rules.dealFunc, Object.keys(layout.zones));
 
     // Tell the view to begin animating
+    view.showWinScreen = false;
     controller.redraw(true);
 
   }
+  
+  /**
+   * Set the game as won.
+   */
+  controller.won = function() {
+    view.showWinScreen = true;
+  };
   
   /**
    * Redraw.
