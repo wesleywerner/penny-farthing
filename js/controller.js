@@ -290,8 +290,8 @@
    */
   controller.peekByRow = function(zone, col, row) {
     var zonepile = game.model.cards[zone];
-    if (zonepile.isLaddder) {
-      return zonepile[col-1].get(row);
+    if (zonepile.isLadder) {
+      return zonepile[col-1].get(row-1);
     }
     return null;
   };
@@ -302,7 +302,7 @@
   controller.peekByCol = function(zone, col) {
     var zonepile = game.model.cards[zone];
     if (zonepile.isLadder) {
-      return zonepile[col].get();
+      return zonepile[col-1].get();
     }
     return null;
   };
