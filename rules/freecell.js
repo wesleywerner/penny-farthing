@@ -121,7 +121,7 @@
     
       // move on to a free cell
       if (dragged.cards.length == 1 && dropped.zone.startsWith('Free')) {
-        var freeZone = control.peek(dropped.zone);
+        var freeZone = control.peekByPile(dropped.zone);
         if (!freeZone) {
           // free zone is empty, drop the card here
           control.place(card, dropped.zone);
@@ -157,7 +157,7 @@
     }
     
     if (dropped.zone == 'A' || dropped.zone == 'B' || dropped.zone == 'C' || dropped.zone == 'D') {
-      var foundation = control.peek(dropped.zone);
+      var foundation = control.peekByPile(dropped.zone);
       if (!foundation && card.value == 1) {
         // place an ace
         control.place(card, dropped.zone);
