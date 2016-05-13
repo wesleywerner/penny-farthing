@@ -39,7 +39,7 @@
     Object.keys(model.cards).forEach(function(pileName) {
       
       var pile = model.cards[pileName];
-      var isStack = pile.cards;
+      var isStack = pile.cards != undefined;
       var isLadder = !isStack && pile.length > 0;
       
       // Store the zone card state
