@@ -116,20 +116,54 @@
     };
     
   };
+
+  // Deals a predictable layout for testing controller manipulation methods
+  t.dealFunc = function(dealer, cards) {
+
+    var deck = dealer.new();
+    deck.fill();
+
+    cards.tableau = [ ];
+    for (var i = 0; i <= 5; i++) {
+      cards.tableau[i] = deck.take(2);
+    };
+    
+    cards.hand = deck.take(5);
+
+  };
+
+  t.testController = function() {
+    
+    console.log('Test dealing and game controller calls');
+    game.model.deal(t.dealFunc);
+    
+    var card = game.controller.peekByCol('tableau', 1);
+    console.assert(card, 'Expected a card returned from peekByCol');
+    console.assert(card.suit == 'H', 'Expected Hearts from peekByCol');
+    console.assert(card.value == 13, 'Expected King from peekByCol');
+    console.log('... passed peekByCol');
+    
+    var card = game.controller.peekByRow('tableau', 1, 1);
+    console.assert(card, 'Expected a card returned from peekByRow');
+    console.assert(card.suit == 'S', 'Expected Spades from peekByRow');
+    console.assert(card.value == 13, 'Expected King from peekByRow');
+    console.log('... passed peekByRow');
+    
+    var card = game.controller.peekByPile('hand');
+    console.assert(card, 'Expected a card returned from peekByPile');
+    console.assert(card.suit == 'S', 'Expected Spades from peekByPile');
+    console.assert(card.value == 9, 'Expected Nine from peekByPile');
+    console.log('... passed peekByPile');
+
+  };
   
+
+  game.unitTestsRunning = true;
   t.testRandomSeed();
   t.testDeckCreation();
   t.testDeckShuffle();
   t.testDeckTake();
   t.testDeckAdding();
-
-  t.testDeal = function() {
-    game.model.deal(t.dealFunc);
-  };
-  
-  t.dealFunc = function(dealer, cards) {
-    };
-
-  t.testDeal();
+  t.testController();
   
 })();
