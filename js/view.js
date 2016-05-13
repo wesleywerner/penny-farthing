@@ -400,18 +400,10 @@
       // Get the cards linked to this zone
       var zoneCards = game.model.cards[zonename];
       
-      // Determine if the cards are in one pile (stack), or an array of piles (ladder)
-      var isStack = zoneCards.cards;
-      var isLadder = !isStack && zoneCards.length > 0;
-      
-      // Store the zone card state
-      zoneCards.isStack = isStack;
-      zoneCards.isLadder = isLadder;
-      
-      if (isStack) {
+      if (zoneCards.isStack) {
         zoneCards.cards.forEach(eachStackCard, zone);
       }
-      else if (isLadder) {
+      else if (zoneCards.isLadder) {
         zoneCards.forEach(eachPile, zone);
       }
   

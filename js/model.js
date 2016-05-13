@@ -22,8 +22,25 @@
   };
 
   model.deal = function(dealFunc) {
+
     model.cards = { };
+
+    // Call the rules deal function
     dealFunc(game.deck, model.cards);
+
+    // Determine if the cards are in one pile (stack), or an array of piles (ladder)
+    Object.keys(model.cards).forEach(function(pileName) {
+      
+      var pile = model.cards[pileName];
+      var isStack = pile.cards;
+      var isLadder = !isStack && pile.length > 0;
+      
+      // Store the zone card state
+      pile.isStack = isStack;
+      pile.isLadder = isLadder;
+
+    });
+    
   };
   
 })();
