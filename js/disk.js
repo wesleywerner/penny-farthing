@@ -10,12 +10,11 @@
     };
   };
   
-  disk.load = function(key, value) {
+  disk.load = function(key) {
     if (disk.allow) {
       var data = window.localStorage.getItem(key);
       if (data) {
-        value = JSON.parse(data);
-        return true;
+        return JSON.parse(data);
       }
     };
   }

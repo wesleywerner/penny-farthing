@@ -27,6 +27,12 @@
 
     // Call the rules deal function
     dealFunc(game.deck, model.cards);
+    
+    model.normalize(zones);
+    
+  };
+  
+  model.normalize = function(zones) {
 
     // ensure that each of the game zones have an initialized hand.
     zones.forEach(function(zoneName) {
@@ -47,6 +53,42 @@
       pile.isLadder = isLadder;
 
     });
+    
+  };
+  
+  /**
+   * Load a model from a data object.
+   * It has the same structure as model cards without functions.
+   */
+  model.loadFromData = function(data) {
+    
+    model.cards = { };
+    
+    var zones = Object.keys(data)
+    
+    zones.forEach(function(zoneName){
+      
+      var zoneData = data[zoneName];
+      
+      // Load stack
+      if (zoneData.isStack) {
+        model.cards[zoneName] = deck = game.deck.new();
+        zoneData.cards.forEach(function(cardData){
+          var card = deck.card(cardData.value, cardData.suit);
+          card.up = cardData.up;
+          deck.add(card);
+        });
+      }
+      
+      // Ladders are stored as arrays
+      if (!zoneData.isStack && zoneData.length) {
+        
+        
+      }
+      
+    });
+    
+    model.normalize(zones);
     
   };
   
