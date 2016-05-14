@@ -137,7 +137,9 @@
       table.appendChild(row);
     };
     
-    game.history.list.forEach(addHistoryRow);
+    for (i=game.history.list.length-1; i; i--) {
+      addHistoryRow(game.history.list[i]);
+    }
 
     // Display the modal
     $('#GameHistoryModal').modal('show');
