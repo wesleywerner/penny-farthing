@@ -52,6 +52,15 @@
     var el = document.getElementById('game-ui-animations');
     el.addEventListener("change", function() {
       game.controller.toggleAnimations(this.checked);
+      $('#SettingsModal').modal('hide');
+    });
+    
+    // Clear game play history
+    var el = document.getElementById('game-ui-clear-history');
+    el.addEventListener("click", function() {
+      if (game.controller.clearHistory()) {
+        $('#SettingsModal').modal('hide');
+      }
     });
     
   });

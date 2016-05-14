@@ -28,6 +28,11 @@
     history.list.splice(reference, 1);
     game.disk.save('game history', history.list)
   }
+  
+  history.clear = function() {
+    history.list = [ ];
+    game.disk.save('game history', history.list)
+  };
 
 })();
 

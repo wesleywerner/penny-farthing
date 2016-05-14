@@ -375,5 +375,17 @@
   controller.toggleAnimations = function(state) {
     view.animate = (state ? true : false);
   };
-    
+  
+  /**
+   * Clear game play history.
+   */
+  controller.clearHistory = function() {
+    if (confirm('Do you *really* want to clear your game play history?')) {
+      game.history.clear();
+      controller.gameHistoryRef = null;
+      alert('History cleared. Your next game onwards will be recorded.');
+      return true;
+    };
+  };
+  
 })();
