@@ -68,7 +68,7 @@
   /**
    * Build a menu from all game objects.
    */
-  ui.buildMenu = function() {
+  ui.buildGamesMenu = function() {
     var gameNames = Object.keys(game.games);
     var el = document.getElementById('all-games-list');
     gameNames.forEach(function(name) {
