@@ -12,8 +12,6 @@
    */
   document.addEventListener("DOMContentLoaded", function(event) { 
     
-    ui.infoEl = document.getElementById('game-info');
-    
     // This hook collapses the navbar after clicking a link,
     // but only if the nav is expanded. This hides the nav bar nicely
     // on mobile devices after link clicks.
@@ -42,6 +40,12 @@
     var el = document.getElementById('game-ui-history');
     el.addEventListener("click", function() {
       ui.showGameHistory();
+    });
+    
+    // Show game rules
+    var el = document.getElementById('game-ui-rules');
+    el.addEventListener("click", function() {
+      ui.showGameRules();
     });
     
   });
@@ -80,15 +84,6 @@
   };
   
   /**
-   * Display info text.
-   */
-  ui.info = function(text) {
-    if (ui.infoEl) {
-      ui.infoEl.innerHTML = text;
-    };
-  };
-  
-  /**
    * Build a menu from all game objects.
    */
   ui.buildGamesMenu = function() {
@@ -96,12 +91,11 @@
     var el = document.getElementById('all-games-list');
     gameNames.forEach(function(name) {
       var anchor = document.createElement('a');
-      anchor.innerHTML = name.toUpperCase();
+      anchor.innerHTML = name; //.toUpperCase();
       anchor.setAttribute("onclick", "game.ui.initialize('"+name+"')");
       anchor.setAttribute("href", "#");
-      var listItem = document.createElement('li');
-      listItem.appendChild(anchor);
-      el.appendChild(listItem);
+      anchor.classList.add('list-group-item');
+      el.appendChild(anchor);
     });
   }
   
@@ -154,6 +148,22 @@
 
     // Display the modal
     $('#GameHistoryModal').modal('show');
+    
+  };
+  
+  /**
+   * Show the game rules modal.
+   */
+  ui.showGameRules = function() {
+    
+    var el = document.getElementById('game-info');
+    
+    if (!el) return;
+    
+    el.innerHTML = game.rules.requestRulesWording();
+
+    // Display the modal
+    $('#GameRulesModal').modal('show');
     
   };
   

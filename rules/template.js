@@ -43,6 +43,11 @@
     
   }
   
+  // Give the game rules
+  template.requestRulesWording = function() {
+    return '<p>This is a template game you can use to build your own card games.</p><p>The rules are simple:</p> <ul><li>Pick any top card to replace your current hand, which will be discarded</li><li>If you pick up the joker you win the game.</li></ul>';
+  };
+  
   /**
    * Table deal function.
    * cards is an array and can contain:
@@ -122,12 +127,9 @@
     // tableau cards can only be acted on if they are the top card, with a facing value.
     if (dragged.zone == 'tableau' && dropped.zone == 'hand') {
       
-      // move each card in the drag pile
+      // move the card to the drag pile
       var len = dragged.cards.length;
-      if (len > 1) {
-        game.ui.info('You dragged '+len+' cards. This is a feature of our game engine, but for this template game, play one card at a time, please ;)');
-      }
-      else if (len == 1) {
+      if (len == 1) {
         
         var card = dragged.cards[0];
         
@@ -135,7 +137,6 @@
         if (card.value > 100) {
           // Show the win screen
           control.won();
-          game.ui.info('You won!');
         }
 
         // discard our hand
@@ -154,8 +155,6 @@
    */
   template.setup = function() {
   
-    var ui = game.ui;
-    ui.info('This is a card game rules template. It features a very basic game: Pick any card, your hand will be discarded. If you pick up the joker you win the game.');
     control.deal();
   
   };

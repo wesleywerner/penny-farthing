@@ -70,19 +70,9 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          
           <ul class="nav navbar-nav">
             
-            <li><a href="#" onclick="game.ui.initialize()">New Game</a></li>
-            
-            <!-- Select Card Game -->
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Play <span class="caret"></span></a>
-              <ul class="dropdown-menu" id="all-games-list">
-                
-                <!-- New games get built here via UI.JS -->
-
-              </ul>
-            </li>
           </ul>
 
           <!-- Right aligned -->
@@ -106,21 +96,30 @@
           
           <!-- Game Number Panel -->
           <div class="panel panel-default">
-            <div class="panel-heading">Game Number</div>
+            <div class="panel-heading"><i class="glyphicon glyphicon-play-circle"></i> Game Number</div>
             <div class="panel-body">
               <input id="game-number" type="number" class="form-control" />
               <div class="btn-group btn-group-justified" role="group">
                 <a class="btn btn-default" id="game-ui-replay">Replay</a>
                 <a class="btn btn-default" id="game-ui-new">New</a>
                 <a class="btn btn-default" id="game-ui-history"><i class="glyphicon glyphicon-list"></i></a>
+                <a class="btn btn-default" id="game-ui-rules"><i class="glyphicon glyphicon-question-sign"></i></a>
               </div>
             </div>
           </div>
           
-          <!-- Game Info Panel -->
-          <div class="panel panel-default">
-            <div class="panel-heading">Game Info<a class="pull-right hidden-md hidden-lg" href="#playfield">Back to game</a></div>
-            <div class="panel-body" id="game-info"></div>
+          <!-- All Games List -->
+          <div class="panel panel-primary">
+            <div class="panel-heading"><i class="glyphicon glyphicon-heart"></i> Play Another Game</div>
+            <div class="panel-body">
+            
+              <div class="list-group" id="all-games-list">
+                  
+                  <!-- New games get built here via UI.JS -->
+
+              </div>
+
+            </div>
           </div>
           
         </div>
@@ -151,7 +150,25 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Game Rules Modal -->
+    <div class="modal fade" id="GameRulesModal" tabindex="-1" role="dialog" aria-labelledby="GameRulesModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="GameRulesModalLabel">Game Rules</h4>
+          </div>
+          <div class="modal-body" id="game-info">
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

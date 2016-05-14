@@ -41,7 +41,24 @@
 
     return layout;
     
-  }
+  };
+  
+  // Give the game rules
+  freecell.requestRulesWording = function() {
+    return `<h1>Freecell</h1>
+<p>FreeCell is a solitaire-based card game played with a 52-card standard deck.
+There are four open cells and four open foundations (marked A, B, C and D).
+Cards are dealt face-up into eight cascades, four of which comprise seven cards and four of which comprise six.</p>
+<p><strong>Moves</strong></p>
+<ul>
+<li>Any card may be moved into a free cell.</li>
+<li>Move a card, or a stack of cards, building down by alternating colors.</li>
+<li>Foundations are built counting up by suit.</li>
+<li>The game is won when all cards are moved to their foundation piles.</li>
+<li>You can move n cards at the same time, where n is the number of open free cells + 1.</li>
+</ul>
+`;
+  };
   
   /**
    * Table deal function.
@@ -89,7 +106,7 @@
     maxCards += control.peekByPile('Free3') ? 0 : 1;
     maxCards += control.peekByPile('Free4') ? 0 : 1;
     maxCards += 1;
-    game.ui.info('You have enough free cells to move '+maxCards+' card'+(maxCards==1 ? '':'s'));
+    //game.ui.info('You have enough free cells to move '+maxCards+' card'+(maxCards==1 ? '':'s'));
     if (dragged.cards.length > maxCards) return false;
 
     // Ensure alternating colors and descending rank
@@ -188,8 +205,6 @@
    */
   freecell.setup = function() {
   
-    var ui = game.ui;
-    ui.info('This is a card game rules freecell. It features a very basic game: Pick any card, your hand will be discarded. If you pick up the joker you win the game.');
     control.deal();
   
   };
