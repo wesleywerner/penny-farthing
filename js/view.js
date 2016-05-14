@@ -315,12 +315,17 @@
       return;
     }
     
-    // measure wording
+    // shaded overlay
+    ctx.globalAlpha = 0.3;
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, view.element.clientWidth, view.element.clientHeight);
+    
+    // wording
     var victoryText = view.layout.victory.text;
     
     // scale font to screen
     var ratio = 70 / 600;
-    var size = w * ratio;
+    var fontSize = w * ratio;
     var cardRatio = 1.5;
     var cardWidth = view.size.card.width * cardRatio;
     var cardHeight = view.size.card.height * cardRatio;
@@ -329,7 +334,7 @@
     w=w/2;
     h=h/2;
     
-    ctx.font = (size|20)+'px serif';
+    ctx.font = (fontSize|20)+'px serif';
     ctx.textAlign = 'center';
 
     // shadow
