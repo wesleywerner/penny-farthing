@@ -23,6 +23,11 @@
       game.disk.save('game history', history.list)
     }
   };
+  
+  history.remove = function(reference) {
+    history.list.splice(reference, 1);
+    game.disk.save('game history', history.list)
+  }
 
 })();
 

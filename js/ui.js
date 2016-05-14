@@ -66,7 +66,8 @@
         if (!confirm('Replay game #'+seed+'?')) return;
       }
       else {
-        if (!confirm('Start a new game of '+game.controller.gameName+'?')) return;
+        // if gamename is empty, it means to play the current game again, as stored in game.controller.gameName
+        if (!confirm('Start a new game of '+(gamename || game.controller.gameName)+'?')) return;
       }
     }
         
@@ -129,7 +130,7 @@
       table.appendChild(row);
     };
     
-    for (i=game.history.list.length-1; i; i--) {
+    for (i=game.history.list.length-1; i>0; i--) {
       addHistoryRow(game.history.list[i]);
     }
 

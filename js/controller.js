@@ -70,6 +70,7 @@
     }
     
     if (view.dragged) {
+      controller.playerTouches++;
       // When not dropped on a valid grid then avoid notifying the rules about nothing
       if (grid) {
         game.rules.dropEvent({zone:view.dragged.zone, cards:view.dragged.cards}, {zone:zone, card:card, grid:grid});
@@ -155,6 +156,18 @@
       controller.gameName = gamename;
     }
     
+    // If the previous game had a history reference, and the player
+    // did not touch the playfield much, remove it from history.
+    if (controller.gameHistoryRef != null) {
+      if (controller.playerTouches < 10) {
+        game.history.remove(controller.gameHistoryRef);
+        controller.gameHistoryRef = null;
+      }
+    };
+    
+    // Clear the touch count
+    controller.playerTouches = 0;    
+
     // Record to history
     controller.gameHistoryRef = game.history.new(game.controller.gameName, controller.seed);
     
@@ -204,7 +217,7 @@
     var layout = game.rules.requestLayout();
     
     game.model.deal(game.rules.dealFunc, Object.keys(layout.zones));
-
+    
     // Tell the view to begin animating
     view.showWinScreen = false;
     controller.redraw(true);
