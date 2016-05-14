@@ -48,6 +48,12 @@
       ui.showGameRules();
     });
     
+    // Toggle animation settings
+    var el = document.getElementById('game-ui-animations');
+    el.addEventListener("change", function() {
+      game.controller.toggleAnimations(this.checked);
+    });
+    
   });
   
   

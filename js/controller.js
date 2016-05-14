@@ -368,5 +368,12 @@
     
     return stack;
   };
+  
+  /**
+   * Toggle animations on and off.
+   */
+  controller.toggleAnimations = function(state) {
+    view.animate = (state ? true : false);
+  };
     
 })();
