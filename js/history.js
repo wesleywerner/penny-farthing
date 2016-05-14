@@ -5,11 +5,14 @@
   var g = window.game = window.game == undefined ? { } : window.game;
   var history = g.history = { };
   
-  history.list = [ ];
+  // Load history from disk
+  history.list = game.disk.load('game history') || [ ];
 
   history.new = function(gameName, gameNumber) {
     var entry = { gameName:gameName, gameNumber:gameNumber, startDate:Date(), endDate:null, won:false };
-    return history.list.push(entry) - 1;
+    var reference = history.list.push(entry) - 1;
+    game.disk.save('game history', history.list)
+    return reference;
   };
   
   history.markWon = function(reference) {
@@ -17,8 +20,9 @@
     if (entry) {
       entry.won = true;
       entry.endDate = Date();
+      game.disk.save('game history', history.list)
     }
-  }
+  };
 
 })();
 
