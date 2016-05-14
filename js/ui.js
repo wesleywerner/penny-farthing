@@ -119,9 +119,10 @@
     var table = document.getElementById('game-ui-history-table');
     table.innerHTML = '';
 
-    var addHistoryCell = function(row, value) {
+    var addHistoryCell = function(row, value, tooltip) {
       var cell = document.createElement('td');
       cell.innerHTML = value;
+      if (tooltip) cell.setAttribute('title', tooltip);
       row.appendChild(cell);
     };
     
@@ -129,7 +130,7 @@
       var row = document.createElement('tr');
       addHistoryCell(row, data.gameName);
       addHistoryCell(row, data.gameNumber);
-      addHistoryCell(row, moment(data.startDate).fromNow());
+      addHistoryCell(row, moment(data.startDate).fromNow(), data.startDate);
       addHistoryCell(row, data.won ? 'Yes' : 'No');
       // Highlight won rows
       if (data.won) row.classList.add('success');
