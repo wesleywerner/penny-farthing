@@ -146,9 +146,6 @@
     
     controller.reseed(seed);
 
-    // Record to history
-    controller.gameHistoryRef = game.history.new(gamename, controller.seed);
-    
     game.ui.reset();
     controller.canvas = canvasElement;
     
@@ -156,6 +153,9 @@
     if (gamename) {
       controller.gameName = gamename;
     }
+    
+    // Record to history
+    controller.gameHistoryRef = game.history.new(game.controller.gameName, controller.seed);
     
     // Reload the current game
     if (!gamename) {
