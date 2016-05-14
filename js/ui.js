@@ -19,33 +19,63 @@
     // but only if the nav is expanded. This hides the nav bar nicely
     // on mobile devices after link clicks.
     $(document).on('click','.navbar-collapse.in',function(e) {
-        if( $(e.target).is('a') ) {
-            $(this).collapse('hide');
-        }
+      if( $(e.target).is('a') ) {
+        $(this).collapse('hide');
+      }
     });
 
-    // handler to set the game number
-    var el = document.getElementById('set-game-number');
+    // Replay a known game number
+    var el = document.getElementById('game-ui-replay');
     el.addEventListener("click", function() {
-        var el = document.getElementById('game-number');
-        document.getElementById('playfield').scrollIntoView();
-        game.ui.initialize(null, parseInt(el.value));
-      });
+      ui.scrollToView();
+      var el = document.getElementById('game-number');
+      ui.initialize(null, parseInt(el.value));
+    });
+    
+    // Play a new (random) game
+    var el = document.getElementById('game-ui-new');
+    el.addEventListener("click", function() {
+      ui.scrollToView();
+      ui.initialize();
+    });
+
+    // Show game history
+    var el = document.getElementById('game-ui-history');
+    el.addEventListener("click", function() {
+      alert('show history')
+    });
     
   });
   
   
   /**
+   * Scroll the playfield into view.
+   */
+  ui.scrollToView = function() {
+    document.getElementById('playfield').scrollIntoView();
+  };
+
+  
+  /**
    * Start a new game, or restart the current game if null name is given.
    * A specific seed can be given too, or one will be generated otherwise.
    */
-  ui.initialize = function(gamename, newseed) {
-    // prompt on restart
-    if (!gamename) {
-      if (!confirm('Restart your game?')) return;
+  ui.initialize = function(gamename, seed) {
+    
+    if (game.controller.gameName) {
+      if (seed) {
+        if (!confirm('Replay game #'+seed+'?')) return;
+      }
+      else {
+        if (!confirm('Start a new game of '+game.controller.gameName+'?')) return;
+      }
     }
+        
+    // Initialize a new game with the given seed
     var el = document.getElementById('playfield');
-    game.controller.initialize(el, gamename, newseed);
+    game.controller.initialize(el, gamename, seed);
+    
+    // Display the seed in the ui
     game.ui.displayGameNumber(game.controller.seed);
   };
   

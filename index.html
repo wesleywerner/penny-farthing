@@ -93,22 +93,33 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-2"></div>
+        
+        <!-- Playfield Canvas -->
         <div class="col-md-8 text-center">
           <canvas id="playfield"></canvas>
         </div>
-        <div class="col-md-2">
+        
+        <div class="col-md-4">
+          
+          <!-- Game Number Panel -->
+          <div class="panel panel-default">
+            <div class="panel-heading">Game Number</div>
+            <div class="panel-body">
+              <input id="game-number" type="number" class="form-control" />
+              <div class="btn-group btn-group-justified" role="group">
+                <a class="btn btn-default" id="game-ui-replay">Replay</a>
+                <a class="btn btn-default" id="game-ui-new">New</a>
+                <a class="btn btn-default" id="game-ui-history"><i class="glyphicon glyphicon-list"></i></a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Game Info Panel -->
           <div class="panel panel-default">
             <div class="panel-heading">Game Info<a class="pull-right hidden-md hidden-lg" href="#playfield">Back to game</a></div>
             <div class="panel-body" id="game-info"></div>
           </div>
-          <div class="panel panel-info">
-            <div class="panel-heading">Game Number</div>
-            <div class="panel-body">
-              <input id="game-number" type="number" class="form-control" />
-              <button id="set-game-number" class="btn btn-default btn-block">Play</button>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -127,6 +138,8 @@
     <script type="text/javascript">
       
       game.ui.buildGamesMenu();
+      
+      // Remove this call when we are ready to build a landing page.
       game.ui.initialize('freecell');
       
     </script>
