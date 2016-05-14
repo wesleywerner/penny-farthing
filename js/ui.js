@@ -142,7 +142,7 @@
       table.appendChild(row);
     };
     
-    for (i=game.history.list.length-1; i>0; i--) {
+    for (i=game.history.list.length-1; i>=0; i--) {
       addHistoryRow(game.history.list[i]);
     }
 
