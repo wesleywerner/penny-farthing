@@ -129,7 +129,7 @@
       var row = document.createElement('tr');
       addHistoryCell(row, data.gameName);
       addHistoryCell(row, data.gameNumber);
-      addHistoryCell(row, data.startDate);
+      addHistoryCell(row, moment(data.startDate).fromNow());
       addHistoryCell(row, data.won ? 'Yes' : 'No');
       // Highlight won rows
       if (data.won) row.classList.add('success');
