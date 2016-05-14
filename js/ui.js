@@ -80,6 +80,9 @@
    */
   ui.initialize = function(gamename, seed) {
     
+    // Hide the history modal if visible (like from replaying a historyical game)
+    $('#GameHistoryModal').modal('hide');
+    
     if (game.controller.gameName) {
       if (seed) {
         if (!confirm('Replay game #'+seed+'?')) return;
