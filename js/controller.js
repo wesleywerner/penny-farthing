@@ -144,9 +144,10 @@
    */
   controller.initialize = function(canvasElement, gamename, seed) {
     
+    // Set the game seed
     controller.reseed(seed);
 
-    game.ui.reset();
+    // Store the canvas element
     controller.canvas = canvasElement;
     
     // Remember the game we are playing

@@ -13,7 +13,6 @@
   document.addEventListener("DOMContentLoaded", function(event) { 
     
     ui.infoEl = document.getElementById('game-info');
-    ui.reset();
     
     // This hook collapses the navbar after clicking a link,
     // but only if the nav is expanded. This hides the nav bar nicely
@@ -77,13 +76,6 @@
     
     // Display the seed in the ui
     game.ui.displayGameNumber(game.controller.seed);
-  };
-  
-  /**
-   * Reset elements.
-   */
-  ui.reset = function() {
-
   };
   
   /**
