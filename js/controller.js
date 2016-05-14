@@ -146,6 +146,9 @@
     
     controller.reseed(seed);
 
+    // Record to history
+    controller.gameHistoryRef = game.history.new(gamename, controller.seed);
+    
     game.ui.reset();
     controller.canvas = canvasElement;
     
@@ -211,6 +214,13 @@
    * Set the game as won.
    */
   controller.won = function() {
+    
+    // Flag won in history
+    if (controller.gameHistoryRef) {
+      game.history.markWon(controller.gameHistoryRef);
+      controller.gameHistoryRef = null;
+    }
+    
     view.showWinScreen = true;
   };
   
