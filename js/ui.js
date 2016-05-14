@@ -112,18 +112,36 @@
     var table = document.getElementById('game-ui-history-table');
     table.innerHTML = '';
 
-    var addHistoryCell = function(row, value, tooltip) {
+    var addHistoryCell = function(row, value) {
       var cell = document.createElement('td');
       cell.innerHTML = value;
-      if (tooltip) cell.setAttribute('title', tooltip);
+      row.appendChild(cell);
+      return cell;
+    };
+    
+    var addReplayLink = function(row, gameName, number) {
+      var anchor = document.createElement('a');
+      anchor.innerHTML = '#'+number.toString();
+      //anchor.setAttribute('onclick', 'game.ui.initialize("'+gameName+'", '+number+')');
+      anchor.setAttribute('href', '#');
+      anchor.onclick = function(){ game.ui.initialize(gameName, number) };
+      
+      var cell = document.createElement('td');
+      cell.appendChild(anchor);
       row.appendChild(cell);
     };
     
     var addHistoryRow = function(data) {
       var row = document.createElement('tr');
+      // Game name
       addHistoryCell(row, data.gameName);
-      addHistoryCell(row, data.gameNumber);
-      addHistoryCell(row, moment(data.startDate).fromNow(), data.startDate);
+      // Game number with link
+      addReplayLink(row, data.gameName, data.gameNumber);
+      
+      // Date with tooltip
+      var cell = addHistoryCell(row, moment(data.startDate).fromNow());
+      cell.setAttribute('title', data.startDate);
+      // Won
       addHistoryCell(row, data.won ? 'Yes' : 'No');
       // Highlight won rows
       if (data.won) row.classList.add('success');
