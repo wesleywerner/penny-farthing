@@ -42,7 +42,7 @@
     // Show game history
     var el = document.getElementById('game-ui-history');
     el.addEventListener("click", function() {
-      alert('show history')
+      ui.showGameHistory();
     });
     
   });
@@ -111,6 +111,37 @@
       el.appendChild(listItem);
     });
   }
+  
+  /**
+   * Build and show the game history.
+   */
+  ui.showGameHistory = function() {
+    var table = document.getElementById('game-ui-history-table');
+    table.innerHTML = '';
+
+    var addHistoryCell = function(row, value) {
+      var cell = document.createElement('td');
+      cell.innerHTML = value;
+      row.appendChild(cell);
+    };
+    
+    var addHistoryRow = function(data) {
+      var row = document.createElement('tr');
+      addHistoryCell(row, data.gameName);
+      addHistoryCell(row, data.gameNumber);
+      addHistoryCell(row, data.startDate);
+      addHistoryCell(row, data.won ? 'Yes' : 'No');
+      // Highlight won rows
+      if (data.won) row.classList.add('success');
+      table.appendChild(row);
+    };
+    
+    game.history.list.forEach(addHistoryRow);
+
+    // Display the modal
+    $('#GameHistoryModal').modal('show');
+    
+  };
   
   /**
    * Display the game number.

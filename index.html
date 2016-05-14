@@ -124,6 +124,32 @@
       </div>
     </div>
     
+    <!-- Game History Modal -->
+    <div class="modal fade" id="GameHistoryModal" tabindex="-1" role="dialog" aria-labelledby="GameHistoryModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="GameHistoryModalLabel">Game History</h4>
+          </div>
+          <div class="modal-body">
+            <!-- History Table -->
+            <table class="table table-bordered">
+              <thead>
+                <tr><td>Game</td><td>Number</td><td>Date</td><td>Won</td></tr>
+              </thead>
+              <tbody id="game-ui-history-table">
+                <!-- Generated via UI -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Load card images -->
     <div style="display: none">
       <img id="cardback" src="assets/cardback.png" />
