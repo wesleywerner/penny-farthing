@@ -42,11 +42,13 @@
 
     <style type="text/css">
       html, body {
-        background: #000;
+        background: #021;
         font-size: 1em;
       }
       canvas {
         width: 80%;
+      }
+      .playfield-container {
       }
     </style>
         
@@ -77,7 +79,7 @@
 
           <!-- Right aligned -->
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">About</a></li>
+            <li><a id="game-ui-about-show" href="#">About</a></li>
             <li><a href="#Settings" data-toggle="modal" data-target="#SettingsModal"><i class="glyphicon glyphicon-wrench"></i></a></li>
           </ul>
 
@@ -85,11 +87,41 @@
       </div><!-- /.container-fluid -->
     </nav>
 
-    <div class="container-fluid">
+    <!-- About Penny Farthing -->
+    <div id="game-ui-about" class="container">
+    
+      <!-- Fork Me Ribbon -->
+      <a href="https://github.com/wesleywerner/penny-farthing"><img style="float: right; width: 149px; height: 149px;" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-green@2x.png" alt="Fork me on GitHub"></a>
+
+      <!-- About Jumbotron -->
+      <div class="jumbotron">
+        <div class="page-header">
+          <h3>Penny Farthing Card Games <small>Presented by Wesley</small></h3>
+        </div>
+        <div class="row">
+          <div class="col-md-10">
+            <!-- If you enjoy a great card game, look no further! We at Penny Farthing aim to please you with classic and new games till your heart's content. -->
+            <p><em>If 't be true thee enjoyeth a most wondrous card game, behold nay furth'r! We at penny farthing aim to prithee thee with classic and new games till thy heart's content.</em></p>
+          </div>
+          <div class="col-md-2">
+            <p>
+            <a href="https://commons.wikimedia.org/wiki/File%3ABicycling-ca1887-bigwheelers.jpg"><img src="assets/433px-Bicycling-ca1887-bigwheelers.jpg" class="img-responsive img-thumbnail" /></a>
+            </p>
+          </div>
+        </div>
+        <p>
+          <button id="game-ui-about-hide" class="btn btn-success btn-lg">Continue</button>
+        </p>
+      </div>
+
+    </div>
+    
+    <div id="ui-game-playfield" class="container-fluid" style="display: none;">
+
       <div class="row">
         
         <!-- Playfield Canvas -->
-        <div class="col-md-8 text-center">
+        <div class="col-md-8 text-center playfield-container">
           <canvas id="playfield"></canvas>
         </div>
         
@@ -232,7 +264,7 @@
       game.ui.buildGamesMenu();
       
       // Remove this call when we are ready to build a landing page.
-      game.ui.initialize('freecell');
+      //game.ui.initialize('freecell');
       
     </script>
 

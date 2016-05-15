@@ -22,49 +22,86 @@
     });
 
     // Replay a known game number
-    var el = document.getElementById('game-ui-replay');
-    el.addEventListener("click", function() {
-      ui.scrollToView();
-      var el = document.getElementById('game-number');
-      ui.initialize(null, parseInt(el.value));
-    });
+    ui.bindToEvent('game-ui-replay', 'click', ui.replayGame);
     
     // Play a new (random) game
-    var el = document.getElementById('game-ui-new');
-    el.addEventListener("click", function() {
-      ui.scrollToView();
-      ui.initialize();
-    });
+    ui.bindToEvent('game-ui-new', 'click', ui.playNewGame);
 
     // Show game history
-    var el = document.getElementById('game-ui-history');
-    el.addEventListener("click", function() {
-      ui.showGameHistory();
-    });
+    ui.bindToEvent('game-ui-history', 'click', ui.showGameHistory);
     
     // Show game rules
-    var el = document.getElementById('game-ui-rules');
-    el.addEventListener("click", function() {
-      ui.showGameRules();
-    });
+    ui.bindToEvent('game-ui-rules', 'click', ui.showGameRules);
     
     // Toggle animation settings
-    var el = document.getElementById('game-ui-animations');
-    el.addEventListener("change", function() {
-      game.controller.toggleAnimations(this.checked);
-      $('#SettingsModal').modal('hide');
-    });
+    ui.bindToEvent('game-ui-animations', 'change', ui.toggleAnimations);
     
     // Clear game play history
-    var el = document.getElementById('game-ui-clear-history');
-    el.addEventListener("click", function() {
-      if (game.controller.clearHistory()) {
-        $('#SettingsModal').modal('hide');
-      }
-    });
+    ui.bindToEvent('game-ui-clear-history', 'click', game.controller.clearHistory);
+    
+    // Show the "About" panel
+    ui.bindToEvent('game-ui-about-show', 'click', ui.showAboutPanel);
+    
+    // Hide the "About" panel
+    ui.bindToEvent('game-ui-about-hide', 'click', ui.hideAboutPanel);
     
   });
   
+  
+  /** 
+   * Bind a function to an element event.
+   */
+  ui.bindToEvent = function(elementId, event, callback) {
+    var el = document.getElementById(elementId);
+    el.addEventListener(event, callback);
+  };
+  
+  /**
+   * Replay a game.
+   */
+  ui.replayGame = function() {
+    ui.scrollToView();
+    var el = document.getElementById('game-number');
+    ui.initialize(null, parseInt(el.value));
+  };
+  
+  /**
+   * Play new game.
+   */
+  ui.playNewGame = function() {
+    ui.scrollToView();
+    ui.initialize();
+  };
+  
+  /**
+   * Show the "About" panel.
+   */
+  ui.showAboutPanel = function() {
+    $('#game-ui-about').show();
+  };
+  
+  /**
+   * Hide the "About" panel.
+   */
+  ui.hideAboutPanel = function() {
+    $('#ui-game-playfield').show();
+    $('#game-ui-about').hide();
+    ui.scrollToView();
+  };
+  
+  /**
+   * Show the "About" panel.
+   */
+  ui.showAboutPanel = function() {
+    $('#game-ui-about').show();
+  };
+  
+  /**
+   * Toggle animations.
+   */
+  ui.toggleAnimations = function() {
+    game.controller.toggleAnimations(this.checked);
+  };
   
   /**
    * Scroll the playfield into view.
