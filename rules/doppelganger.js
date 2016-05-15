@@ -213,15 +213,15 @@ When you Panic you discard your current Shape and take the top card of the Reser
           var pos = draggedCard.clickedColRow;
           
           // directly above
-          var acard = control.peekByRow('tableau', pos.col, Math.max(1, pos.row-1) );
+          var acard = control.peekByRow('tableau', pos.col, Math.max(0, pos.row-1) );
           if (acard) acard.up = true;
 
           // to the left
-          acard = control.peekByRow('tableau', Math.max(1, pos.col-1), pos.row );
+          acard = control.peekByRow('tableau', Math.max(0, pos.col-1), pos.row );
           if (acard) acard.up = true;
           
           // to the right
-          acard = control.peekByRow('tableau', Math.min(6, pos.col+1), pos.row );
+          acard = control.peekByRow('tableau', Math.min(5, pos.col+1), pos.row );
           if (acard) acard.up = true;
           
         }

@@ -27,6 +27,8 @@
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
+    var grid = view.gridAt(pos.x, pos.y);
+    
     if (card) {
       
       // Include the stack of cards on top of the selected card
@@ -34,7 +36,7 @@
       
       // Consult the rules if we can do this drag
       if (game.rules.allowDragEvent({zone:zone, cards:cardsOnTop})) {
-        view.dragged = {zone:zone, pos:pos, cards:cardsOnTop};
+        view.dragged = {zone:zone, pos:pos, cards:cardsOnTop, grid:grid};
       };
     }
   };
@@ -65,15 +67,17 @@
     // at the grid position too. This handles when dragging cards
     // below valid piles.
     if (grid && !card) {
-      // The controlled peek functions are 1-based.
-      card = controller.peekByCol(zone, grid.col+1);
+      card = controller.peekByCol(zone, grid.col);
     }
     
     if (view.dragged) {
       controller.playerTouches++;
       // When not dropped on a valid grid then avoid notifying the rules about nothing
       if (grid) {
-        game.rules.dropEvent({zone:view.dragged.zone, cards:view.dragged.cards}, {zone:zone, card:card, grid:grid});
+        game.rules.dropEvent(
+          {zone:view.dragged.zone, cards:view.dragged.cards, grid:view.dragged.grid},
+          {zone:zone, card:card, grid:grid}
+          );
       }
       view.dragged = null;
     }
@@ -333,7 +337,7 @@
   controller.peekByRow = function(zone, col, row) {
     var zonepile = game.model.cards[zone];
     if (zonepile.isLadder) {
-      return zonepile[col-1].get(row-1);
+      return zonepile[col].get(row);
     }
     return null;
   };
@@ -344,7 +348,7 @@
   controller.peekByCol = function(zone, col) {
     var zonepile = game.model.cards[zone];
     if (zonepile.isLadder) {
-      return zonepile[col-1].get();
+      return zonepile[col].get();
     }
     return null;
   };

@@ -6,12 +6,9 @@
 
 ;(function(){
   
-  // reference the game object
-  var g = window.game = window.game == undefined ? { } : window.game;
-
   // refrence the controller.
   // We perform any card manipulations through here.
-  var control = g.controller;
+  var control = game.controller;
   
   // create our rules object
   var template = game.games.template = { };
@@ -27,10 +24,10 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:2, width:6, height:3},  // entire top row
-      'reserve': { col:1, row:1, width:1, height:1},  // bottom left
-      'discard': { col:2, row:1, width:1, height:1},    // next to reserve
-      'hand': { col:6, row:1, width:1, height:1}     // bottom right
+      'tableau': { col:1, row:2, width:6, height:3},
+      'reserve': { col:1, row:1, width:1, height:1},
+      'discard': { col:2, row:1, width:1, height:1},
+      'hand': { col:6, row:1, width:1, height:1}
     };
     
     layout.victory = {
