@@ -154,7 +154,7 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
       if (!dropped.card) {
         // move the entire dragged stack
         dragged.cards.forEach(function(card) {
-          control.place(card, dropped.zone, dropped.grid.col);
+          control.place(card, dropped.zone, dropped.column);
         });
       }
       
@@ -165,7 +165,7 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
         if (!sameColor && oneLower) {
           // move the entire dragged stack
           dragged.cards.forEach(function(card) {
-            control.place(card, dropped.zone, dropped.grid.col);
+            control.place(card, dropped.zone, dropped.column);
           });
         }
         

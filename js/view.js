@@ -725,17 +725,13 @@
   };
   
   /**
-   * Get the grid column and row at the given position.
+   * Get the grid column at the given x position.
    */
-  view.gridAt = function(x, y) {
+  view.columnAt = function(x) {
     for (col=0; col < view.grid.cols; col++) {
-      for (row=0; row < view.grid.rows; row++) {
-        var cell = view.grid.cells[col][row];
-        if (x > cell.x && x < cell.x+view.size.card.width) {
-          if (y > cell.y && y < cell.y+view.size.card.height) {
-            return {col:col, row:row, pos:cell};
-          }
-        }
+      var cell = view.grid.cells[col][0];
+      if (x > cell.x && x < cell.x+view.size.card.width) {
+        return col;
       }
     }
     return null;

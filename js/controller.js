@@ -27,7 +27,7 @@
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
-    var grid = view.gridAt(pos.x, pos.y);
+    var column = view.columnAt(pos.x);
     
     if (card) {
       
@@ -36,7 +36,7 @@
       
       // Consult the rules if we can do this drag
       if (game.rules.allowDragEvent({zone:zone, cards:cardsOnTop})) {
-        view.dragged = {zone:zone, pos:pos, cards:cardsOnTop, grid:grid};
+        view.dragged = {zone:zone, pos:pos, cards:cardsOnTop, column:column};
       };
     }
   };
@@ -61,25 +61,43 @@
     var pos = controller.translateMouse(event);
     var card = view.cardAt(pos.x, pos.y);
     var zone = view.zoneAt(pos.x, pos.y);
-    var grid = view.gridAt(pos.x, pos.y);
+    var column = view.columnAt(pos.x);
     
     // If the zone is a tableau-like layout, try get the card
-    // at the grid position too. This handles when dragging cards
-    // below valid piles.
-    if (grid && !card) {
-      card = controller.peekByCol(zone, grid.col);
+    // at the grid column.
+    if (column != null && !card) {
+      card = controller.peekByCol(zone, column);
     }
     
     if (view.dragged) {
+      
+      // Count this touch
       controller.playerTouches++;
-      // When not dropped on a valid grid then avoid notifying the rules about nothing
-      if (grid) {
-        game.rules.dropEvent(
-          {zone:view.dragged.zone, cards:view.dragged.cards, grid:view.dragged.grid},
-          {zone:zone, card:card, grid:grid}
-          );
+      
+      // Notify rules only of valid drops
+      if (column != null) {
+        
+        // Event Dragged and Drop parameters
+        var draggedParameter = {
+          zone:view.dragged.zone,
+          cards:view.dragged.cards,
+          column:view.dragged.column
+          };
+        
+        var droppedParameter = {
+          zone:zone,
+          card:card,
+          column:column
+          };
+        
+        // Fire rules drop event
+        game.rules.dropEvent(draggedParameter, droppedParameter);
+        
       }
+      
+      // Clear the dragged view object
       view.dragged = null;
+      
     }
     else {
       game.rules.dropEvent({zone:null, cards:[]}, {zone:zone, card:card});
