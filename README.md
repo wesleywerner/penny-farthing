@@ -1,47 +1,10 @@
 # Overview
 
-Lab: Create a card game.
-Restrictions: Allowed technologies are: Seb canvas, vanilla JS.
-Reasoning: Learn the web canvas API.
-Pattern: Attempt to model towards a model-view-controller pattern.
+Penny farthing is a solitaire card game engine using a web canvas and written in vanilla JavaScript.
 
-# Terminology
-
-### DECK
-
-A deck contains one or more cards. When you take from a deck, you have two decks.
-
-# Program Flow
-
-+---------+
-| DECK.JS |
-+-^-------+
-  |            +----------------+
-  |        +--->  GAME RULES.JS <--+
-  |        |   +----------------+  |
-  |        |                       |
-+-+--------+-+                   +-+-------+
-|  MODEL.JS  <-------------------+ VIEW.JS |
-+----------+-+                   +-+----+--+
-           |                       |    ^
-           |   +---------------+   |    |
-           +---> CONTROLLER.JS <---+    |
-               +-------+-------+        |
-                       |                |
-                  EVENT|DRIVEN          |
-                       |                |
-               +-------v-------+        |
-               |               +--------+
-               |   GAME LOOP   |
-               |               |
-               +---------------+
-
-DECK.JS provides methods to handle a deck of cards. It can fill a deck with 52 cards, shuffle, take and get cards.
-MODEL.JS tracks the game state, it consults GAME RULES whenever an action is performed.
-GAME RULES.JS contains game logic that determines how cards are dealt, moved, flipped or taken.
-CONTROLLER.JS handles user input and translates it to the methods that changes the model.
-VIEW.JS draw the state of the model. It consults GAME RULES when it has to determine the postition of a deck of cards.
+For details on it's implementation and how to make your own card game rules, [see the WIKI](https://github.com/wesleywerner/penny-farthing/wiki).
 
 # References
 
-Random number generator source code: https://gist.github.com/Protonk/5367430
+* [Random number generator source, by Protonk](https://gist.github.com/Protonk/5367430)
+* [Riders Image, By L. Prang & Co., touched up by user:Churchh, Public domain, via Wikimedia Commons](https://commons.wikimedia.org/wiki/File%3ABicycling-ca1887-bigwheelers.jpg)
