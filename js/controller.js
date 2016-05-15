@@ -274,11 +274,14 @@
    * Takes the top card from a zone.
    * Returns null if no card is available.
    */
-  controller.take = function(zone) {
+  controller.take = function(zone, amount) {
     // taking from piles returns a new pile.
-    var pile = model.cards[zone].take();
+    var pile = model.cards[zone].take(amount);
     if (pile.cards.length == 1) {
       return pile.cards[0];
+    }
+    if (pile.cards.length > 1) {
+      return pile;
     }
     else {
       return null;
