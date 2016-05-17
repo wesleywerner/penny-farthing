@@ -57,6 +57,15 @@
   };
   
   /**
+   * Start a default game.
+   */
+  ui.startDefaultGame = function() {
+    if (!game.controller.gameName) {
+      game.ui.initialize('klondike');
+    }
+  };
+  
+  /**
    * Replay a game.
    */
   ui.replayGame = function() {
@@ -86,6 +95,7 @@
   ui.hideAboutPanel = function() {
     $('#ui-game-playfield').show();
     $('#game-ui-about').hide();
+    ui.startDefaultGame();
     ui.scrollToView();
   };
   
