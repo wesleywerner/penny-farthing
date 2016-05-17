@@ -521,26 +521,41 @@
     // Request another animation loop while any cards are moving.
     var mustAnimate = false;
     
+    var stillCards = [ ];
+    var movingCards = [ ]
+    
     // Draw each card for every zone
-    var eachZonePile = function(zoneName) {
+    Object.keys(game.model.cards).forEach(function(zoneName) {
       var zoneCards = game.model.cards[zoneName];
       if (zoneCards.isStack) {
         zoneCards.cards.forEach(function(card, index){
-          if (view.updateDrawPosition(card)) mustAnimate = true;
-          view.drawCard(ctx, card, card.drawpos.x, card.drawpos.y);
+          if (view.updateDrawPosition(card)) {
+            mustAnimate = true;
+            movingCards.push(card);
+          }
+          else {
+            stillCards.push(card);
+          }
         });
       }
       else if (zoneCards.isLadder) {
         zoneCards.forEach(function(ladder, col){
           ladder.cards.forEach(function(card, row){
-            if (view.updateDrawPosition(card)) mustAnimate = true;
-            view.drawCard(ctx, card, card.drawpos.x, card.drawpos.y);
+            if (view.updateDrawPosition(card)) {
+              mustAnimate = true;
+              movingCards.push(card);
+            }
+            else {
+              stillCards.push(card);
+            }
           });
         });
       }
-    };
+    });
     
-    Object.keys(game.model.cards).sort().reverse().forEach(eachZonePile);
+    stillCards.concat(movingCards).forEach(function(card) {
+      view.drawCard(ctx, card, card.drawpos.x, card.drawpos.y);
+    });
     
     return mustAnimate;
     
