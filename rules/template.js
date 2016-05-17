@@ -38,7 +38,7 @@
   
   // Give the game rules
   template.requestRulesWording = function() {
-    return '<p>This is a template game you can use to build your own card games.</p><p>The rules are simple:</p> <ul><li>Pick any top card to replace your current hand, which will be discarded</li><li>If you pick up the joker you win the game.</li></ul>';
+    return `<p>This is a template game you can use to build your own card games.</p><p>The rules are simple:</p> <ul><li>Pick any top card to replace your current hand, which will be discarded</li><li>If you pick up the joker you win the game.</li></ul>`;
   };
   
   /**

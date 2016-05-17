@@ -39,25 +39,25 @@
   // Give the game rules
   doppel.requestRulesWording = function() {
     return `<h1>Doppelganger</h1>
-<p>A patience card game created by unpronounceable for Ludum Dare 35</p>
-<h3><a id="Goal_3"></a>Goal</h3>
-<p>Work your way through the stronghold (tableau), replacing people and spying to open up new options available to you. The goal is to find and replace the joker hidden within the stronghold.</p>
-<h3><a id="Spying_6"></a>Spying</h3>
-<p><em>Action: Tap a card</em><br>
-Spying is used to reveal cards in the Stronghold. Touch a face-up card at the bottom
-of a column that has the <em>same suit</em> as your Shape card. Adjacent cards are then revealed.</p>
-<h3><a id="Replacing_11"></a>Replacing</h3>
-<p><em>Action: Drag from stronghold to Hand</em><br>
-Replacing is used to work your way through the Stronghold. Aces low.</p>
-<ul>
-<li>Replace cards of the same color, if counting up.</li>
-<li>Replace cards of the opposite color, if counting down.</li>
-</ul>
-<h3><a id="Panic_17"></a>Panic</h3>
-<p><em>Action: Drag from reserve to hand</em>
-When you Panic you discard your current Shape and take the top card of the Reserve as your new Shape. You only get 5 reserve cards.</p>
-<h3><a id="Official_Rules_21"></a>Official Rules</h3>
-<p><a href="http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422">http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422</a></p>`;
+            <p>A patience card game created by unpronounceable for Ludum Dare 35</p>
+            <h3><a id="Goal_3"></a>Goal</h3>
+            <p>Work your way through the stronghold (tableau), replacing people and spying to open up new options available to you. The goal is to find and replace the joker hidden within the stronghold.</p>
+            <h3><a id="Spying_6"></a>Spying</h3>
+            <p><em>Action: Tap a card</em><br>
+            Spying is used to reveal cards in the Stronghold. Touch a face-up card at the bottom
+            of a column that has the <em>same suit</em> as your Shape card. Adjacent cards are then revealed.</p>
+            <h3><a id="Replacing_11"></a>Replacing</h3>
+            <p><em>Action: Drag from stronghold to Hand</em><br>
+            Replacing is used to work your way through the Stronghold. Aces low.</p>
+            <ul>
+            <li>Replace cards of the same color, if counting up.</li>
+            <li>Replace cards of the opposite color, if counting down.</li>
+            </ul>
+            <h3><a id="Panic_17"></a>Panic</h3>
+            <p><em>Action: Drag from reserve to hand</em>
+            When you Panic you discard your current Shape and take the top card of the Reserve as your new Shape. You only get 5 reserve cards.</p>
+            <h3><a id="Official_Rules_21"></a>Official Rules</h3>
+            <p><a href="http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422">http://ludumdare.com/compo/ludum-dare-35/?action=preview&amp;uid=18422</a></p>`;
   };
   
   /**
