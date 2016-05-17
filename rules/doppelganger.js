@@ -1,13 +1,13 @@
 /**
- * A function library that handles the rules of the game.
- *
+ * Doppelganger is a solitaire card game created by Unpronounceable.
+ * You can find the game entry on Ludum Dare: http://ludumdare.com/compo/ludum-dare-35/?action=preview&uid=18422
  *
  */
 
 ;(function(){
 
   // create our rules object
-  var doppel = game.games.doppelganger = { };
+  var doppel = { name: 'doppelganger' };
   
   // The game model will request the requirements for your game.
   doppel.requestLayout = function() {
@@ -228,5 +228,7 @@
     game.controller.deal();
     
   };
+
+  game.controller.registerGame(doppel);
 
 })();

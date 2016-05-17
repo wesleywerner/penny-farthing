@@ -7,7 +7,7 @@
 ;(function(){
   
   // create our rules object
-  var klondike = game.games.klondike = { };
+  var klondike = { name: 'klondike' };
   
   // The game model will request the requirements for your game.
   klondike.requestLayout = function() {
@@ -205,5 +205,7 @@
     game.controller.deal();
   
   };
+  
+  game.controller.registerGame(klondike);
 
 })();

@@ -8,7 +8,7 @@
 ;(function(){
     
   // create our rules object
-  var freecell = game.games.freecell = { };
+  var freecell = { name: 'freecell' };
   
   // The game model will request the requirements for your game.
   freecell.requestLayout = function() {
@@ -201,5 +201,7 @@
     game.controller.deal();
   
   };
+  
+  game.controller.registerGame(freecell);
 
 })();

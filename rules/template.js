@@ -1,13 +1,12 @@
 /**
  * A function library that handles the rules of the game.
  *
- *
  */
 
 ;(function(){
   
   // create our rules object
-  var template = game.games.template = { };
+  var template = { name: 'template' };
   
   // The game model will request the requirements for your game.
   template.requestLayout = function() {
@@ -148,5 +147,7 @@
     game.controller.deal();
   
   };
+  
+  game.controller.registerGame(template);
 
 })();

@@ -14,6 +14,12 @@
   // Flag if handlers have been set up
   controller.handlersAdded = false;
 
+  /**
+   * Register game rules with the engine.
+   */
+  controller.registerGame = function(gameObject) {
+    game.games[gameObject.name] = gameObject;
+  };
 
   /**
    * Mouse or Touch down event.
