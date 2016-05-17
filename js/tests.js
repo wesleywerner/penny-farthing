@@ -135,25 +135,23 @@
   t.testController = function() {
     
     console.log('Test dealing and game controller calls');
-    game.model.deal(t.dealFunc);
+    var testZones = ['tableau', 'hand', 'reserve'];
+    game.model.deal(t.dealFunc, testZones);
     
-    var card = game.controller.peekByCol('tableau', 1);
+    var card = game.controller.peekByCol('tableau', 0);
     console.assert(card, 'Expected a card returned from peekByCol');
     console.assert(card.suit == 'H', 'Expected Hearts from peekByCol');
     console.assert(card.value == 13, 'Expected King from peekByCol');
-    console.log('... passed peekByCol');
     
-    var card = game.controller.peekByRow('tableau', 1, 1);
+    var card = game.controller.peekByRow('tableau', 0, 0);
     console.assert(card, 'Expected a card returned from peekByRow');
     console.assert(card.suit == 'S', 'Expected Spades from peekByRow');
     console.assert(card.value == 13, 'Expected King from peekByRow');
-    console.log('... passed peekByRow');
     
     var card = game.controller.peekByPile('hand');
     console.assert(card, 'Expected a card returned from peekByPile');
     console.assert(card.suit == 'S', 'Expected Spades from peekByPile');
     console.assert(card.value == 9, 'Expected Nine from peekByPile');
-    console.log('... passed peekByPile');
 
   };
   
