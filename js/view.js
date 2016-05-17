@@ -622,7 +622,14 @@
     }
     
     //// Grid
+    //view.ctx.globalAlpha = 0.5;
+    //view.ctx.fillStyle = 'white';
+    //Object.keys(view.layout.zones).forEach(function(zonename) {
+      //var zone = view.layout.zones[zonename];
+      //view.ctx.fillRect(zone.x, zone.y, zone.w, zone.h);
+    //});
     //view.ctx.strokeStyle = 'blue';
+    //view.ctx.lineWidth = 4;
     //for (col=0; col < view.grid.cols; col++) {
       //for (row=0; row < view.grid.rows; row++) {
         //view.ctx.strokeRect(
@@ -633,6 +640,7 @@
           //);
       //}
     //}
+    //view.ctx.globalAlpha = 1;    
     
     // Clear animation request flag
     view.hasAnimationRequest = false;
