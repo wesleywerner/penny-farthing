@@ -41,7 +41,18 @@
   
   // Give the game rules
   klondike.requestRulesWording = function() {
-    return '';
+    return `<h1>Klondike</h1>
+            <p>Klondike is one of the well known solitaire games.</p>
+            <h3><a id="Goal_3"></a>Goal</h3>
+            <p>Move all the cards to the foundation piles, A, B, C and D.</p>
+            <h3><a id="Play_6"></a>Play</h3>
+            <ul>
+            <li>Build stacks counting down by alternating color.</li>
+            <li>You can move entire stacks as long as they match this pattern.</li>
+            <li>Tap the reserve to flip new cards.</li>
+            <li>Tap the waste pile to recycle it back into the reserve.</li>
+            <li>Kings may be moved to empty columns.</li>
+            </ul>`;
   };
   
   /**
