@@ -676,7 +676,7 @@
           if (x > card.pos.x && x < card.pos.x + view.size.card.width &&
               y > card.pos.y && y < card.pos.y + view.size.card.height) {
             // store the clicked row on the card
-            card.clickedColRow = {col:0, row:row+1};
+            card.clickedColRow = {col:0, row:row};
             card.onTop = row == pilecount;
             match = card;
           }
@@ -691,7 +691,7 @@
             if (x > card.pos.x && x < card.pos.x + view.size.card.width &&
                 y > card.pos.y && y < card.pos.y + view.size.card.height) {
               // store the clicked row and column on the card
-              card.clickedColRow = {col:col+1, row:row+1};
+              card.clickedColRow = {col:col, row:row};
               card.onTop = row == pilecount;
               match = card;
             }
