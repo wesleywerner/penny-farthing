@@ -20,9 +20,9 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:2, width:7, height:3},
-      'reserve': { col:1, row:1, width:1, height:1},
-      'waste': { col:2, row:1, width:1, height:1},
+      'tableau': { col:1, row:2, width:7, height:3 },
+      'reserve': { col:1, row:1, width:1, height:1 },
+      'waste': { col:2, row:1, width:1, height:1 },
       'A': { col:4, row:1, width:1, height:1 },
       'B': { col:5, row:1, width:1, height:1 },
       'C': { col:6, row:1, width:1, height:1 },
@@ -50,7 +50,7 @@
    *   + a pile of cards
    *   + an array of piles
    */
-  klondike.dealFunc = function(dealer, cards) {
+  klondike.requestDeal = function(dealer, cards) {
     
     // create a new deck, fill and shuffle it.
     var deck = dealer.new();

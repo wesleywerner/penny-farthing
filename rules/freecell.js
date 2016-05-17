@@ -6,14 +6,7 @@
  */
 
 ;(function(){
-  
-  // reference the game object
-  var g = window.game = window.game == undefined ? { } : window.game;
-
-  // refrence the controller.
-  // We perform any card manipulations through here.
-  var control = g.controller;
-  
+    
   // create our rules object
   var freecell = game.games.freecell = { };
   
@@ -66,7 +59,7 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
    *   + a pile of cards
    *   + an array of piles
    */
-  freecell.dealFunc = function(dealer, cards) {
+  freecell.requestDeal = function(dealer, cards) {
 
     // fill and shuffle
     var deck = dealer.new();
@@ -101,10 +94,10 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
     // Allow moving n cards, where n is the count of free cells + 1.
     // Also only allow moving if the dragged cards are in descending order
     // and of alternating color.
-    var maxCards = control.peekByPile('Free1') ? 0 : 1;
-    maxCards += control.peekByPile('Free2') ? 0 : 1;
-    maxCards += control.peekByPile('Free3') ? 0 : 1;
-    maxCards += control.peekByPile('Free4') ? 0 : 1;
+    var maxCards = game.controller.peekByPile('Free1') ? 0 : 1;
+    maxCards += game.controller.peekByPile('Free2') ? 0 : 1;
+    maxCards += game.controller.peekByPile('Free3') ? 0 : 1;
+    maxCards += game.controller.peekByPile('Free4') ? 0 : 1;
     maxCards += 1;
     //game.ui.info('You have enough free cells to move '+maxCards+' card'+(maxCards==1 ? '':'s'));
     if (dragged.cards.length > maxCards) return false;
@@ -138,10 +131,10 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
     
       // move on to a free cell
       if (dragged.cards.length == 1 && dropped.zone.startsWith('Free')) {
-        var freeZone = control.peekByPile(dropped.zone);
+        var freeZone = game.controller.peekByPile(dropped.zone);
         if (!freeZone) {
           // free zone is empty, drop the card here
-          control.place(card, dropped.zone);
+          game.controller.place(card, dropped.zone);
         }
       }
 
@@ -154,7 +147,7 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
       if (!dropped.card) {
         // move the entire dragged stack
         dragged.cards.forEach(function(card) {
-          control.place(card, dropped.zone, dropped.column);
+          game.controller.place(card, dropped.zone, dropped.column);
         });
       }
       
@@ -165,7 +158,7 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
         if (!sameColor && oneLower) {
           // move the entire dragged stack
           dragged.cards.forEach(function(card) {
-            control.place(card, dropped.zone, dropped.column);
+            game.controller.place(card, dropped.zone, dropped.column);
           });
         }
         
@@ -174,14 +167,14 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
     }
     
     if (dropped.zone == 'A' || dropped.zone == 'B' || dropped.zone == 'C' || dropped.zone == 'D') {
-      var foundation = control.peekByPile(dropped.zone);
+      var foundation = game.controller.peekByPile(dropped.zone);
       if (!foundation && card.value == 1) {
         // place an ace
-        control.place(card, dropped.zone);
+        game.controller.place(card, dropped.zone);
       }
       else if (foundation && foundation.suit == card.suit && card.value - foundation.value == 1) {
         // stack on foundation
-        control.place(card, dropped.zone);
+        game.controller.place(card, dropped.zone);
       }
       freecell.testWinCondition();
     }
@@ -192,12 +185,12 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
    * Tests for the game win condition: the top card in each foundation is a King.
    */
   freecell.testWinCondition = function() {
-    var f1 = control.peekByPile('A');
-    var f2 = control.peekByPile('B');
-    var f3 = control.peekByPile('C');
-    var f4 = control.peekByPile('D');
+    var f1 = game.controller.peekByPile('A');
+    var f2 = game.controller.peekByPile('B');
+    var f3 = game.controller.peekByPile('C');
+    var f4 = game.controller.peekByPile('D');
     var won = (f1 && f1.value==13 && f2 && f2.value==13 && f3 && f3.value==13 && f4&&f4.value==13);
-    if (won) control.won();
+    if (won) game.controller.won();
   };
 
   /**
@@ -205,7 +198,7 @@ Cards are dealt face-up into eight cascades, four of which comprise seven cards 
    */
   freecell.setup = function() {
   
-    control.deal();
+    game.controller.deal();
   
   };
 

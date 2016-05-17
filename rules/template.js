@@ -6,10 +6,6 @@
 
 ;(function(){
   
-  // refrence the controller.
-  // We perform any card manipulations through here.
-  var control = game.controller;
-  
   // create our rules object
   var template = game.games.template = { };
   
@@ -24,10 +20,10 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:2, width:6, height:3},
-      'reserve': { col:1, row:1, width:1, height:1},
-      'discard': { col:2, row:1, width:1, height:1},
-      'hand': { col:6, row:1, width:1, height:1}
+      'tableau': { col:1, row:2, width:6, height:3 },
+      'reserve': { col:1, row:1, width:1, height:1 },
+      'discard': { col:2, row:1, width:1, height:1 },
+      'hand': { col:6, row:1, width:1, height:1 }
     };
     
     layout.victory = {
@@ -47,11 +43,8 @@
   
   /**
    * Table deal function.
-   * cards is an array and can contain:
-   *   + a pile of cards
-   *   + an array of piles
    */
-  template.dealFunc = function(dealer, cards) {
+  template.requestDeal = function(dealer, cards) {
     
     // An example game that display six columns of face up cards.
     // Taking a card from the tableau discards your hand.
@@ -114,7 +107,7 @@
     // dragged.zone is where the action began, dropped.zone is where the action ended.
     
     // look at our hand
-    var hand = control.peekByPile('hand');
+    var hand = game.controller.peekByPile('hand');
     
     if (dropped.card) console.log('Dropped on card ' + dropped.card.name);
 
@@ -133,14 +126,14 @@
         // win condition
         if (card.value > 100) {
           // Show the win screen
-          control.won();
+          game.controller.won();
         }
 
         // discard our hand
-        control.place(control.take('hand'), 'discard')
+        game.controller.place(game.controller.take('hand'), 'discard')
         
         // place new card in hand
-        control.place(card, 'hand');
+        game.controller.place(card, 'hand');
     
       };
     }
@@ -152,7 +145,7 @@
    */
   template.setup = function() {
   
-    control.deal();
+    game.controller.deal();
   
   };
 

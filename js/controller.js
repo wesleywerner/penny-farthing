@@ -238,7 +238,7 @@
 
     var layout = game.rules.requestLayout();
     
-    game.model.deal(game.rules.dealFunc, Object.keys(layout.zones));
+    game.model.deal(game.rules.requestDeal, Object.keys(layout.zones));
     
     // Tell the view to begin animating
     view.showWinScreen = false;

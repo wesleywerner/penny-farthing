@@ -6,13 +6,6 @@
 
 ;(function(){
 
-  // reference the game object
-  var g = window.game = window.game == undefined ? { } : window.game;
-
-  // refrence the controller.
-  // We perform any card manipulations through here.
-  var control = g.controller;
-
   // create our rules object
   var doppel = game.games.doppelganger = { };
   
@@ -27,10 +20,10 @@
     
     // Play zones
     layout.zones = {
-      'tableau': { col:1, row:2, width:6, height:2},  // entire top row
-      'reserve': { col:1, row:1, width:1, height:1},  // bottom left
-      'waste': { col:2, row:1, width:1, height:1},    // next to reserve
-      'hand': { col:6, row:1, width:1, height:1}     // bottom right
+      'tableau': { col:1, row:2, width:6, height:2 },
+      'reserve': { col:1, row:1, width:1, height:1 },
+      'waste': { col:2, row:1, width:1, height:1 },
+      'hand': { col:6, row:1, width:1, height:1 }
     };
     
     layout.victory = {
@@ -69,11 +62,8 @@ When you Panic you discard your current Shape and take the top card of the Reser
   
   /**
    * Table deal function.
-   * cards is an array and can contain:
-   *   + a pile of cards
-   *   + an array of piles
    */
-  doppel.dealFunc = function(dealer, cards) {
+  doppel.requestDeal = function(dealer, cards) {
 
     // Fill and shuffle a new hand.
     // Take 5 cards for the reserve.
@@ -138,7 +128,7 @@ When you Panic you discard your current Shape and take the top card of the Reser
     var draggedCard = dragged.cards[0];
     
     // look at our hand
-    var hand = control.peekByPile('hand');
+    var hand = game.controller.peekByPile('hand');
     
     // win condition
     if (hand && hand.value > 100) return;
@@ -147,10 +137,10 @@ When you Panic you discard your current Shape and take the top card of the Reser
     if (dragged.zone == 'reserve' && dropped.zone == 'hand') {
       
       // discard our hand
-      control.place(hand, 'waste')
+      game.controller.place(hand, 'waste')
       
       // place selected card into hand
-      control.place(draggedCard, 'hand');
+      game.controller.place(draggedCard, 'hand');
 
       // turn the hand card face up
       draggedCard.up = true;
@@ -185,17 +175,17 @@ When you Panic you discard your current Shape and take the top card of the Reser
         
         // win condition
         if (draggedCard.value > 100) {
-          control.won();
+          game.controller.won();
           canSwitch = true;
         }
         
         if (canSwitch) {
           
           // discard our hand
-          control.place(hand, 'waste')
+          game.controller.place(hand, 'waste')
           
           // place new card in hand
-          control.place(draggedCard, 'hand');
+          game.controller.place(draggedCard, 'hand');
           
           hand = draggedCard;
         }
@@ -213,15 +203,15 @@ When you Panic you discard your current Shape and take the top card of the Reser
           var pos = draggedCard.clickedColRow;
           
           // directly above
-          var acard = control.peekByRow('tableau', pos.col, Math.max(0, pos.row-1) );
+          var acard = game.controller.peekByRow('tableau', pos.col, Math.max(0, pos.row-1) );
           if (acard) acard.up = true;
 
           // to the left
-          acard = control.peekByRow('tableau', Math.max(0, pos.col-1), pos.row );
+          acard = game.controller.peekByRow('tableau', Math.max(0, pos.col-1), pos.row );
           if (acard) acard.up = true;
           
           // to the right
-          acard = control.peekByRow('tableau', Math.min(5, pos.col+1), pos.row );
+          acard = game.controller.peekByRow('tableau', Math.min(5, pos.col+1), pos.row );
           if (acard) acard.up = true;
           
         }
@@ -235,7 +225,7 @@ When you Panic you discard your current Shape and take the top card of the Reser
 
   doppel.setup = function() {
   
-    control.deal();
+    game.controller.deal();
     
   };
 
