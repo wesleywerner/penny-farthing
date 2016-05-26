@@ -253,7 +253,6 @@
     
     var w = zoom ? view.size.card.zoom.w : view.size.card.width;
     var h = zoom ? view.size.card.zoom.h : view.size.card.height;
-    var offset = zoom ? view.size.card.zoom.w : 0;
     
     // draw card shape
     if (card.up) {
@@ -267,7 +266,7 @@
           map.x, map.y,
           view.facelookup.gridsize.w,
           view.facelookup.gridsize.h,
-          x-offset, y, w, h
+          x, y, w, h
           );
       }
     }
@@ -275,11 +274,11 @@
       
       // draw the card back
       if (view.image('cardback')) {
-        context.drawImage(view.image('cardback'), x, y, view.size.card.width, view.size.card.height);
+        context.drawImage(view.image('cardback'), x, y, w, h);
       }
       else {
         context.fillStyle = "gray";
-        context.fillRect(x, y, view.size.card.width, view.size.card.height);
+        context.fillRect(x, y, w, h);
       }
       
     }
@@ -598,8 +597,8 @@
         view.drawCard(
           view.ctx,
           card,
-          view.dragged.pos.x - view.size.card.center.x,
-          view.dragged.pos.y - view.size.card.center.y + (row*view.pad.piletop*1.5),
+          view.dragged.pos.x - view.size.card.width,
+          view.dragged.pos.y - view.size.card.height + (row*view.pad.piletop*1.5),
           true
           );
         
