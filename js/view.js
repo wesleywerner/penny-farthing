@@ -605,13 +605,13 @@
       });
 
       // Draw an arc around the finger/cursor
-      view.ctx.strokeStyle = "black";
-      view.ctx.lineWidth = 4;
-      view.ctx.setLineDash([20, 10]);
-      view.ctx.lineDashOffset = -(view.dragged.pos.x + view.dragged.pos.y);
-      view.ctx.beginPath();
-      view.ctx.arc(view.dragged.pos.x, view.dragged.pos.y, 50, 0, 2 * Math.PI);
-      view.ctx.stroke();
+      //view.ctx.strokeStyle = "black";
+      //view.ctx.lineWidth = 4;
+      //view.ctx.setLineDash([20, 10]);
+      //view.ctx.lineDashOffset = -(view.dragged.pos.x + view.dragged.pos.y);
+      //view.ctx.beginPath();
+      //view.ctx.arc(view.dragged.pos.x, view.dragged.pos.y, 50, 0, 2 * Math.PI);
+      //view.ctx.stroke();
 
     }
     
