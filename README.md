@@ -1,3 +1,7 @@
+# Migrated
+
+This repo has migrated to [Codeberg](https://codeberg.org/wesbot/penny-farthing).
+
 # Overview
 
 Penny farthing is a solitaire card game engine using a web canvas and written in vanilla JavaScript.
